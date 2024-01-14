@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+	  
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -26,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Infraestructure\Security\" />
-    <Folder Include="Resources\" />
   </ItemGroup>
 
 </Project>

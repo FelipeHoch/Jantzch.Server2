@@ -1,18 +1,18 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using System.Text.Json.Serialization;
 
 namespace Jantzch.Server2.Domain;
 
 public class GroupMaterial
 {
-    [BsonElement("_id")]
+    [JsonIgnore]
     public ObjectId Id { get; set; }
 
-    [BsonElement("name")]
     public string Name { get; set; }
 
-
-    [BsonElement("description")]
     public string Description { get; set; }
 
+    [JsonPropertyName("id")]
+    public string MongoId => Id.ToString();
 }

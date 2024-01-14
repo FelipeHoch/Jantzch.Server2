@@ -2,7 +2,7 @@
 
 namespace Jantzch.Server2.Features.Materials;
 
-public class MaterialsSet
+public class MaterialsEnvelope
 {
     public List<Material> Materials { get; set; } = new();
 

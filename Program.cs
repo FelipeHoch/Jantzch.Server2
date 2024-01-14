@@ -1,4 +1,5 @@
 using Jantzch.Server2;
+using Jantzch.Server2.Infraestructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,5 +10,6 @@ startup.ConfigureServices(builder.Services);
 var app = builder.Build();
 
 startup.Configure(app, builder.Environment);
+
 
 app.Run();

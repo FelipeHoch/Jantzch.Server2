@@ -9,9 +9,7 @@ public class MongoRepository : IMongoRepository
 
     public IMongoClient Client => _mongoClient;
 
-    private readonly JantzchContext _context;
 
-    public JantzchContext Context => _context;
 
     public MongoRepository(MongoRepositoryOptions mongoRepositoryOptions)
     {
@@ -20,10 +18,5 @@ public class MongoRepository : IMongoRepository
         conf.ApplicationName = mongoRepositoryOptions.ClientName;
 
         _mongoClient = new MongoClient(conf);
-
-        var dbContextOptions = new DbContextOptionsBuilder<JantzchContext>()
-            .UseMongoDB(mongoRepositoryOptions.ConnectionString, "jantzch");
-        
-        _context = new JantzchContext(dbContextOptions.Options);
     }
 }

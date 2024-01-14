@@ -8,6 +8,7 @@ public static class MongoRepositoryDependencyInjectionExtension
 
         serviceCollection.AddSingleton<IMongoRepository, MongoRepository>();
 
+
         return serviceCollection;
     }
 }
