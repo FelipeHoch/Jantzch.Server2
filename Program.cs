@@ -1,5 +1,4 @@
 using Jantzch.Server2;
-using Jantzch.Server2.Infraestructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

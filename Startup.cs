@@ -6,8 +6,12 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Jantzch.Server2.Infraestructure.Errors;
-using Jantzch.Server2.Infraestructure.Repositories.Materials;
-using Jantzch.Server2.Infraestructure.Repositories.GroupsMaterial;
+using Jantzch.Server2.Domain.Entities.Materials;
+using Jantzch.Server2.Infrastructure.Repositories;
+using Jantzch.Server2.Domain.Entities.GroupsMaterial;
+using Jantzch.Server2.Application.Services.PropertyChecker;
+using Jantzch.Server2.Application.Services.Pagination;
+using Jantzch.Server2.Infraestructure.Services.PropertyChecker;
 
 namespace Jantzch.Server2;
 
@@ -48,6 +52,10 @@ public class Startup
 
         services.AddScoped<IGroupsMaterialRepository, GroupsMaterialRepository>();
 
+        services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
+
+        services.AddTransient<IPaginationService, PaginationService>();
+
         services
            .AddMvc(opt =>
            {
@@ -67,11 +75,12 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseMiddleware<ErrorHandlingMiddleware>();
+
         app.UseMvc();
 
         app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
-        app.UseMiddleware<ErrorHandlingMiddleware>();
 
         app.ApplicationServices.GetRequiredService<ILoggerFactory>();
     }
