@@ -35,7 +35,7 @@ public class GetMaterialHandler
 
         public async Task<ExpandoObject> Handle(MaterialQuery request, CancellationToken cancellationToken)
         {
-            var material = await _materialRepository.GetMaterialById(new ObjectId(request.Id));
+            var material = await _materialRepository.GetMaterialByIdAsync(new ObjectId(request.Id));
 
             if (material == null)
             {

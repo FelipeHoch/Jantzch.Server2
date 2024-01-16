@@ -1,16 +1,20 @@
-﻿using MongoDB.Bson;
+﻿using Jantzch.Server2.Application.Helpers;
+using Jantzch.Server2.Application.Shared;
+using MongoDB.Bson;
 
 namespace Jantzch.Server2.Domain.Entities.GroupsMaterial;
 
 public interface IGroupsMaterialRepository
 {
-    Task<GroupMaterial?> GetGroupById(ObjectId id);
+    Task<PagedList<GroupMaterial>> GetGroupsAsync(ResourceParameters parameters, CancellationToken cancellationToken);
 
-    Task AddGroup(GroupMaterial group);
+    Task<GroupMaterial?> GetGroupByIdAsync(ObjectId id);
 
-    Task UpdateGroup(GroupMaterial group);
+    Task AddGroupAsync(GroupMaterial group, CancellationToken cancellationToken);
 
-    Task DeleteGroup(GroupMaterial group);
+    Task UpdateGroupAsync(GroupMaterial group);
 
-    Task<bool> SaveChangesAsync();
+    Task DeleteGroupAsync(GroupMaterial group);
+
+    Task<bool> SaveChangesAsync(CancellationToken cancellationToken);
 }

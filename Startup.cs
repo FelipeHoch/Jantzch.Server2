@@ -13,6 +13,7 @@ using Jantzch.Server2.Application.Services.PropertyChecker;
 using Jantzch.Server2.Application.Services.Pagination;
 using Jantzch.Server2.Infraestructure.Services.PropertyChecker;
 using Jantzch.Server2.Application.Services.DataShapingService;
+using Microsoft.AspNetCore.Builder;
 
 namespace Jantzch.Server2;
 
@@ -75,7 +76,10 @@ public class Startup
                        .Serialization
                        .JsonIgnoreCondition
                        .WhenWritingNull
-           );        
+           );
+
+        // Inject an implementation of ISwaggerProvider with defaulted settings applied
+        services.AddSwaggerGen();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -85,6 +89,11 @@ public class Startup
         app.UseMvc();
 
         app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
+        app.UseSwagger();
+
+        // Enable middleware to serve swagger-ui assets(HTML, JS, CSS etc.)
+        app.UseSwaggerUI();
 
 
         app.ApplicationServices.GetRequiredService<ILoggerFactory>();

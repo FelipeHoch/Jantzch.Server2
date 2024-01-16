@@ -23,7 +23,7 @@ public class MaterialsRepository : IMaterialsRepository
         _propertyCheckerService = propertyCheckerService;
     }
 
-    public async Task<PagedList<Material>> GetMaterials(MaterialsResourceParameters parameters)
+    public async Task<PagedList<Material>> GetMaterialsAsync(MaterialsResourceParameters parameters, CancellationToken cancellationToken)
     {
         var query = _context.Materials.AsQueryable();
 
@@ -43,29 +43,29 @@ public class MaterialsRepository : IMaterialsRepository
         }
         
        
-        return await PagedList<Material>.CreateAsync(query, parameters.PageNumber, parameters.PageSize);
+        return await PagedList<Material>.CreateAsync(query, parameters.PageNumber, parameters.PageSize, cancellationToken);
     }   
 
-    public async Task<Material?> GetMaterialById(ObjectId id)
+    public async Task<Material?> GetMaterialByIdAsync(ObjectId id)
     {
         return await _context.Materials
             .AsNoTracking()
             .FirstOrDefaultAsync(x => id.Equals(id));
     }
 
-    public async Task AddMaterial(Material material)
+    public async Task AddMaterialAsync(Material material)
     {
         await _context.Materials.AddAsync(material);
     }
 
-    public async Task UpdateMaterial(Material material)
+    public async Task UpdateMaterialAsync(Material material)
     {
         _context.Materials.Update(material);
 
         await Task.FromResult(Unit.Value);
     }
 
-    public async Task DeleteMaterial(Material material)
+    public async Task DeleteMaterialAsync(Material material)
     {
         _context.Materials.Remove(material);
 

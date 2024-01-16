@@ -6,15 +6,15 @@ namespace Jantzch.Server2.Domain.Entities.Materials;
 
 public interface IMaterialsRepository
 {
-    Task<PagedList<Material>> GetMaterials(MaterialsResourceParameters parameters);
+    Task<PagedList<Material>> GetMaterialsAsync(MaterialsResourceParameters parameters, CancellationToken cancellationToken);
 
-    Task<Material?> GetMaterialById(ObjectId id);
+    Task<Material?> GetMaterialByIdAsync(ObjectId id);
 
-    Task AddMaterial(Material material);
+    Task AddMaterialAsync(Material material);
 
-    Task UpdateMaterial(Material material);
+    Task UpdateMaterialAsync(Material material);
 
-    Task DeleteMaterial(Material material);
+    Task DeleteMaterialAsync(Material material);
 
     Task<bool> SaveChangesAsync();
 }

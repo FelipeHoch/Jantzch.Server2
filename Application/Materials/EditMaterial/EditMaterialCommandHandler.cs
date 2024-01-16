@@ -24,7 +24,7 @@ public class EditMaterialCommandHandler
         public async Task<Material> Handle(EditMaterialCommand.Command request, CancellationToken cancellationToken)
 
         {
-            var material = await _materialsRepository.GetMaterialById(ObjectId.Parse(request.Id));
+            var material = await _materialsRepository.GetMaterialByIdAsync(ObjectId.Parse(request.Id));
 
             if (material == null)
             {
@@ -33,7 +33,7 @@ public class EditMaterialCommandHandler
 
             if (material.GroupIdObject is not null)
             {
-                var group = await _groupsMaterialRepository.GetGroupById((ObjectId)material.GroupIdObject);
+                var group = await _groupsMaterialRepository.GetGroupByIdAsync((ObjectId)material.GroupIdObject);
 
                 if (group == null)
                 {
@@ -47,7 +47,7 @@ public class EditMaterialCommandHandler
             material.Eu = request.Model.Eu;
             material.GroupIdObject = ObjectId.Parse(request.Model.GroupId);
 
-            await _materialsRepository.UpdateMaterial(material);
+            await _materialsRepository.UpdateMaterialAsync(material);
 
             await _materialsRepository.SaveChangesAsync();
 

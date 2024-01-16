@@ -2,12 +2,10 @@
 using Jantzch.Server2.Application.Materials.CreateMaterial;
 using Jantzch.Server2.Application.Materials.DeleteMaterial;
 using Jantzch.Server2.Application.Materials.GetMaterial;
-using Jantzch.Server2.Domain.Entities.Materials;
 using Jantzch.Server2.Features.Materials;
 using Jantzch.Server2.Features.Materials.EditMaterial;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Dynamic;
 using System.Net;
 
 namespace Jantzch.Server2.Api.Controllers.Materials;
@@ -37,6 +35,7 @@ public class MaterialsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(MaterialDTO), (int)HttpStatusCode.Created)]
     public async Task<IActionResult> Create([FromBody] CreateMaterialCommand command, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(command, cancellationToken);
@@ -45,14 +44,20 @@ public class MaterialsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public Task<Material> Edit(string id, [FromBody] EditMaterialCommand command, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(MaterialDTO), (int)HttpStatusCode.Created)]
+    public async Task<IActionResult> Edit(string id, [FromBody] EditMaterialCommand command, CancellationToken cancellationToken)
     {
-        return _mediator.Send(new EditMaterialCommand.Command(command, id), cancellationToken);
+        var result = await _mediator.Send(new EditMaterialCommand.Command(command, id), cancellationToken);
+
+        return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
     }
 
     [HttpDelete("{id}")]
-    public Task Delete(string id, CancellationToken cancellationToken)
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
     {
-        return _mediator.Send(new DeleteMaterialCommand.Command(id), cancellationToken);
+        await _mediator.Send(new DeleteMaterialCommand.Command(id), cancellationToken);
+
+        return NoContent();
     }
 }

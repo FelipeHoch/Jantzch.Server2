@@ -20,14 +20,14 @@ public class DeleteMaterialCommandHandler
 
         public async Task Handle(DeleteMaterialCommand.Command request, CancellationToken cancellationToken)
         {
-            var material = await _materialsRepository.GetMaterialById(ObjectId.Parse(request.Id));
+            var material = await _materialsRepository.GetMaterialByIdAsync(ObjectId.Parse(request.Id));
 
             if (material == null)
             {
                 throw new RestException(HttpStatusCode.NotFound, new { Material = "Not found" });
             }
 
-            await _materialsRepository.DeleteMaterial(material);
+            await _materialsRepository.DeleteMaterialAsync(material);
 
             await _materialsRepository.SaveChangesAsync();
 

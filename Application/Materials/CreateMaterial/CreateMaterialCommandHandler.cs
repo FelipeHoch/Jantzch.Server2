@@ -44,13 +44,13 @@ public class CreateMaterialCommandHandler
                 GroupIdObject = ObjectId.Parse(request.GroupId)
             };            
 
-            var group = await _groupsMaterialRepository.GetGroupById(ObjectId.Parse(request.GroupId));                
+            var group = await _groupsMaterialRepository.GetGroupByIdAsync(ObjectId.Parse(request.GroupId));                
 
             if (group is null)
                 throw new RestException(HttpStatusCode.NotFound, new { Group = "Not found" });
 
 
-            await _materialsRepository.AddMaterial(material);
+            await _materialsRepository.AddMaterialAsync(material);
 
             await _materialsRepository.SaveChangesAsync();
 

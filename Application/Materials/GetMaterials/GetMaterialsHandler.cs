@@ -43,7 +43,7 @@ public class GetMaterialsHandler
 
         public async Task<IEnumerable<ExpandoObject>> Handle(MaterialsQuery request, CancellationToken cancellationToken)
         {
-            var materials = await _materialsRepository.GetMaterials(request.MaterialsResourceParameters);
+            var materials = await _materialsRepository.GetMaterialsAsync(request.MaterialsResourceParameters, cancellationToken);
 
             _paginationService.AddPaginationMetadataInResponseHeader(materials, _httpContextAccessor.HttpContext.Response);
 
