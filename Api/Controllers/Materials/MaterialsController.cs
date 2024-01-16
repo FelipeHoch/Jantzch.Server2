@@ -6,19 +6,23 @@ using Jantzch.Server2.Features.Materials.EditMaterial;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Dynamic;
+using System.Net;
 
 namespace Jantzch.Server2.Api.Controllers.Materials;
 
 [ApiController]
 [Route("api/[controller]")]
-public class MaterialsController(IMediator mediator)
+public class MaterialsController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
     [HttpGet]
-    public Task<IEnumerable<ExpandoObject>> List([FromQuery] MaterialsResourceParameters parameters, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(List<MaterialDTO>), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> List([FromQuery] MaterialsResourceParameters parameters, CancellationToken cancellationToken)
     {
-        return _mediator.Send(new MaterialsQuery(parameters), cancellationToken);
+        var result = await _mediator.Send(new MaterialsQuery(parameters), cancellationToken);
+
+        return Ok(result);
     }
 
     [HttpPost]
