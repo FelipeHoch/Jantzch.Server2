@@ -51,7 +51,7 @@ public class GetMaterialsHandler
 
             var materialsDto = _mapper.Map<List<MaterialDTO>>(materialsList);          
 
-            var materialsShaped = _dataShapingService.ShapeData(materialsDto, request.MaterialsResourceParameters.Fields);
+            var materialsShaped = _dataShapingService.ShapeDataList(materialsDto, request.MaterialsResourceParameters.Fields);
 
             return materialsShaped;
         }

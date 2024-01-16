@@ -1,5 +1,7 @@
-﻿using Jantzch.Server2.Application.Materials.CreateMaterial;
+﻿using Jantzch.Server2.Application.Materials;
+using Jantzch.Server2.Application.Materials.CreateMaterial;
 using Jantzch.Server2.Application.Materials.DeleteMaterial;
+using Jantzch.Server2.Application.Materials.GetMaterial;
 using Jantzch.Server2.Domain.Entities.Materials;
 using Jantzch.Server2.Features.Materials;
 using Jantzch.Server2.Features.Materials.EditMaterial;
@@ -25,10 +27,21 @@ public class MaterialsController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost]
-    public Task<Material> Create([FromBody] CreateMaterialCommand command, CancellationToken cancellationToken)
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(MaterialDTO), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> Get(string id, [FromQuery] string? fields, CancellationToken cancellationToken)
     {
-        return _mediator.Send(command, cancellationToken);
+        var result = await _mediator.Send(new MaterialQuery(id, fields), cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateMaterialCommand command, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
     }
 
     [HttpPut("{id}")]

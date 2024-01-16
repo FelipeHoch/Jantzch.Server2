@@ -1,12 +1,12 @@
 ﻿using Jantzch.Server2.Application.Helpers;
 using Jantzch.Server2.Domain.Entities.Materials;
-using Jantzch.Server2.Features.Materials;
 using Jantzch.Server2.Infraestructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using MongoDB.Bson;
 using Jantzch.Server2.Application.Services.PropertyChecker;
+using Jantzch.Server2.Application.Materials;
 
 namespace Jantzch.Server2.Infrastructure.Repositories;
 
@@ -50,7 +50,7 @@ public class MaterialsRepository : IMaterialsRepository
     {
         return await _context.Materials
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id.Value.Equals(id));
+            .FirstOrDefaultAsync(x => id.Equals(id));
     }
 
     public async Task AddMaterial(Material material)

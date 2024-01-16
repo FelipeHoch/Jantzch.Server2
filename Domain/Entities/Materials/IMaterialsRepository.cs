@@ -1,5 +1,5 @@
 ﻿using Jantzch.Server2.Application.Helpers;
-using Jantzch.Server2.Features.Materials;
+using Jantzch.Server2.Application.Materials;
 using MongoDB.Bson;
 
 namespace Jantzch.Server2.Domain.Entities.Materials;

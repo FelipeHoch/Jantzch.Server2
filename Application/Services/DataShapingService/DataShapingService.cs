@@ -8,7 +8,9 @@ namespace Jantzch.Server2.Application.Services.DataShapingService;
 
 public interface IDataShapingService
 {
-    IEnumerable<ExpandoObject> ShapeData<T>(List<T> data, string fields);
+    IEnumerable<ExpandoObject> ShapeDataList<T>(List<T> data, string fields);
+
+    ExpandoObject ShapeData<T>(T data, string fields);
 }
 
 public class DataShapingService : IDataShapingService
@@ -20,7 +22,17 @@ public class DataShapingService : IDataShapingService
         _propertyCheckerService = propertyCheckerService;
     }
 
-    public IEnumerable<ExpandoObject> ShapeData<T>(List<T> data, string fields)
+    public IEnumerable<ExpandoObject> ShapeDataList<T>(List<T> data, string fields)
+    {
+        if (!_propertyCheckerService.TypeHasProperties<T>(fields))
+        {
+            throw new RestException(HttpStatusCode.BadRequest, new { Error = "Os campos fornecidos não são válidos" });
+        }
+
+        return data.ShapeData<T>(fields);
+    }
+
+    public ExpandoObject ShapeData<T>(T data, string fields)
     {
         if (!_propertyCheckerService.TypeHasProperties<T>(fields))
         {
