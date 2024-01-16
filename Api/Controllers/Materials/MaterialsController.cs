@@ -1,12 +1,11 @@
-﻿using Jantzch.Server2.Application.Helpers;
-using Jantzch.Server2.Application.Materials.CreateMaterial;
+﻿using Jantzch.Server2.Application.Materials.CreateMaterial;
 using Jantzch.Server2.Application.Materials.DeleteMaterial;
-using Jantzch.Server2.Application.Materials.GetMaterials;
 using Jantzch.Server2.Domain.Entities.Materials;
 using Jantzch.Server2.Features.Materials;
 using Jantzch.Server2.Features.Materials.EditMaterial;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Dynamic;
 
 namespace Jantzch.Server2.Api.Controllers.Materials;
 
@@ -17,7 +16,7 @@ public class MaterialsController(IMediator mediator)
     private readonly IMediator _mediator = mediator;
 
     [HttpGet]
-    public Task<PagedList<MaterialDTO>> List([FromQuery] MaterialsResourceParameters parameters, CancellationToken cancellationToken)
+    public Task<IEnumerable<ExpandoObject>> List([FromQuery] MaterialsResourceParameters parameters, CancellationToken cancellationToken)
     {
         return _mediator.Send(new MaterialsQuery(parameters), cancellationToken);
     }

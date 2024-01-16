@@ -23,7 +23,7 @@ public class MaterialsRepository : IMaterialsRepository
         _propertyCheckerService = propertyCheckerService;
     }
 
-    public async Task<PagedList<MaterialDTO>> GetMaterials(MaterialsResourceParameters parameters)
+    public async Task<PagedList<Material>> GetMaterials(MaterialsResourceParameters parameters)
     {
         var query = _context.Materials.AsQueryable();
 
@@ -41,24 +41,9 @@ public class MaterialsRepository : IMaterialsRepository
         {         
             query = query.OrderBy(parameters.OrderBy + " descending");
         }
-
-        IQueryable<MaterialDTO> queryWithShaping;
-
-        if (!string.IsNullOrWhiteSpace(parameters.Fields) && _propertyCheckerService.TypeHasProperties<Material>(parameters.Fields))
-        {
-            var selectInString = "new (" + parameters.Fields + ")";
-
-            queryWithShaping = query.Select<MaterialDTO>(selectInString);
-        }
-        else
-        {
-            queryWithShaping = query.Select(mbox => new MaterialDTO
-            {
-                Id = mbox.Id.Value.ToString(),
-            });
-        }
+        
        
-        return await PagedList<MaterialDTO>.CreateAsync(queryWithShaping, parameters.PageNumber, parameters.PageSize);
+        return await PagedList<Material>.CreateAsync(query, parameters.PageNumber, parameters.PageSize);
     }   
 
     public async Task<Material?> GetMaterialById(ObjectId id)

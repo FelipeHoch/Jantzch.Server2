@@ -56,6 +56,8 @@ public class Startup
 
         services.AddTransient<IPaginationService, PaginationService>();
 
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
         services
            .AddMvc(opt =>
            {

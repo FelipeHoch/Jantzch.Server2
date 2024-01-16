@@ -1,5 +1,6 @@
 ﻿using System.Dynamic;
 using System.Reflection;
+using System.Text.Json;
 
 namespace Jantzch.Server2.Application.Helpers;
 
@@ -77,9 +78,12 @@ public static class IEnumerableExtensions
 
                 if (propertyValue == null) continue;
 
+                // Convert the property name to camelCase
+                var camelCasePropertyName = JsonNamingPolicy.CamelCase.ConvertName(propertyInfo.Name);
+
                 // add the field to the ExpandoObject
                 ((IDictionary<string, object?>)dataShapedObject)
-                    .Add(propertyInfo.Name, propertyValue);
+                    .Add(camelCasePropertyName, propertyValue);
             }
 
             // add the ExpandoObject to the list

@@ -6,7 +6,7 @@ namespace Jantzch.Server2.Domain.Entities.Materials;
 
 public interface IMaterialsRepository
 {
-    Task<PagedList<MaterialDTO>> GetMaterials(MaterialsResourceParameters parameters);
+    Task<PagedList<Material>> GetMaterials(MaterialsResourceParameters parameters);
 
     Task<Material?> GetMaterialById(ObjectId id);
 
