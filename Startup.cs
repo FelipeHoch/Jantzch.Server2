@@ -12,6 +12,7 @@ using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using Jantzch.Server2.Application.Services.PropertyChecker;
 using Jantzch.Server2.Application.Services.Pagination;
 using Jantzch.Server2.Infraestructure.Services.PropertyChecker;
+using Jantzch.Server2.Application.Services.DataShapingService;
 
 namespace Jantzch.Server2;
 
@@ -55,6 +56,8 @@ public class Startup
         services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
 
         services.AddTransient<IPaginationService, PaginationService>();
+
+        services.AddTransient<IDataShapingService, DataShapingService>();
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
-using Jantzch.Server2.Application.Helpers;
+using Jantzch.Server2.Application.Services.DataShapingService;
 using Jantzch.Server2.Application.Services.Pagination;
-using Jantzch.Server2.Application.Services.PropertyChecker;
 using Jantzch.Server2.Domain.Entities.Materials;
 using Jantzch.Server2.Features.Materials;
-using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Metadata;
 using System.Dynamic;
-using System.Net;
 
 namespace Jantzch.Server2.Application.Materials.GetMaterials;
 
@@ -24,14 +20,15 @@ public class GetMaterialsHandler
 
         private readonly IMapper _mapper;
 
-        private readonly IPropertyCheckerService _propertyCheckerService;
+        private readonly IDataShapingService _dataShapingService;
 
         public QueryHandler(
             IMaterialsRepository materialsRepository,
             IPaginationService paginationService, 
             IHttpContextAccessor httpContextAccessor,
             IMapper mapper,
-            IPropertyCheckerService propertyCheckerService)
+            IDataShapingService dataShapingService
+            )
         {
             _materialsRepository = materialsRepository;
 
@@ -41,7 +38,7 @@ public class GetMaterialsHandler
 
             _mapper = mapper;
 
-            _propertyCheckerService = propertyCheckerService;
+            _dataShapingService = dataShapingService;
         }
 
         public async Task<IEnumerable<ExpandoObject>> Handle(MaterialsQuery request, CancellationToken cancellationToken)
@@ -52,14 +49,9 @@ public class GetMaterialsHandler
 
             var materialsList = materials.ToList();
 
-            var materialsDto = _mapper.Map<IEnumerable<MaterialDTO>>(materialsList);
+            var materialsDto = _mapper.Map<List<MaterialDTO>>(materialsList);          
 
-            if (!_propertyCheckerService.TypeHasProperties<MaterialDTO>(request.MaterialsResourceParameters.Fields))
-            {
-                throw new RestException(HttpStatusCode.BadRequest, new { Error = "The fields provided are not valid" });
-            }
-
-            var materialsShaped = materialsDto.ShapeData(request.MaterialsResourceParameters.Fields);
+            var materialsShaped = _dataShapingService.ShapeData(materialsDto, request.MaterialsResourceParameters.Fields);
 
             return materialsShaped;
         }

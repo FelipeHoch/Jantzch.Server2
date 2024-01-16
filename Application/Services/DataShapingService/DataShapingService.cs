@@ -1,0 +1,32 @@
+using Jantzch.Server2.Application.Helpers;
+using Jantzch.Server2.Application.Services.PropertyChecker;
+using Jantzch.Server2.Infraestructure.Errors;
+using System.Dynamic;
+using System.Net;
+
+namespace Jantzch.Server2.Application.Services.DataShapingService;
+
+public interface IDataShapingService
+{
+    IEnumerable<ExpandoObject> ShapeData<T>(List<T> data, string fields);
+}
+
+public class DataShapingService : IDataShapingService
+{
+    private readonly IPropertyCheckerService _propertyCheckerService;
+
+    public DataShapingService(IPropertyCheckerService propertyCheckerService)
+    {
+        _propertyCheckerService = propertyCheckerService;
+    }
+
+    public IEnumerable<ExpandoObject> ShapeData<T>(List<T> data, string fields)
+    {
+        if (!_propertyCheckerService.TypeHasProperties<T>(fields))
+        {
+            throw new RestException(HttpStatusCode.BadRequest, new { Error = "Os campos fornecidos não são válidos" });
+        }
+
+        return data.ShapeData(fields);
+    }
+}
