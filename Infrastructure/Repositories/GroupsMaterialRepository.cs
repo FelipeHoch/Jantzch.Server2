@@ -42,11 +42,11 @@ public class GroupsMaterialRepository : IGroupsMaterialRepository
         return await PagedList<GroupMaterial>.CreateAsync(query, parameters?.PageNumber ?? 1, parameters?.PageSize ?? 10, cancellationToken);
     }
 
-    public async Task<GroupMaterial?> GetGroupByIdAsync(ObjectId id)
+    public async Task<GroupMaterial?> GetGroupByIdAsync(ObjectId id, CancellationToken cancellationToken)
     {
         return await _context.GroupMaterials
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public async Task AddGroupAsync(GroupMaterial group, CancellationToken cancellationToken)

@@ -33,7 +33,7 @@ public class EditMaterialCommandHandler
 
             if (material.GroupIdObject is not null)
             {
-                var group = await _groupsMaterialRepository.GetGroupByIdAsync((ObjectId)material.GroupIdObject);
+                var group = await _groupsMaterialRepository.GetGroupByIdAsync((ObjectId)material.GroupIdObject, cancellationToken);
 
                 if (group == null)
                 {

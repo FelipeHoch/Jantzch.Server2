@@ -2,7 +2,7 @@
 
 namespace Jantzch.Server2.Features.Materials;
 
-public class MaterialDTO
+public class MaterialResponse
 {
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string Id { get; set; } = default!;

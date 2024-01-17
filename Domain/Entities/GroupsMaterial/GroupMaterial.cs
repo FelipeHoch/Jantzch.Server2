@@ -7,11 +7,11 @@ namespace Jantzch.Server2.Domain.Entities.GroupsMaterial;
 public class GroupMaterial
 {
     [JsonIgnore]
-    public ObjectId Id { get; set; }
+    public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
 
     public string Name { get; set; }
 
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     [JsonPropertyName("id")]
     public string MongoId => Id.ToString();

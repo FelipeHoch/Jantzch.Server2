@@ -9,7 +9,7 @@ public class MappingMaterial : Profile
 {
     public MappingMaterial()
     {
-        CreateMap<Material, MaterialDTO>()
+        CreateMap<Material, MaterialResponse>()
             .ForMember(dest => dest.GroupId, opt => opt.MapFrom(src => src.MongoGroupId))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.MongoId));       
     }

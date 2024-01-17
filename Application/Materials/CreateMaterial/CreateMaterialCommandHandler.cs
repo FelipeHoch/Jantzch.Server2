@@ -1,11 +1,8 @@
 ﻿using Jantzch.Server2.Application.Materials.Notifications;
 using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using Jantzch.Server2.Domain.Entities.Materials;
-using Jantzch.Server2.Features.Materials;
-using Jantzch.Server2.Infraestructure;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using System.Net;
 
@@ -44,7 +41,7 @@ public class CreateMaterialCommandHandler
                 GroupIdObject = ObjectId.Parse(request.GroupId)
             };            
 
-            var group = await _groupsMaterialRepository.GetGroupByIdAsync(ObjectId.Parse(request.GroupId));                
+            var group = await _groupsMaterialRepository.GetGroupByIdAsync(ObjectId.Parse(request.GroupId), cancellationToken);                
 
             if (group is null)
                 throw new RestException(HttpStatusCode.NotFound, new { Group = "Not found" });

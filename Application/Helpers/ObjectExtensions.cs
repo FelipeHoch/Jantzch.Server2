@@ -30,9 +30,11 @@ public static class ObjectExtensions
 
                 if (propertyValue == null) continue;
 
+                var camelCasePropertyName = JsonNamingPolicy.CamelCase.ConvertName(propertyInfo.Name);
+
                 // add the field to the ExpandoObject
                 ((IDictionary<string, object?>)dataShapedObject)
-                    .Add(propertyInfo.Name, propertyValue);
+                    .Add(camelCasePropertyName, propertyValue);
             }
 
             return dataShapedObject;

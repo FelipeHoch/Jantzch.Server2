@@ -17,7 +17,7 @@ public class MaterialsController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<MaterialDTO>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<MaterialResponse>), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> List([FromQuery] MaterialsResourceParameters parameters, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new MaterialsQuery(parameters), cancellationToken);
@@ -26,7 +26,7 @@ public class MaterialsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(MaterialDTO), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(MaterialResponse), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> Get(string id, [FromQuery] string? fields, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new MaterialQuery(id, fields), cancellationToken);
@@ -35,7 +35,7 @@ public class MaterialsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(MaterialDTO), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(MaterialResponse), (int)HttpStatusCode.Created)]
     public async Task<IActionResult> Create([FromBody] CreateMaterialCommand command, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(command, cancellationToken);
@@ -44,7 +44,7 @@ public class MaterialsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [ProducesResponseType(typeof(MaterialDTO), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(MaterialResponse), (int)HttpStatusCode.Created)]
     public async Task<IActionResult> Edit(string id, [FromBody] EditMaterialCommand command, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new EditMaterialCommand.Command(command, id), cancellationToken);

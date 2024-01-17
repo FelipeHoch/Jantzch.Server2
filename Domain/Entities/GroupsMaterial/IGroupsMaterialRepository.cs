@@ -8,7 +8,7 @@ public interface IGroupsMaterialRepository
 {
     Task<PagedList<GroupMaterial>> GetGroupsAsync(ResourceParameters parameters, CancellationToken cancellationToken);
 
-    Task<GroupMaterial?> GetGroupByIdAsync(ObjectId id);
+    Task<GroupMaterial?> GetGroupByIdAsync(ObjectId id, CancellationToken cancellationToken);
 
     Task AddGroupAsync(GroupMaterial group, CancellationToken cancellationToken);
 

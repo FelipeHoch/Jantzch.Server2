@@ -37,14 +37,14 @@ public class GetMaterialHandler
         {
             var material = await _materialRepository.GetMaterialByIdAsync(new ObjectId(request.Id));
 
-            if (material == null)
+            if (material is null)
             {
                 throw new RestException(HttpStatusCode.NotFound, new { Material = Constants.NOT_FOUND });
             }
 
-            var materialDTO = _mapper.Map<MaterialDTO>(material);
+            var materialResponse = _mapper.Map<MaterialResponse>(material);
 
-            var shapedMaterial = _dataShapingService.ShapeData(materialDTO, request.Fields);
+            var shapedMaterial = _dataShapingService.ShapeData(materialResponse, request.Fields);
 
             return shapedMaterial;
         }

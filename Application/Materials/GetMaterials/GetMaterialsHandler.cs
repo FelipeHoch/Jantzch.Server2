@@ -49,7 +49,7 @@ public class GetMaterialsHandler
 
             var materialsList = materials.ToList();
 
-            var materialsDto = _mapper.Map<List<MaterialDTO>>(materialsList);          
+            var materialsDto = _mapper.Map<List<MaterialResponse>>(materialsList);          
 
             var materialsShaped = _dataShapingService.ShapeDataList(materialsDto, request.MaterialsResourceParameters.Fields);
 
