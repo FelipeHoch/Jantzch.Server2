@@ -14,6 +14,7 @@ using Jantzch.Server2.Application.Services.Pagination;
 using Jantzch.Server2.Infraestructure.Services.PropertyChecker;
 using Jantzch.Server2.Application.Services.DataShapingService;
 using Microsoft.AspNetCore.Builder;
+using Jantzch.Server2.Domain.Entities.Taxes;
 
 namespace Jantzch.Server2;
 
@@ -53,6 +54,8 @@ public class Startup
         services.AddScoped<IMaterialsRepository, MaterialsRepository>();
 
         services.AddScoped<IGroupsMaterialRepository, GroupsMaterialRepository>();
+
+        services.AddScoped<ITaxesRepository, TaxesRepository>();
 
         services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
 

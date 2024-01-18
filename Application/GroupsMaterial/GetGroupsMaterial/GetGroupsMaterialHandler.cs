@@ -42,9 +42,9 @@ public class GetGroupsMaterialHandler : IRequestHandler<GroupsMaterialQuery, IEn
 
         var groupsMaterialList = groupsMaterial.ToList();
 
-        var groupsMaterialDto = _mapper.Map<List<GroupMaterialResponse>>(groupsMaterialList);
+        var groupsMaterialResponse = _mapper.Map<List<GroupMaterialResponse>>(groupsMaterialList);
 
-        var groupsMaterialShaped = _dataShapingService.ShapeDataList(groupsMaterialDto, request.Parameters.Fields);
+        var groupsMaterialShaped = _dataShapingService.ShapeDataList(groupsMaterialResponse, request.Parameters.Fields);
 
         return groupsMaterialShaped;
     }

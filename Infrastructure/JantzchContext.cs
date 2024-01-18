@@ -1,5 +1,6 @@
 ﻿using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using Jantzch.Server2.Domain.Entities.Materials;
+using Jantzch.Server2.Domain.Entities.Taxes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MongoDB.Driver;
@@ -16,6 +17,8 @@ public class JantzchContext: DbContext
     public DbSet<Material> Materials { get; set; } = null!;
 
     public DbSet<GroupMaterial> GroupMaterials { get; set; } = null!;
+
+    public DbSet<Tax> Taxes { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,6 +39,15 @@ public class JantzchContext: DbContext
         groupMaterialEntity.Property(g => g.Id).HasElementName("_id");
         groupMaterialEntity.Property(g => g.Name).HasElementName("name");
         groupMaterialEntity.Property(g => g.Description).HasElementName("description");
+
+        var taxEntity = modelBuilder.Entity<Tax>().ToCollection("taxes");
+
+        taxEntity.Property(t => t.Id).HasElementName("_id");
+        taxEntity.Property(t => t.Name).HasElementName("name");
+        taxEntity.Property(t => t.Type).HasElementName("type");
+        taxEntity.Property(t => t.CreatedBy).HasElementName("createdBy");
+        taxEntity.Property(t => t.Value).HasElementName("value");
+        taxEntity.Property(t => t.Code).HasElementName("code");
     }
 
     #region Transaction Handling
