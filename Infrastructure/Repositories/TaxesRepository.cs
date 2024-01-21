@@ -55,6 +55,14 @@ public class TaxesRepository : ITaxesRepository
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
+    public async Task<Tax?> LastTaxInsertedAsync(CancellationToken cancellationToken)
+    {
+        return await _context.Taxes
+            .AsNoTracking()
+            .OrderByDescending(x => x.Code)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task UpdateAsync(Tax tax)
     {
         _context.Taxes.Update(tax);

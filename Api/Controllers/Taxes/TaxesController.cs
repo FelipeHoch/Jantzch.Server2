@@ -1,6 +1,10 @@
 ﻿using Jantzch.Server2.Application.Taxes;
+using Jantzch.Server2.Application.Taxes.CreateTax;
+using Jantzch.Server2.Application.Taxes.DeleteTax;
+using Jantzch.Server2.Application.Taxes.EditTax;
 using Jantzch.Server2.Application.Taxes.GetTax;
 using Jantzch.Server2.Application.Taxes.GetTaxes;
+using Jantzch.Server2.Domain.Entities.Taxes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -31,30 +35,30 @@ public class TaxesController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
-    //[HttpPost]
-    //[ProducesResponseType(typeof(Tax), (int)HttpStatusCode.Created)]
-    //public async Task<IActionResult> Create([FromBody] CreateTaxCommand command, CancellationToken cancellationToken)
-    //{
-    //    var result = await _mediator.Send(command, cancellationToken);
+    [HttpPost]
+    [ProducesResponseType(typeof(Tax), (int)HttpStatusCode.Created)]
+    public async Task<IActionResult> Create([FromBody] CreateTaxCommand command, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(command, cancellationToken);
 
-    //    return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
-    //}
+        return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
+    }
 
-    //[HttpPut("{id}")]
-    //[ProducesResponseType(typeof(Tax), (int)HttpStatusCode.Created)]
-    //public async Task<IActionResult> Edit(string id, [FromBody] EditTaxCommand command, CancellationToken cancellationToken)
-    //{
-    //    var result = await _mediator.Send(new EditTaxCommand.Command(command, id), cancellationToken);
+    [HttpPut("{id}")]
+    [ProducesResponseType(typeof(Tax), (int)HttpStatusCode.Created)]
+    public async Task<IActionResult> Edit(string id, [FromBody] EditTaxCommand command, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new EditTaxCommand.Command(command, id), cancellationToken);
 
-    //    return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
-    //}
+        return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
+    }
 
-    //[HttpDelete("{id}")]
-    //[ProducesResponseType((int)HttpStatusCode.NoContent)]
-    //public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
-    //{
-    //    await _mediator.Send(new DeleteTaxCommand(id), cancellationToken);
+    [HttpDelete("{id}")]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new DeleteTaxCommand(id), cancellationToken);
 
-    //    return NoContent();
-    //}
+        return NoContent();
+    }
 }

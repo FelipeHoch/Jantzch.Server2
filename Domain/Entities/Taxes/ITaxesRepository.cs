@@ -8,6 +8,8 @@ public interface ITaxesRepository
 {
     Task<PagedList<Tax>> GetTaxesAsync(TaxesResourceParameters parameters, CancellationToken cancellationToken);
 
+    Task<Tax?> LastTaxInsertedAsync(CancellationToken cancellationToken);
+
     Task UpdateAsync(Tax tax);
 
     Task AddAsync(Tax tax, CancellationToken cancellationToken);

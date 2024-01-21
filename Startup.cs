@@ -15,6 +15,10 @@ using Jantzch.Server2.Infraestructure.Services.PropertyChecker;
 using Jantzch.Server2.Application.Services.DataShapingService;
 using Microsoft.AspNetCore.Builder;
 using Jantzch.Server2.Domain.Entities.Taxes;
+using Jantzch.Server2.Domain.Entities.ReportConfigurations;
+using Jantzch.Server2.Infrastructure.Google;
+using Jantzch.Server2.Domain.Entities.Clients;
+using Jantzch.Server2.Application.Abstractions.Google;
 
 namespace Jantzch.Server2;
 
@@ -29,6 +33,9 @@ public class Startup
         var mongoClient = new MongoClient(conf);
 
         var database = mongoClient.GetDatabase("jantzch");
+
+        // Is necessary, because the mongo provider to ef core, doesn't nested objects
+        services.AddSingleton(database);
 
         services.AddDbContext<JantzchContext>(opt => opt.UseMongoDB(mongoClient, database.DatabaseNamespace.DatabaseName));
 
@@ -57,6 +64,10 @@ public class Startup
 
         services.AddScoped<ITaxesRepository, TaxesRepository>();
 
+        services.AddScoped<IReportConfigurationRepository, ReportConfigurationRepository>();
+
+        services.AddScoped<IClientsRepository, ClientsRepository>();
+
         services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
 
         services.AddTransient<IPaginationService, PaginationService>();
@@ -80,8 +91,12 @@ public class Startup
                        .JsonIgnoreCondition
                        .WhenWritingNull
            );
+        
+        services.AddHttpClient<IGoogleMapsService, GoogleMapsService>((provider, httpClinet) => 
+        {
+            httpClinet.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/");
+        });
 
-        // Inject an implementation of ISwaggerProvider with defaulted settings applied
         services.AddSwaggerGen();
     }
 

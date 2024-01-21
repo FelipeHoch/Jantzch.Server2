@@ -1,5 +1,7 @@
-﻿using Jantzch.Server2.Domain.Entities.GroupsMaterial;
+﻿using Jantzch.Server2.Domain.Entities.Clients;
+using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using Jantzch.Server2.Domain.Entities.Materials;
+using Jantzch.Server2.Domain.Entities.ReportConfigurations;
 using Jantzch.Server2.Domain.Entities.Taxes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -19,6 +21,10 @@ public class JantzchContext: DbContext
     public DbSet<GroupMaterial> GroupMaterials { get; set; } = null!;
 
     public DbSet<Tax> Taxes { get; set; } = null!;
+
+    public DbSet<ReportConfiguration> ReportConfiguration { get; set; } = null!;
+
+    public DbSet<Client> Clients { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -48,6 +54,16 @@ public class JantzchContext: DbContext
         taxEntity.Property(t => t.CreatedBy).HasElementName("createdBy");
         taxEntity.Property(t => t.Value).HasElementName("value");
         taxEntity.Property(t => t.Code).HasElementName("code");
+
+        var reportConfigurationEntity = modelBuilder.Entity<ReportConfiguration>().ToCollection("report_configuration");
+
+        reportConfigurationEntity.Property(r => r.Id).HasElementName("_id");
+        reportConfigurationEntity.Property(r => r.ReportKey).HasElementName("reportKey");
+        reportConfigurationEntity.Property(r => r.BottomTitle).HasElementName("bottomTitle");
+        reportConfigurationEntity.Property(r => r.BottomText).HasElementName("bottomText");
+        reportConfigurationEntity.Property(r => r.PhoneContact).HasElementName("phoneContact");
+        reportConfigurationEntity.Property(r => r.EmailContact).HasElementName("emailContact");
+        reportConfigurationEntity.Property(r => r.SiteUrl).HasElementName("siteUrl");
     }
 
     #region Transaction Handling

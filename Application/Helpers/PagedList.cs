@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace Jantzch.Server2.Application.Helpers;
 
@@ -26,6 +27,15 @@ public class PagedList<T> : List<T>
         var count = await source.CountAsync(cancellationToken);
         var items = await source.Skip((pageNumber - 1) * pageSize)
             .Take(pageSize).ToListAsync(cancellationToken);
+
+        return new PagedList<T>(items, count, pageNumber, pageSize);
+    }
+
+    public static async Task<PagedList<T>> CreateAsync(
+         IAggregateFluent<T> source, int pageNumber, int pageSize, int count, CancellationToken cancellationToken)
+    {
+        var items = await source.Skip((pageNumber - 1) * pageSize)
+            .Limit(pageSize).ToListAsync(cancellationToken);
 
         return new PagedList<T>(items, count, pageNumber, pageSize);
     }
