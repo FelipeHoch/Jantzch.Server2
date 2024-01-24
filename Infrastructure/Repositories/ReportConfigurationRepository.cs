@@ -46,8 +46,6 @@ public class ReportConfigurationRepository : IReportConfigurationRepository
     public async Task AddAsync(ReportConfiguration reportConfiguration, CancellationToken cancellationToken)
     {
         await _context.ReportConfiguration.AddAsync(reportConfiguration, cancellationToken);
-
-        await Task.FromResult(Unit.Value);
     }
 
     public async Task UpdateAsync(ReportConfiguration reportConfiguration)

@@ -1,5 +1,8 @@
 ﻿using Jantzch.Server2.Application.Clients;
 using Jantzch.Server2.Application.Clients.CreateClient;
+using Jantzch.Server2.Application.Clients.DeleteClient;
+using Jantzch.Server2.Application.Clients.EditAddress;
+using Jantzch.Server2.Application.Clients.EditClient;
 using Jantzch.Server2.Application.Clients.GetClients;
 using Jantzch.Server2.Application.Clients.GetClientsInformation;
 using Jantzch.Server2.Domain.Entities.Clients;
@@ -44,5 +47,32 @@ public class ClientsController : ControllerBase
         var client = await _mediator.Send(command, cancellationToken);
 
         return Ok(client);
+    }
+
+    [HttpPut("{id}")]
+    [ProducesResponseType(typeof(Client), StatusCodes.Status200OK)]
+    public async Task<IActionResult> EditClient(string id, [FromBody] EditClientCommand command, CancellationToken cancellationToken)
+    {
+        var client = await _mediator.Send(new EditClientCommand.Command(command, id), cancellationToken);
+
+        return Ok(client);
+    }
+
+    [HttpPut("{id}/address")]
+    [ProducesResponseType(typeof(Client), StatusCodes.Status200OK)]
+    public async Task<IActionResult> EditClientAddress(string id, [FromBody] EditAddressCommand command, CancellationToken cancellationToken)
+    {
+        var client = await _mediator.Send(new EditAddressCommand.Command(command, id), cancellationToken);
+
+        return Ok(client);
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> DeleteClient(string id, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new DeleteClientCommand(id), cancellationToken);
+
+        return NoContent();
     }
 }

@@ -42,7 +42,7 @@ public class TaxesRepository : ITaxesRepository
 
         if (!string.IsNullOrWhiteSpace(parameters.OrderBy) && _propertyCheckerService.TypeHasProperties<Tax>(parameters.OrderBy))
         {
-            query = query.OrderBy(parameters.OrderBy + " descending");
+            query = query.OrderBy(parameters.OrderBy + " dcending");
         }
 
         return await PagedList<Tax>.CreateAsync(query, parameters?.PageNumber ?? 1, parameters?.PageSize ?? 10, cancellationToken);

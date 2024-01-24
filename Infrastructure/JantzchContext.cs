@@ -3,6 +3,7 @@ using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using Jantzch.Server2.Domain.Entities.Materials;
 using Jantzch.Server2.Domain.Entities.ReportConfigurations;
 using Jantzch.Server2.Domain.Entities.Taxes;
+using Jantzch.Server2.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MongoDB.Driver;
@@ -24,7 +25,7 @@ public class JantzchContext: DbContext
 
     public DbSet<ReportConfiguration> ReportConfiguration { get; set; } = null!;
 
-    public DbSet<Client> Clients { get; set; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -64,6 +65,16 @@ public class JantzchContext: DbContext
         reportConfigurationEntity.Property(r => r.PhoneContact).HasElementName("phoneContact");
         reportConfigurationEntity.Property(r => r.EmailContact).HasElementName("emailContact");
         reportConfigurationEntity.Property(r => r.SiteUrl).HasElementName("siteUrl");
+
+        var userEntity = modelBuilder.Entity<User>().ToCollection("users");
+
+        userEntity.Property(u => u.Id).HasElementName("_id");
+        userEntity.Property(u => u.IdentityProviderId).HasElementName("identityProviderId");
+        userEntity.Property(u => u.Name).HasElementName("name");
+        userEntity.Property(u => u.Email).HasElementName("email");
+        userEntity.Property(u => u.Provider).HasElementName("provider");
+        userEntity.Property(u => u.Role).HasElementName("role");
+        userEntity.Property(u => u.CustByHour).HasElementName("custByHour");
     }
 
     #region Transaction Handling

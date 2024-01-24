@@ -13,16 +13,12 @@ namespace Jantzch.Server2.Infrastructure.Repositories;
 
 public class ClientsRepository : IClientsRepository
 {
-    private readonly JantzchContext _context;
-
     private readonly IMongoDatabase _database;
 
     private readonly IMongoCollection<Client> _clients;
 
-    public ClientsRepository(JantzchContext context, IMongoDatabase database)
+    public ClientsRepository(IMongoDatabase database)
     {
-        _context = context;
-
         _database = database;
 
         _clients = _database.GetCollection<Client>("clients");
@@ -30,7 +26,6 @@ public class ClientsRepository : IClientsRepository
 
     public async Task<PagedList<Client>> GetAsync(ClientsResourceParameters parameters, CancellationToken cancellationToken)
     {
-        var builder = Builders<Client>.Filter;
         var filter = BuildClientFilters(parameters);
         var sort = BuildSortDefinition(parameters); 
 
@@ -45,7 +40,6 @@ public class ClientsRepository : IClientsRepository
 
     public async Task<PagedList<ClientInformationResponse>> GetInformationsAsync(ClientsResourceParameters parameters, CancellationToken cancellationToken)
     {
-        var builder = Builders<Client>.Filter;
         var filter = BuildClientFilters(parameters);
         var sort = BuildSortDefinition(parameters);
         
@@ -69,41 +63,35 @@ public class ClientsRepository : IClientsRepository
 
     public async Task<Client?> GetByIdAsync(ObjectId id, CancellationToken cancellationToken)
     {
-        return await _context.Clients
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id.ToString(), cancellationToken);
+        return await _clients.Find(client => client.Id == id.ToString()).FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task AddAsync(Client client, CancellationToken cancellationToken)
     {
-        await _clients.InsertOneAsync(client);
+        await _clients.InsertOneAsync(client, cancellationToken: cancellationToken);
     }
 
     public async Task UpdateAsync(Client client)
     {
-        _context.Clients.Update(client);
-
-        await Task.FromResult(Unit.Value);
+        await _clients.ReplaceOneAsync(x => x.Id == client.Id, client);
     }
 
     public async Task DeleteAsync(Client client)
     {
-        _context.Clients.Remove(client);
-
-        await Task.FromResult(Unit.Value);
+        await _clients.DeleteOneAsync(x => x.Id == client.Id);
     }
 
     public async Task<bool> ClientExists(ObjectId id, CancellationToken cancellationToken)
     {
-        return await _context.Clients.AnyAsync(x => x.Id == id.ToString(), cancellationToken);
+        return await _clients.Find(client => client.Id == id.ToString()).AnyAsync(cancellationToken);
     }
 
-    public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken)
+    public Task<bool> SaveChangesAsync(CancellationToken cancellationToken)
     {
-        return await _context.SaveChangesAsync(cancellationToken) > 0;
+        throw new NotImplementedException();
     }
 
-    private FilterDefinition<Client> BuildClientFilters(ClientsResourceParameters clientsResourceParameters)
+    private static FilterDefinition<Client> BuildClientFilters(ClientsResourceParameters clientsResourceParameters)
     {
         var builder = Builders<Client>.Filter;
         var filter = builder.Empty;
@@ -135,7 +123,7 @@ public class ClientsRepository : IClientsRepository
         return filter;
     }
 
-    private SortDefinition<Client> BuildSortDefinition(ClientsResourceParameters clientsResourceParameters)
+    private static SortDefinition<Client> BuildSortDefinition(ClientsResourceParameters clientsResourceParameters)
     {
         var sort = Builders<Client>.Sort.Descending(client => client.Name);
 

@@ -19,6 +19,7 @@ using Jantzch.Server2.Domain.Entities.ReportConfigurations;
 using Jantzch.Server2.Infrastructure.Google;
 using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Application.Abstractions.Google;
+using Jantzch.Server2.Domain.Entities.Users;
 
 namespace Jantzch.Server2;
 
@@ -73,6 +74,8 @@ public class Startup
         services.AddTransient<IPaginationService, PaginationService>();
 
         services.AddTransient<IDataShapingService, DataShapingService>();
+
+        services.AddTransient<IUserRepository, UserRepository>();
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
