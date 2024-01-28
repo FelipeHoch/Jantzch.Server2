@@ -25,7 +25,5 @@ public class DeleteClientCommandHandler : IRequestHandler<DeleteClientCommand>
         }
 
         await _clientsRepository.DeleteAsync(client);
-
-        await Task.FromResult(Unit.Value);
     }
 }

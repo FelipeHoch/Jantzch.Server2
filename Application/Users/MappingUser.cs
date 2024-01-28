@@ -8,8 +8,7 @@ public class MappingUser : Profile
 {
     public MappingUser()
     {
-        CreateMap<User, UserResponse>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.MongoId));
+        CreateMap<User, UserResponse>();            
 
         CreateMap<UserFromIdpDto, User>()
             .ForMember(dest => dest.IdentityProviderId, opt => opt.MapFrom(src => src.Id));

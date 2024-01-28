@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Conduit.Resources {
+namespace Jantzch.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Conduit.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Conduit.Resources.Infrastructure.Errors.ErrorHandlingMiddleware", typeof(Infrastructure_Errors_ErrorHandlingMiddleware).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Jantzch.Resources.Infrastructure.Errors.ErrorHandlingMiddleware", typeof(Infrastructure_Errors_ErrorHandlingMiddleware).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -7,7 +7,7 @@ namespace Jantzch.Server2.Domain.Entities.Users;
 public class User
 {
     [JsonIgnore]
-    public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
+    public ObjectId? Id { get; set; } = ObjectId.GenerateNewId();
 
     public ObjectId? IdentityProviderId { get; set; }
 
@@ -19,9 +19,6 @@ public class User
 
     public string Role { get; set; }
 
-    public int CustByHour { get; set; }
+    public int CustByHour { get; set; } = 0;
 
-    [NotMapped]
-    [JsonPropertyName("id")]
-    public string MongoId => Id.ToString();
 }

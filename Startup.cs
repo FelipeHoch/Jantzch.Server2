@@ -20,6 +20,11 @@ using Jantzch.Server2.Infrastructure.Google;
 using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Application.Abstractions.Google;
 using Jantzch.Server2.Domain.Entities.Users;
+using System.Text.Json;
+using Jantzch.Server2.Infrastructure;
+using System.Text.Json.Serialization;
+using Jantzch.Server2.Domain.Entities.Orders;
+using Newtonsoft.Json.Serialization;
 
 namespace Jantzch.Server2;
 
@@ -69,13 +74,15 @@ public class Startup
 
         services.AddScoped<IClientsRepository, ClientsRepository>();
 
+        services.AddScoped<IUserRepository, UserRepository>();
+
+        services.AddScoped<IOrderRepository, OrderRepository>();
+
         services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
 
         services.AddTransient<IPaginationService, PaginationService>();
 
-        services.AddTransient<IDataShapingService, DataShapingService>();
-
-        services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IDataShapingService, DataShapingService>();        
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -84,17 +91,21 @@ public class Startup
            {
                opt.Filters.Add(typeof(ValidatorActionFilter));
                opt.EnableEndpointRouting = false;
+
+               opt.InputFormatters.Insert(0, JsonPatchFormatter.GetJsonPatchInputFormatter());
            })
            .AddJsonOptions(
-               opt =>
-                   opt.JsonSerializerOptions.DefaultIgnoreCondition = System
-                       .Text
-                       .Json
-                       .Serialization
-                       .JsonIgnoreCondition
-                       .WhenWritingNull
-           );
-        
+                opt =>
+                {
+                    opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+
+                    opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+
+                    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(new LowerCaseJsonNamingPolicy()));
+                })
+           .AddNewtonsoftJson();
+            
+
         services.AddHttpClient<IGoogleMapsService, GoogleMapsService>((provider, httpClinet) => 
         {
             httpClinet.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/");

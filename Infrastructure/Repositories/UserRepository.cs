@@ -49,14 +49,14 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
     }
 
     public async Task<User?> GetByIdpIdAsync(ObjectId idpId, CancellationToken cancellationToken)
     {
         return await _context.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.IdentityProviderId == idpId, cancellationToken);
+            .FirstOrDefaultAsync(x => x.IdentityProviderId.Equals(idpId), cancellationToken);
     }
 
     public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)

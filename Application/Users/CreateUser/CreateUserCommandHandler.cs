@@ -4,7 +4,7 @@ using Jantzch.Server2.Domain.Entities.Users;
 using Jantzch.Server2.Infraestructure.Errors;
 using Jantzch.Server2.Infrastructure.Security;
 using MediatR;
-using MongoDB.Bson.IO;
+using MongoDB.Bson;
 using System.Text.Json;
 
 namespace Jantzch.Server2.Application.Users.CreateUser;
@@ -22,23 +22,32 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserR
 
     public async Task<UserResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        //var userFromIdpDto = JsonSerializer.Deserialize<UserFromIdpDto>(Utils.DecodeBase64<string>(request.Data)!);
+        var userFromIdpDto = Utils.DecodeBase64<UserFromIdpDto>(request.Data);
 
-        //if (userFromIdpDto is null)
-        //{
-        //    throw new RestException(System.Net.HttpStatusCode.BadRequest, new { User = "Invalid user data" });
-        //}
+        if (userFromIdpDto is null)
+        {
+            throw new RestException(System.Net.HttpStatusCode.BadRequest, new { User = "Invalid user data" });
+        }
 
-        //userFromIdpDto.Token = null;
+        userFromIdpDto.Token = null;
 
-        //var user = _mapper.Map<User>(userFromIdpDto, opt =>
-        //    opt.AfterMap((src, dest) =>
-        //    {
-        //        dest.CustByHour = 
-        //    });
+        var user = _mapper.Map<User>(userFromIdpDto, opt =>
+            opt.AfterMap((src, dest) =>
+            {
+                dest.CustByHour = request.UserFromClient.CustByHour;
+                dest.Id = ObjectId.GenerateNewId();
+            }));
 
-        //await _userRepository.CreateUserAsync(user);
+        user.Email = user.Email.ToLower();
 
-        //return _mapper.Map<UserResponse>(user);
+        await _userRepository.AddAsync(user, cancellationToken);
+        
+        await _userRepository.SaveChangesAsync(cancellationToken);
+
+        var userResponse = _mapper.Map<UserResponse>(user);
+
+        if (userFromIdpDto.NewPassword is not null) userResponse.NewPassword = userFromIdpDto.NewPassword;
+
+        return userResponse;
     }
 }
