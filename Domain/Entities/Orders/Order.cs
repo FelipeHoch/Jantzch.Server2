@@ -9,6 +9,12 @@ namespace Jantzch.Server2.Domain.Entities.Orders;
 
 public class Order
 {
+    public Order()
+    {
+        SetStatusOnCreation();
+        SetStartDateOnOpen();
+    }
+
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     [BsonElement("_id")]
@@ -76,4 +82,69 @@ public class Order
     [BsonElement("hoursWorked")]
     [BsonIgnoreIfNull]
     public double? HoursWorked { get; set; } = 0;
+
+    public void FinishOrder(string userId, string userName)
+    {
+        if (FinishedAt is null)
+        {
+            IsReported = false;
+
+            FinishedAt = DateTime.UtcNow;
+
+            FinishedBy = new UserSimple
+            {
+                Id = userId,
+                Name = userName
+            };
+        }
+
+        CalculateHoursWorked();
+    }
+
+    public void PauseOrder(string descriptive, string userId, string userName)
+    {
+        if (Status == "open")
+        {
+            Status = "paused";
+
+            BreaksHistory.Add(new Break
+            {
+                StartDate = DateTime.UtcNow,
+                Descriptive = descriptive,
+                BreakNumber = BreaksHistory.Count,
+                PausedBy = new UserSimple
+                {
+                    Id = userId,
+                    Name = userName
+                }
+            });
+        }
+    }
+
+    public void CalculateHoursWorked()
+    {
+        var timeDiff = FinishedAt - StartDate;
+
+        var minutesWorked = timeDiff?.TotalMinutes;
+
+        if (BreaksHistory.Count > 0)
+        {
+
+            var minutesStopped = BreaksHistory.Sum(x => (x.EndDate - x.StartDate).Value.TotalMinutes);
+
+            minutesWorked -= minutesStopped;
+        }
+
+        HoursWorked = minutesWorked / 60;
+    }
+
+    private void SetStatusOnCreation()
+    {
+        Status = ScheduledDate != null ? "scheduled" : "open";
+    }
+
+    private void SetStartDateOnOpen()
+    {
+        if (Status == "open") StartDate = DateTime.Now;
+    }
 }

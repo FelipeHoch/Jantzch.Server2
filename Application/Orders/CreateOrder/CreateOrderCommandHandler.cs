@@ -34,10 +34,6 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Ord
             Name = "Felipe Mock"
         };
 
-        order.Status = order.ScheduledDate != null ? "scheduled" : "open";
-
-        if (order.Status == "open") order.StartDate = DateTime.Now;
-
         await _orderRepository.AddAsync(order, cancellationToken);
 
         return order;

@@ -1,9 +1,12 @@
 ﻿using Jantzch.Server2.Application.Orders;
+using Jantzch.Server2.Application.Orders.CreateBreak;
 using Jantzch.Server2.Application.Orders.CreateOrder;
+using Jantzch.Server2.Application.Orders.EditOrder;
 using Jantzch.Server2.Application.Orders.GetOrder;
 using Jantzch.Server2.Application.Orders.GetOrders;
 using Jantzch.Server2.Domain.Entities.Orders;
 using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jantzch.Server2.Api.Controllers.Orders;
@@ -42,6 +45,24 @@ public class OrderController : ControllerBase
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand command, CancellationToken cancellationToken)
     {
         var client = await _mediator.Send(command, cancellationToken);
+
+        return Ok(client);
+    }
+
+    [HttpPatch("{id}")]
+    [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+    public async Task<IActionResult> EditOrder(string id, [FromBody] JsonPatchDocument<Order> model, CancellationToken cancellationToken)
+    {
+        var client = await _mediator.Send(new EditOrderCommand.Command(model, id), cancellationToken);
+
+        return Ok(client);
+    }
+
+    [HttpPost("{id}/break")]
+    [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateBreak(string id, [FromBody] CreateBreakCommand command, CancellationToken cancellationToken)
+    {
+        var client = await _mediator.Send(new CreateBreakCommand.Command(id, command.Descriptive), cancellationToken);
 
         return Ok(client);
     }
