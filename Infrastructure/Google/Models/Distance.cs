@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
 
 namespace Jantzch.Server2.Infrastructure.Google.Models;
 
@@ -17,8 +18,10 @@ public sealed class Distance
 
 public sealed class Measurement
 {
+    [BsonElement("Text")]
     public string Text { get; set; }
- 
+
+    [BsonElement("Value")]
     public int Value { get; set; }
 }
 

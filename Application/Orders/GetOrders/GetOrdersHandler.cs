@@ -9,7 +9,7 @@ namespace Jantzch.Server2.Application.Orders.GetOrders;
 
 public class GetOrdersHandler : IRequestHandler<OrdersQuery, IEnumerable<ExpandoObject>>
 {
-    private IOrderRepository _orderRepository;
+    private readonly IOrderRepository _orderRepository;
 
     private readonly IMapper _mapper;
 
