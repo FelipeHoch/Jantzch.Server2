@@ -1,6 +1,7 @@
 ﻿using Jantzch.Server2.Application.Orders;
 using Jantzch.Server2.Application.Orders.CreateBreak;
 using Jantzch.Server2.Application.Orders.CreateOrder;
+using Jantzch.Server2.Application.Orders.DeleteOrder;
 using Jantzch.Server2.Application.Orders.EditOrder;
 using Jantzch.Server2.Application.Orders.GetOrder;
 using Jantzch.Server2.Application.Orders.GetOrders;
@@ -67,21 +68,12 @@ public class OrderController : ControllerBase
         return Ok(client);
     }
 
-    //[HttpPut("{id}")]
-    //[ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
-    //public async Task<IActionResult> EditOrder(string id, [FromBody] EditOrderCommand command, CancellationToken cancellationToken)
-    //{
-    //    var client = await _mediator.Send(new EditOrderCommand.Command(command, id), cancellationToken);
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> DeleteOrder(string id, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new DeleteOrderCommand(id), cancellationToken);
 
-    //    return Ok(client);
-    //}
-
-    //[HttpDelete("{id}")]
-    //[ProducesResponseType(StatusCodes.Status204NoContent)]
-    //public async Task<IActionResult> DeleteOrder(string id, CancellationToken cancellationToken)
-    //{
-    //    await _mediator.Send(new DeleteOrderCommand(id), cancellationToken);
-
-    //    return NoContent();
-    //}
+        return NoContent();
+    }
 }

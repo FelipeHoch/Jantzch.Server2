@@ -23,6 +23,8 @@ public class ReportConfiguration
 
     public string SiteUrl { get; set; }
 
+    public double MinValue { get; set; } = 70.0;
+
     [NotMapped]
     [JsonPropertyName("id")]
     public string MongoId => Id.ToString();

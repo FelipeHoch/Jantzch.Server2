@@ -10,6 +10,8 @@ public interface IGroupsMaterialRepository
 
     Task<GroupMaterial?> GetGroupByIdAsync(ObjectId id, CancellationToken cancellationToken);
 
+    Task<List<GroupMaterial>> GetGroupsWithMaterialsAsync(CancellationToken cancellationToken);
+
     Task AddGroupAsync(GroupMaterial group, CancellationToken cancellationToken);
 
     Task UpdateGroupAsync(GroupMaterial group);

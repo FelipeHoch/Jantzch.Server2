@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace Jantzch.Server2.Domain.Entities.Materials;
 
@@ -20,13 +20,16 @@ public class Material
     public string CreatedBy { get; set; }
 
     [JsonIgnore]
-    public ObjectId? GroupIdObject { get; set; }
+    [BsonElement("groupId")]
+    public ObjectId? GroupMaterialId { get; set; }
 
     [NotMapped]
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public string MongoId => Id?.ToString() ?? string.Empty;
 
     [NotMapped]
-    [JsonPropertyName("groupId")]
-    public string MongoGroupId => GroupIdObject?.ToString() ?? null;
+    [BsonIgnore]
+    [BsonElement("groupId")]
+    [JsonProperty("groupId")]
+    public string MongoGroupId => GroupMaterialId?.ToString() ?? null;
 }

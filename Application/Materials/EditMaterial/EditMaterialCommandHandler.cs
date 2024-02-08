@@ -31,9 +31,9 @@ public class EditMaterialCommandHandler
                 throw new RestException(HttpStatusCode.NotFound, new { Material = "Not found" });
             }
 
-            if (material.GroupIdObject is not null)
+            if (material.GroupMaterialId is not null)
             {
-                var group = await _groupsMaterialRepository.GetGroupByIdAsync((ObjectId)material.GroupIdObject, cancellationToken);
+                var group = await _groupsMaterialRepository.GetGroupByIdAsync((ObjectId)material.GroupMaterialId, cancellationToken);
 
                 if (group == null)
                 {
@@ -45,7 +45,7 @@ public class EditMaterialCommandHandler
             material.Name = request.Model.Name;
             material.Value = request.Model.Value;
             material.Eu = request.Model.Eu;
-            material.GroupIdObject = ObjectId.Parse(request.Model.GroupId);
+            material.GroupMaterialId = ObjectId.Parse(request.Model.GroupId);
 
             await _materialsRepository.UpdateMaterialAsync(material);
 

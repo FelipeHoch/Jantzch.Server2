@@ -62,8 +62,6 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
 
         await _clientsRepository.AddAsync(client, cancellationToken);
 
-        await _clientsRepository.SaveChangesAsync(cancellationToken);
-
         return client;
     }
 }

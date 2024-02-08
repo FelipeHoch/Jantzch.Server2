@@ -38,7 +38,7 @@ public class JantzchContext: DbContext
         materialEntity.Property(m => m.Value).HasElementName("value");
         materialEntity.Property(m => m.Eu).HasElementName("eu");
         materialEntity.Property(m => m.CreatedBy).HasElementName("createdBy");
-        materialEntity.Property(m => m.GroupIdObject).HasElementName("groupId");
+        materialEntity.Property(m => m.GroupMaterialId).HasElementName("groupId");
 
 
         var groupMaterialEntity = modelBuilder.Entity<GroupMaterial>().ToCollection("groups_material");
@@ -65,6 +65,7 @@ public class JantzchContext: DbContext
         reportConfigurationEntity.Property(r => r.PhoneContact).HasElementName("phoneContact");
         reportConfigurationEntity.Property(r => r.EmailContact).HasElementName("emailContact");
         reportConfigurationEntity.Property(r => r.SiteUrl).HasElementName("siteUrl");
+        reportConfigurationEntity.Property(r => r.MinValue).HasElementName("minValue");
 
         var userEntity = modelBuilder.Entity<User>().ToCollection("users");
 

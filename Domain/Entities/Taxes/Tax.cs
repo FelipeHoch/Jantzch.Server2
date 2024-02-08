@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson;
+﻿using Jantzch.Server2.Domain.Entities.Clients;
+using Jantzch.Server2.Domain.Entities.Orders;
+using MongoDB.Bson;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -22,4 +24,27 @@ public class Tax
     [NotMapped]
     [JsonPropertyName("id")]
     public string MongoId => Id.ToString();
+
+    [NotMapped]
+    [JsonPropertyName("totalValue")]
+    public double TotalValue { get; set; }
+
+    public double ApplyTax(double value, int distance)
+    {
+        if (Type == "percent")
+        {
+            return value * (Value / 100);
+        }
+        else if (Type == "amount")
+        {
+            return Value;
+        }
+        else
+        {
+            var distanceInKm = distance / 1000;
+
+            return distanceInKm * Value;
+        }
+    }
+
 }

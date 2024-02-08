@@ -5,8 +5,6 @@ namespace Jantzch.Server2.Application.ReportConfigurations.EditConfiguration;
 
 public class EditConfigurationCommand
 {
-    public string ReportKey { get; set; }
-
     public string BottomTitle { get; set; }
 
     public string BottomText { get; set; }
@@ -16,6 +14,8 @@ public class EditConfigurationCommand
     public string EmailContact { get; set; }
 
     public string SiteUrl { get; set; }
+
+    public double MinValue { get; set; }
 
     public record Command(EditConfigurationCommand Model, string Key) : IRequest<ReportConfiguration>;
 }

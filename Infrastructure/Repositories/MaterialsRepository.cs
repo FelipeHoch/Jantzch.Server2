@@ -34,7 +34,7 @@ public class MaterialsRepository : IMaterialsRepository
 
         if (!string.IsNullOrWhiteSpace(parameters.Group))
         {
-            query = query.Where(x => x.GroupIdObject.Equals(ObjectId.Parse(parameters.Group)));
+            query = query.Where(x => x.GroupMaterialId.Equals(ObjectId.Parse(parameters.Group)));
         }
 
         if (!string.IsNullOrWhiteSpace(parameters.OrderBy) && _propertyCheckerService.TypeHasProperties<Material>(parameters.OrderBy))

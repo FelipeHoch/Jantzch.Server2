@@ -20,6 +20,9 @@ public class ClientResponse
     public string? Cnpj { get; set; } = default;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Cpf { get; set; } = default;
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? PhoneNumber { get; set; } = default;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

@@ -24,4 +24,7 @@ public class ReportConfigurationResponse
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? SiteUrl { get; set; } = default!;
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? MinValue { get; set; } = default!;
 }

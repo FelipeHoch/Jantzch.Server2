@@ -8,9 +8,9 @@ using MediatR;
 using MongoDB.Bson;
 using System.Net;
 
-namespace Jantzch.Server2.Application.OrderReports.CreateOrderReport;
+namespace Jantzch.Server2.Application.OrderReports.GetExportByOrder;
 
-public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReportCommand.Command, OrderReportResponse>
+public class GetReportByOrderHandler : IRequestHandler<ReportByOrderQuery, OrderReportResponse>
 {
     private readonly IOrderReportRepository _orderReportRepository;
 
@@ -24,7 +24,7 @@ public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReport
 
     private readonly IMapper _mapper;
 
-    public CreateOrderReportCommandHandler(IOrderReportRepository orderReportRepository, IOrderRepository orderRepository, IClientsRepository clientRepository, IReportConfigurationRepository reportConfRepository, ITaxesRepository taxesRepository, IMapper mapper)
+    public GetReportByOrderHandler(IOrderReportRepository orderReportRepository, IOrderRepository orderRepository, IClientsRepository clientRepository, IReportConfigurationRepository reportConfRepository, ITaxesRepository taxesRepository, IMapper mapper)
     {
         _orderReportRepository = orderReportRepository;
 
@@ -39,9 +39,16 @@ public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReport
         _mapper = mapper;
     }
 
-    public async Task<OrderReportResponse> Handle(CreateOrderReportCommand.Command request, CancellationToken cancellationToken)
-    {       
-        var detailedOrders = await _orderRepository.GetToExport(request.OrdersId);
+    public async Task<OrderReportResponse> Handle(ReportByOrderQuery request, CancellationToken cancellationToken)
+    {
+        var hasAnyOrderAlreadyLinked = await _orderReportRepository.OrdersAlreadyHasReportLinked([request.OrderId]);
+
+        if (hasAnyOrderAlreadyLinked)
+        {
+            throw new RestException(HttpStatusCode.BadRequest, new { message = "One or more orders already has a report linked" });
+        }
+
+        var detailedOrders = await _orderRepository.GetToExport([request.OrderId]);
 
         var client = await _clientRepository.GetByIdAsync(new ObjectId(request.ClientId), cancellationToken);
 
@@ -69,21 +76,17 @@ public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReport
 
             ordersToExport.Add(orderToExport);
         });
-
+        
         var taxes = new List<Tax>();
 
         if (request.TaxesId is not null)
         {
-            var taxesId = request.TaxesId.Select(ObjectId.Parse).ToList();
+            var taxesId = request.TaxesId.Split(",").Select(ObjectId.Parse).ToList();
 
             taxes = await _taxesRepository.GetByIds(taxesId, cancellationToken);
         }
 
-        var report = new OrderReport(client, reportNumber, "Mock", ordersToExport, taxes);           
-        
-        await _orderReportRepository.AddAsync(report, cancellationToken);
-
-        await _orderRepository.UpdateToReportedAsync([.. request.OrdersId], cancellationToken);
+        var report = new OrderReport(client, reportNumber, "Mock", ordersToExport, taxes);
 
         return _mapper.Map<OrderReport, OrderReportResponse>(report);
     }

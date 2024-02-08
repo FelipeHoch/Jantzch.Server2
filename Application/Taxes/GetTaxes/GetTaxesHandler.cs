@@ -36,7 +36,7 @@ public class GetTaxesHandler : IRequestHandler<TaxesQuery, IEnumerable<ExpandoOb
 
     public async Task<IEnumerable<ExpandoObject>> Handle(TaxesQuery request, CancellationToken cancellationToken)
     {
-        var taxes = await _taxesRepository.GetTaxesAsync(request.Parameters, cancellationToken);
+        var taxes = await _taxesRepository.GetAsync(request.Parameters, cancellationToken);
 
         _paginationService.AddPaginationMetadataInResponseHeader(taxes, _httpContextAccessor.HttpContext.Response);
 

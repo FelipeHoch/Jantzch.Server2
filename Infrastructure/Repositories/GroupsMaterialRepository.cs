@@ -7,6 +7,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using MongoDB.Bson;
+using Jantzch.Server2.Domain.Entities.Clients;
+using MongoDB.Driver;
+using Jantzch.Server2.Domain.Entities.Materials;
 
 namespace Jantzch.Server2.Infrastructure.Repositories;
 
@@ -16,13 +19,22 @@ public class GroupsMaterialRepository : IGroupsMaterialRepository
 
     private readonly IPropertyCheckerService _propertyCheckerService;
 
+    private readonly IMongoDatabase _database;
+
+    private readonly IMongoCollection<GroupMaterial> _groupMaterialsColl;
+
     public GroupsMaterialRepository(
         JantzchContext context,
-        IPropertyCheckerService propertyCheckerService)
+        IPropertyCheckerService propertyCheckerService,
+        IMongoDatabase database)
     {
         _context = context;
 
         _propertyCheckerService = propertyCheckerService;
+
+        _database = database;
+
+        _groupMaterialsColl = _database.GetCollection<GroupMaterial>("groups_material");
     }
 
     public async Task<PagedList<GroupMaterial>> GetGroupsAsync(ResourceParameters parameters, CancellationToken cancellationToken)
@@ -47,6 +59,26 @@ public class GroupsMaterialRepository : IGroupsMaterialRepository
         return await _context.GroupMaterials
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }   
+
+    public async Task<List<GroupMaterial>> GetGroupsWithMaterialsAsync(CancellationToken cancellationToken)
+    {
+        var query = _groupMaterialsColl.Aggregate()
+            .Lookup<GroupMaterial, Material, GroupMaterial>(
+            _database.GetCollection<Material>("materials"),
+            group => group.Id,
+            material => material.GroupMaterialId,
+            group => group.Materials).ToString();
+
+        Console.WriteLine(query);
+
+
+        return await _groupMaterialsColl.Aggregate()
+            .Lookup<GroupMaterial, Material, GroupMaterial>(
+            _database.GetCollection<Material>("materials"),
+            group => group.Id,
+            material => material.GroupMaterialId,
+            group => group.Materials).ToListAsync(cancellationToken: cancellationToken);
     }
 
     public async Task AddGroupAsync(GroupMaterial group, CancellationToken cancellationToken)

@@ -26,7 +26,7 @@ public class TaxesRepository : ITaxesRepository
         _propertyCheckerService = propertyCheckerService;
     }
 
-    public async Task<PagedList<Tax>> GetTaxesAsync(TaxesResourceParameters parameters, CancellationToken cancellationToken)
+    public async Task<PagedList<Tax>> GetAsync(TaxesResourceParameters parameters, CancellationToken cancellationToken)
     {
         var query = _context.Taxes.AsQueryable();
 
@@ -42,7 +42,7 @@ public class TaxesRepository : ITaxesRepository
 
         if (!string.IsNullOrWhiteSpace(parameters.OrderBy) && _propertyCheckerService.TypeHasProperties<Tax>(parameters.OrderBy))
         {
-            query = query.OrderBy(parameters.OrderBy + " dcending");
+            query = query.OrderBy(parameters.OrderBy + " descending");
         }
 
         return await PagedList<Tax>.CreateAsync(query, parameters?.PageNumber ?? 1, parameters?.PageSize ?? 10, cancellationToken);
@@ -53,6 +53,14 @@ public class TaxesRepository : ITaxesRepository
         return await _context.Taxes
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+
+    public async Task<List<Tax>> GetByIds(List<ObjectId> ids, CancellationToken cancellationToken)
+    {
+        return await _context.Taxes
+            .AsNoTracking()
+            .Where(x => ids.Contains(x.Id))
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<Tax?> LastTaxInsertedAsync(CancellationToken cancellationToken)

@@ -4,6 +4,7 @@ using Jantzch.Server2.Application.GroupsMaterial.DeleteGroupMaterial;
 using Jantzch.Server2.Application.GroupsMaterial.EditGroupMaterial;
 using Jantzch.Server2.Application.GroupsMaterial.GetGroupMaterial;
 using Jantzch.Server2.Application.GroupsMaterial.GetGroupsMaterial;
+using Jantzch.Server2.Application.GroupsMaterial.GetGroupsWithMaterials;
 using Jantzch.Server2.Application.Shared;
 using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using MediatR;
@@ -32,6 +33,15 @@ public class GroupsMaterialController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Get(string id, [FromQuery] string? fields, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GroupMaterialQuery(id, fields), cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpGet("withMaterials")]
+    [ProducesResponseType(typeof(List<GroupMaterialResponse>), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetGroupsWithMaterials(CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GroupsWithMaterialsQuery(), cancellationToken);
 
         return Ok(result);
     }

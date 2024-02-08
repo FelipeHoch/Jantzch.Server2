@@ -62,8 +62,6 @@ public class Startup
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-        services.AddCors();
-
         services.AddLocalization(x => x.ResourcesPath = "Resources");
 
         services.AddScoped<IMaterialsRepository, MaterialsRepository>();
@@ -120,11 +118,17 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseCors(builder =>
+               builder
+               .AllowAnyHeader()
+               .AllowAnyOrigin()
+               .AllowAnyMethod()
+               .WithExposedHeaders("X-Pagination")
+               );
+
         app.UseMiddleware<ErrorHandlingMiddleware>();
 
-        app.UseMvc();
-
-        app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+        app.UseMvc();        
 
         app.UseSwagger();
 

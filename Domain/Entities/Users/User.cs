@@ -21,4 +21,8 @@ public class User
 
     public int CustByHour { get; set; } = 0;
 
+    public double CalculateTotalManPower(double hoursWorked)
+    {
+        return hoursWorked * CustByHour;
+    }
 }

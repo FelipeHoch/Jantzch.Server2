@@ -36,11 +36,11 @@ public class ReportConfigurationRepository : IReportConfigurationRepository
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<ReportConfiguration?> GetByKeyAsync(string Key, CancellationToken cancellationToken)
+    public async Task<ReportConfiguration?> GetByKeyAsync(string key, CancellationToken cancellationToken)
     {
         return await _context.ReportConfiguration
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ReportKey == Key, cancellationToken);
+            .FirstOrDefaultAsync(x => x.ReportKey == key, cancellationToken);
     }
 
     public async Task AddAsync(ReportConfiguration reportConfiguration, CancellationToken cancellationToken)

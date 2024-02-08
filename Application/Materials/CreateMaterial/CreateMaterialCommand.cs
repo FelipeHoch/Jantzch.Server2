@@ -16,9 +16,6 @@ public class CreateMaterialCommand : IRequest<Material>
     [JsonPropertyName("eu")]
     public string Eu { get; set; }
 
-    [JsonPropertyName("createdBy")]
-    public string CreatedBy { get; set; }
-
     [JsonPropertyName("groupId")]
     public string? GroupId { get; set; }
 

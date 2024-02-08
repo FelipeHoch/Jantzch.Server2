@@ -27,6 +27,8 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Ord
 
         var order = _mapper.Map<Order>(request);
 
+        order.SetStatusOnCreation();
+
         // TODO: Get From token
         order.CreatedBy = new UserSimple
         {

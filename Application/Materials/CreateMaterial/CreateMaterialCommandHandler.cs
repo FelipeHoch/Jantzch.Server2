@@ -37,8 +37,8 @@ public class CreateMaterialCommandHandler
                 Name = request.Name,
                 Value = request.Value,
                 Eu = request.Eu,
-                CreatedBy = request.CreatedBy,
-                GroupIdObject = ObjectId.Parse(request.GroupId)
+                CreatedBy = "Mock",
+                GroupMaterialId = ObjectId.Parse(request.GroupId)
             };            
 
             var group = await _groupsMaterialRepository.GetGroupByIdAsync(ObjectId.Parse(request.GroupId), cancellationToken);                

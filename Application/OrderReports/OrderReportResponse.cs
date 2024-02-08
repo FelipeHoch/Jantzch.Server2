@@ -1,7 +1,6 @@
 ﻿using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Domain.Entities.Orders;
 using Jantzch.Server2.Domain.Entities.Taxes;
-using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
 namespace Jantzch.Server2.Application.OrderReports;
@@ -33,5 +32,5 @@ public class OrderReportResponse
     public double? TotalValue { get; set; } = default;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public List<TaxExport>? Taxes { get; set; } = default;
+    public List<Tax>? Taxes { get; set; } = default;
 }

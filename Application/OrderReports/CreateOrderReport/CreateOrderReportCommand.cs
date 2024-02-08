@@ -9,5 +9,5 @@ public class CreateOrderReportCommand
 
     public List<string>? TaxesId { get; set; }
 
-    public record Command(CreateOrderReportCommand Model, string ClientId) : IRequest<OrderReport>;
+    public record Command(List<string> OrdersId, List<string>? TaxesId, string ClientId) : IRequest<OrderReportResponse>;
 }

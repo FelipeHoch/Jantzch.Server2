@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Application.Helpers;
+using Jantzch.Server2.Application.OrderReports.Models;
 using Jantzch.Server2.Application.Orders;
 using Jantzch.Server2.Application.Services.PropertyChecker;
 using Jantzch.Server2.Domain.Entities.Orders;
@@ -62,7 +63,7 @@ public class OrderRepository : IOrderRepository
 
         if (!string.IsNullOrWhiteSpace(paramaters.Client))
         {
-            var clientFilter = builder.Eq(order => order.Client.Name, paramaters.Client);
+            var clientFilter = builder.Eq(order => order.Client.Id, paramaters.Client);
             filter &= clientFilter;
         }
 
@@ -101,6 +102,87 @@ public class OrderRepository : IOrderRepository
         return await _orders.Find(order => order.Id == id).FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<List<DetailedOrderForExport>> GetToExport(List<string> ordersId)
+    {
+        var ordersIdParsed = ordersId.Select(ObjectId.Parse).ToList();
+
+        var filter = new BsonDocument("_id", new BsonDocument("$in", new BsonArray(ordersIdParsed)));
+
+        var pipeline = new BsonDocument[]
+        {
+            new("$match", filter),
+
+            new("$lookup",
+                new BsonDocument("from", "users")
+                    .Add("localField", "workers._id")
+                    .Add("foreignField", "_id")
+                    .Add("as", "workersFull")),
+
+            new("$lookup",
+                new BsonDocument("from", "materials")
+                    .Add("localField", "materialsUsed.materialId")
+                    .Add("foreignField", "_id")
+                    .Add("as", "materialsFull")),
+
+            new("$lookup",
+                new BsonDocument("from", "clients")
+                    .Add("localField", "client._id")
+                    .Add("foreignField", "_id")
+                    .Add("as", "client")),
+
+            new("$unwind", "$client"),
+
+            new("$project",
+                new BsonDocument
+                {
+                    { "createdBy", 1 },
+                    { "startDate", 1 },
+                    { "finishedAt", 1 },
+                    { "descriptive", 1 },
+                    { "client", 1 },
+                    { "breaksHistory", 1 },
+                    { "orderNumber", 1 },
+                    { "hoursWorked", 1 },
+                    { "materialsUsed", 1 },
+                    { "materials",
+                        new BsonDocument("$map",
+                            new BsonDocument
+                            {
+                                { "input", "$materialsFull" },
+                                { "as", "m" },
+                                { "in", new BsonDocument
+                                    {
+                                        { "_id", "$$m._id" },
+                                        { "name", "$$m.name" },
+                                        { "value", "$$m.value" }
+                                    }
+                                }
+                            }
+                        )
+                    },
+                    { "workers",
+                        new BsonDocument("$map",
+                            new BsonDocument
+                            {
+                                { "input", "$workersFull" },
+                                { "as", "w" },
+                                { "in", new BsonDocument
+                                    {
+                                        { "name", "$$w.name" },
+                                        { "custByHour", "$$w.custByHour" }
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            ),
+            new("$sort", new BsonDocument("startDate", -1))
+            };
+
+        return await _orders.Aggregate<DetailedOrderForExport>(pipeline).ToListAsync();
+    }
+
     public async Task AddAsync(Order order, CancellationToken cancellationToken)
     {
         await _orders.InsertOneAsync(order, cancellationToken: cancellationToken);
@@ -109,6 +191,28 @@ public class OrderRepository : IOrderRepository
     public async Task UpdateAsync(Order order, CancellationToken cancellationToken)
     {
         await _orders.ReplaceOneAsync(x => x.Id == order.Id, order, cancellationToken: cancellationToken);
+    }
+
+    public async Task UpdateToReportedAsync(string[] ids, CancellationToken cancellationToken)
+    {
+        var ordersIdParsed = ids.Select(el => ObjectId.Parse(el)).ToArray();
+
+        var filter = Builders<Order>.Filter.In("_id", ordersIdParsed);
+
+        var update = Builders<Order>.Update.Set(o => o.IsReported, true);
+
+        await _orders.UpdateManyAsync(filter, update, cancellationToken: cancellationToken);
+    }
+
+    public async Task UpdateToNoReportedAsync(string[] ids, CancellationToken cancellationToken)
+    {
+        var ordersIdParsed = ids.Select(el => ObjectId.Parse(el)).ToArray();
+
+        var filter = Builders<Order>.Filter.In("_id", ordersIdParsed);
+
+        var update = Builders<Order>.Update.Set(o => o.IsReported, false);
+
+        await _orders.UpdateManyAsync(filter, update, cancellationToken: cancellationToken);
     }
 
     public async Task DeleteAsync(Order order, CancellationToken cancellationToken)

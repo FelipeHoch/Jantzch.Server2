@@ -9,7 +9,7 @@ public class CreateClientCommandValidator
         public ClientCommandValidator()
         {
             RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
-            RuleFor(x => x.Email).EmailAddress();
+            RuleFor(x => x.Email).EmailAddress().When(x => !string.IsNullOrEmpty(x.Email));
             RuleFor(x => x.PhoneNumber).NotEmpty().MaximumLength(20);
             RuleFor(x => x.Cnpj).MaximumLength(14);
             RuleFor(x => x.Cpf).MaximumLength(11);

@@ -25,12 +25,12 @@ public class EditReportConfigurationCommandHandler
                 throw new RestException(HttpStatusCode.NotFound, new { ReportConfiguration = Constants.NOT_FOUND });
             }
 
-            configuration.ReportKey = request.Model.ReportKey;
             configuration.BottomTitle = request.Model.BottomTitle;
             configuration.BottomText = request.Model.BottomText;
             configuration.PhoneContact = request.Model.PhoneContact;
             configuration.EmailContact = request.Model.EmailContact;
             configuration.SiteUrl = request.Model.SiteUrl;
+            configuration.MinValue = request.Model.MinValue;
 
             await _reportConfigurationRepository.UpdateAsync(configuration);
 

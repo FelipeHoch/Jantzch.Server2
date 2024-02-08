@@ -10,13 +10,15 @@ public class MaterialHistory
     [BsonElement("id")]
     public string Id { get; set; }
 
-    [BsonElement("name")]
     public string Name { get; set; } = string.Empty;
 
-    [BsonElement("quantity")]
     public int Quantity { get; set; } = 0;
 
-    [BsonElement("value")]
     [BsonIgnoreIfNull]
     public double Value { get; set; } = 0;
+
+    public double CalculateTotalCost()
+    {
+        return Quantity * Value;
+    }
 }

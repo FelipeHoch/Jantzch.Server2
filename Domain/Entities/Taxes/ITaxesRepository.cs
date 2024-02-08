@@ -6,7 +6,7 @@ namespace Jantzch.Server2.Domain.Entities.Taxes;
 
 public interface ITaxesRepository
 {
-    Task<PagedList<Tax>> GetTaxesAsync(TaxesResourceParameters parameters, CancellationToken cancellationToken);
+    Task<PagedList<Tax>> GetAsync(TaxesResourceParameters parameters, CancellationToken cancellationToken);
 
     Task<Tax?> LastTaxInsertedAsync(CancellationToken cancellationToken);
 
@@ -17,6 +17,8 @@ public interface ITaxesRepository
     Task DeleteAsync(Tax tax);
 
     Task<Tax?> GetByIdAsync(ObjectId id, CancellationToken cancellationToken);
+
+    Task<List<Tax>> GetByIds(List<ObjectId> ids, CancellationToken cancellationToken);
 
     Task<bool> SaveChangesAsync(CancellationToken cancellationToken);
 }

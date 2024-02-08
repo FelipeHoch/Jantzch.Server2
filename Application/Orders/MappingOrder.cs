@@ -10,7 +10,6 @@ public class MappingOrder : Profile
     public MappingOrder()
     {
         CreateMap<Order, OrderResponse>();
-        CreateMap<CreateOrderCommand, Order>()
-            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));
+        CreateMap<CreateOrderCommand, Order>();          
     }
 }

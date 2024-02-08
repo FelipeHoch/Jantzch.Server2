@@ -8,9 +8,9 @@ using MediatR;
 using MongoDB.Bson;
 using System.Net;
 
-namespace Jantzch.Server2.Application.OrderReports.CreateOrderReport;
+namespace Jantzch.Server2.Application.OrderReports.CreateManualReport;
 
-public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReportCommand.Command, OrderReportResponse>
+public class CreateManualReportCommandHandler : IRequestHandler<CreateManualReportCommand.Command, OrderReportResponse>
 {
     private readonly IOrderReportRepository _orderReportRepository;
 
@@ -24,7 +24,7 @@ public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReport
 
     private readonly IMapper _mapper;
 
-    public CreateOrderReportCommandHandler(IOrderReportRepository orderReportRepository, IOrderRepository orderRepository, IClientsRepository clientRepository, IReportConfigurationRepository reportConfRepository, ITaxesRepository taxesRepository, IMapper mapper)
+    public CreateManualReportCommandHandler(IOrderReportRepository orderReportRepository, IOrderRepository orderRepository, IClientsRepository clientRepository, IReportConfigurationRepository reportConfRepository, ITaxesRepository taxesRepository, IMapper mapper)
     {
         _orderReportRepository = orderReportRepository;
 
@@ -39,10 +39,8 @@ public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReport
         _mapper = mapper;
     }
 
-    public async Task<OrderReportResponse> Handle(CreateOrderReportCommand.Command request, CancellationToken cancellationToken)
-    {       
-        var detailedOrders = await _orderRepository.GetToExport(request.OrdersId);
-
+    public async Task<OrderReportResponse> Handle(CreateManualReportCommand.Command request, CancellationToken cancellationToken)
+    {
         var client = await _clientRepository.GetByIdAsync(new ObjectId(request.ClientId), cancellationToken);
 
         if (client is null)
@@ -61,29 +59,18 @@ public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReport
 
         var reportNumber = lastReport?.ReportNumber + 1 ?? 1;
 
-        var ordersToExport = new List<OrderExport>();
-
-        detailedOrders.ForEach(detailedOrder =>
-        {
-            var orderToExport = new OrderExport(detailedOrder, reportConfig.MinValue);
-
-            ordersToExport.Add(orderToExport);
-        });
+        var ordersToExport = _mapper.Map<List<CreateManualReportCommand>,List<OrderExport>>(request.ManualReports);
 
         var taxes = new List<Tax>();
 
         if (request.TaxesId is not null)
         {
-            var taxesId = request.TaxesId.Select(ObjectId.Parse).ToList();
+            var taxesId = request.TaxesId.Split(",").Select(ObjectId.Parse).ToList();
 
             taxes = await _taxesRepository.GetByIds(taxesId, cancellationToken);
         }
 
-        var report = new OrderReport(client, reportNumber, "Mock", ordersToExport, taxes);           
-        
-        await _orderReportRepository.AddAsync(report, cancellationToken);
-
-        await _orderRepository.UpdateToReportedAsync([.. request.OrdersId], cancellationToken);
+        var report = new OrderReport(client, reportNumber, "Mock", ordersToExport, taxes);
 
         return _mapper.Map<OrderReport, OrderReportResponse>(report);
     }
