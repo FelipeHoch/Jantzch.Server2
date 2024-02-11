@@ -1,5 +1,6 @@
 ﻿using Jantzch.Server2.Application.Abstractions.Google;
 using Jantzch.Server2.Domain.Entities.Clients;
+using Jantzch.Server2.Domain.Entities.Clients.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using Jantzch.Server2.Infrastructure.Google;
 using MediatR;
@@ -26,7 +27,7 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
 
         if (geoCode is null)
         {
-            throw new RestException(HttpStatusCode.BadRequest, new { Client = "Address not found" });
+            throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.INVALID_ADDRESS });
         }
 
         var location = new Location
@@ -39,7 +40,7 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
 
         if (distance is null)
         {
-            throw new RestException(HttpStatusCode.BadRequest, new { Client = "Distance not found" });
+            throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.INVALID_ADDRESS });
         }
 
         var route = new Route

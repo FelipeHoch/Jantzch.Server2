@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Jantzch.Server2.Application.Abstractions.Google;
 using Jantzch.Server2.Domain.Entities.Clients;
+using Jantzch.Server2.Domain.Entities.Clients.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -35,7 +36,7 @@ public class EditAddressCommandHandler : IRequestHandler<EditAddressCommand.Comm
 
         if (client is null)
         {
-            throw new RestException(HttpStatusCode.NotFound, new { Client = Constants.NOT_FOUND });
+            throw new RestException(HttpStatusCode.NotFound, new { message = ClientErrorMessages.NOT_FOUND });
         }
 
         var address = _mapper.Map<Address>(request.Model);
@@ -44,7 +45,7 @@ public class EditAddressCommandHandler : IRequestHandler<EditAddressCommand.Comm
 
         if (geoCode is null)
         {
-            throw new RestException(HttpStatusCode.BadRequest, new { Client = "Address not found" });
+            throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.ADDRESS_NOT_FOUND });
         }
 
         var location = new Location
@@ -57,7 +58,7 @@ public class EditAddressCommandHandler : IRequestHandler<EditAddressCommand.Comm
 
         if (distance is null)
         {
-            throw new RestException(HttpStatusCode.BadRequest, new { Client = "Distance not found" });
+            throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.INVALID_ADDRESS });
         }
 
         var route = new Route

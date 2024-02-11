@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Jantzch.Server2.Domain.Entities.Orders;
+using Jantzch.Server2.Domain.Entities.Orders.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 
@@ -23,7 +24,7 @@ public class GetOrderReportHandler : IRequestHandler<OrderReportQuery, OrderRepo
 
         if (report is null)
         {
-            throw new RestException(System.Net.HttpStatusCode.NotFound, new { OrderReport = "Not found" });
+            throw new RestException(System.Net.HttpStatusCode.NotFound, new { message = OrdersErrorMessages.REPORT_NOT_FOUND });
         }
 
         return _mapper.Map<OrderReportResponse>(report);

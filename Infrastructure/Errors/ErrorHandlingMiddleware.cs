@@ -57,7 +57,7 @@ public class ErrorHandlingMiddleware
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 LOGGER_MESSAGE(logger, "Unhandled Exception", e);
                 result = JsonSerializer.Serialize(
-                    new { errors = localizer[Constants.InternalServerError].Value }
+                    new { message =Constants.InternalServerError }
                 );
                 break;
             default:

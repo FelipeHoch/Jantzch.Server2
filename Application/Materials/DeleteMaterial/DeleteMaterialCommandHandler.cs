@@ -21,14 +21,14 @@ public class DeleteMaterialCommandHandler
 
         public async Task Handle(DeleteMaterialCommand.Command request, CancellationToken cancellationToken)
         {
-            if (request.Id is MaterialsConstants.OthersMaterialId)
-                throw new RestException(HttpStatusCode.BadRequest, new { message = "You can't delete this material" });
+            if (request.Id == MaterialsConstants.OthersMaterialId)
+                throw new RestException(HttpStatusCode.BadRequest, new { message = MaterialErrorMessages.CANT_DELETE });
 
             var material = await _materialsRepository.GetMaterialByIdAsync(ObjectId.Parse(request.Id));
 
             if (material is null)
             {
-                throw new RestException(HttpStatusCode.NotFound, new { message = "Material não encontrado" });
+                throw new RestException(HttpStatusCode.NotFound, new { message = MaterialErrorMessages.NOT_FOUND });
             }
 
             await _materialsRepository.DeleteMaterialAsync(material);

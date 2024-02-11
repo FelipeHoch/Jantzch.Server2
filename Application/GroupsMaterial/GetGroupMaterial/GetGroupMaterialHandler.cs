@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Jantzch.Server2.Application.Services.DataShapingService;
 using Jantzch.Server2.Domain.Entities.GroupsMaterial;
+using Jantzch.Server2.Domain.Entities.GroupsMaterial.Constants;
 using Jantzch.Server2.Domain.Entities.Materials;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
@@ -37,7 +38,7 @@ public class GetGroupMaterialHandler
 
             if (groupMaterial is null)
             {
-                throw new RestException(HttpStatusCode.NotFound, new { GroupMaterial = Constants.NOT_FOUND });
+                throw new RestException(HttpStatusCode.NotFound, new { message = GroupMaterialErrorMessages.NOT_FOUND });
             }
 
             var groupMaterialResponse = _mapper.Map<GroupMaterialResponse>(groupMaterial);

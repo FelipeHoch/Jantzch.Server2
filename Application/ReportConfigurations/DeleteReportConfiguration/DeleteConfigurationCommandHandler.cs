@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.ReportConfigurations;
+using Jantzch.Server2.Domain.Entities.ReportConfigurations.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -21,7 +22,7 @@ public class DeleteConfigurationCommandHandler : IRequestHandler<DeleteConfigura
 
         if (configuration is null)
         {
-            throw new RestException(HttpStatusCode.NotFound, new { ReportConfiguration = "Not found" });
+            throw new RestException(HttpStatusCode.NotFound, new { message = ReportConfErrorMessages.NOT_FOUND });
         }
 
         await _repository.DeleteAsync(configuration);

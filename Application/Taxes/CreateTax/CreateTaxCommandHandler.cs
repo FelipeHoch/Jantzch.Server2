@@ -21,14 +21,12 @@ public class CreateTaxCommandHandler
         {
             var lastTax = await _TaxRepository.LastTaxInsertedAsync(cancellationToken);
 
-            if (lastTax is null)
-            {
-                throw new RestException(HttpStatusCode.BadRequest, new { Tax = "Invalid parameters"});
-            }
+            var code = 0;
 
-            var code = lastTax.Code + 1;
+            if (lastTax != null)
+                code = lastTax.Code + 1;
 
-            var Tax = new Tax
+            var tax = new Tax
             {
                 Name = request.Name,
                 Type = request.Type,
@@ -38,11 +36,11 @@ public class CreateTaxCommandHandler
                 Code = code,
             };
 
-            await _TaxRepository.AddAsync(Tax, cancellationToken);
+            await _TaxRepository.AddAsync(tax, cancellationToken);
 
             await _TaxRepository.SaveChangesAsync(cancellationToken);
 
-            return Tax;
+            return tax;
         }
     }
 }

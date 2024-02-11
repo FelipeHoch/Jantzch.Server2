@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Jantzch.Server2.Application.Services.DataShapingService;
 using Jantzch.Server2.Domain.Entities.Taxes;
+using Jantzch.Server2.Domain.Entities.Taxes.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -31,7 +32,7 @@ public class GetTaxHandler
 
             if (tax is null)
             {
-                throw new RestException(System.Net.HttpStatusCode.NotFound, new { Tax = Constants.NOT_FOUND });
+                throw new RestException(System.Net.HttpStatusCode.NotFound, new { message = TaxErrorMessages.NOT_FOUND });
             }
 
             var taxResponse = _mapper.Map<TaxResponse>(tax);

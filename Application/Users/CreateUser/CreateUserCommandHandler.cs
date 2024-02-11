@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Jantzch.Server2.Application.Users.Models;
 using Jantzch.Server2.Domain.Entities.Users;
+using Jantzch.Server2.Domain.Entities.Users.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using Jantzch.Server2.Infrastructure.Security;
 using MediatR;
@@ -26,7 +27,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserR
 
         if (userFromIdpDto is null)
         {
-            throw new RestException(System.Net.HttpStatusCode.BadRequest, new { User = "Invalid user data" });
+            throw new RestException(System.Net.HttpStatusCode.BadRequest, new { message = UserErrorMessages.INVALID_USER_DATA });
         }
 
         userFromIdpDto.Token = null;

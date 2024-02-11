@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Jantzch.Server2.Application.Services.DataShapingService;
 using Jantzch.Server2.Domain.Entities.Materials;
+using Jantzch.Server2.Domain.Entities.Materials.Constants;
 using Jantzch.Server2.Features.Materials;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
@@ -39,7 +40,7 @@ public class GetMaterialHandler
 
             if (material is null)
             {
-                throw new RestException(HttpStatusCode.NotFound, new { Material = Constants.NOT_FOUND });
+                throw new RestException(HttpStatusCode.NotFound, new { message = MaterialErrorMessages.NOT_FOUND });
             }
 
             var materialResponse = _mapper.Map<MaterialResponse>(material);

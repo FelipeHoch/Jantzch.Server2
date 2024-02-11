@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Jantzch.Server2.Application.Services.DataShapingService;
 using Jantzch.Server2.Domain.Entities.ReportConfigurations;
+using Jantzch.Server2.Domain.Entities.ReportConfigurations.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using System.Dynamic;
@@ -33,7 +34,7 @@ public class GetConfigurationHandler : IRequestHandler<ConfigurationQuery, Expan
 
         if (configuration is null)
         {
-            throw new RestException(HttpStatusCode.NotFound, new { ReportConfiguration = Constants.NOT_FOUND });
+            throw new RestException(HttpStatusCode.NotFound, new { message = ReportConfErrorMessages.NOT_FOUND });
         }
 
         var configurationResponse = _mapper.Map<ReportConfigurationResponse>(configuration);

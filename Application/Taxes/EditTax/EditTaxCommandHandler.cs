@@ -1,5 +1,6 @@
 ﻿using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using Jantzch.Server2.Domain.Entities.Taxes;
+using Jantzch.Server2.Domain.Entities.Taxes.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -24,7 +25,7 @@ public class EditTaxCommandHandler
 
             if (tax is null)
             {
-                throw new RestException(HttpStatusCode.NotFound, new { Group = "Not found" });
+                throw new RestException(HttpStatusCode.NotFound, new { message = TaxErrorMessages.NOT_FOUND });
             }
 
             tax.Name = request.Model.Name;

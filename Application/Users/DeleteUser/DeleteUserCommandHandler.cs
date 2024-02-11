@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.Users;
+using Jantzch.Server2.Domain.Entities.Users.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -24,7 +25,7 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
             user = await _userRepository.GetByIdpIdAsync(new ObjectId(request.Id), cancellationToken);
 
             if (user is null)
-                throw new RestException(HttpStatusCode.NotFound, new { User = "Not found" });
+                throw new RestException(HttpStatusCode.NotFound, new { message = UserErrorMessages.NOT_FOUND });
         }
 
         await _userRepository.DeleteAsync(user);

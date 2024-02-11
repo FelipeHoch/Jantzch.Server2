@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.Orders;
+using Jantzch.Server2.Domain.Entities.Orders.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using System.Net;
@@ -18,7 +19,7 @@ public class CreateBreakCommandHandler : IRequestHandler<CreateBreakCommand.Comm
     {
         var order = await _orderRepository.GetByIdAsync(request.Id, cancellationToken);
 
-        if (order is null) throw new RestException(HttpStatusCode.NotFound, new { Order = "Not found" });
+        if (order is null) throw new RestException(HttpStatusCode.NotFound, new { message = OrdersErrorMessages.NOT_FOUND });
 
         // TODO: Get data from token
         order.PauseOrder(request.Descriptive, "64a49b23141f6f29641cc4ce", "Felipe Mock");

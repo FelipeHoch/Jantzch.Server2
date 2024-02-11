@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.Clients;
+using Jantzch.Server2.Domain.Entities.Clients.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -21,7 +22,7 @@ public class DeleteClientCommandHandler : IRequestHandler<DeleteClientCommand>
 
         if (client is null)
         {
-            throw new RestException(HttpStatusCode.NotFound, new { Client = Constants.NOT_FOUND });
+            throw new RestException(HttpStatusCode.NotFound, new { message = ClientErrorMessages.NOT_FOUND });
         }
 
         await _clientsRepository.DeleteAsync(client);

@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.ReportConfigurations;
+using Jantzch.Server2.Domain.Entities.ReportConfigurations.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using System.Net;
@@ -22,7 +23,7 @@ public class EditReportConfigurationCommandHandler
 
             if (configuration is null)
             {
-                throw new RestException(HttpStatusCode.NotFound, new { ReportConfiguration = Constants.NOT_FOUND });
+                throw new RestException(HttpStatusCode.NotFound, new { message = ReportConfErrorMessages.NOT_FOUND });
             }
 
             configuration.BottomTitle = request.Model.BottomTitle;

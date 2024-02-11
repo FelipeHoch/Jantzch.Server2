@@ -1,5 +1,7 @@
 ﻿using Jantzch.Server2.Application.Abstractions.Google;
 using Jantzch.Server2.Domain.Entities.Clients;
+using Jantzch.Server2.Infraestructure.Errors;
+using Jantzch.Server2.Infrastructure.Google.Constants;
 using Jantzch.Server2.Infrastructure.Google.Models;
 using System.Globalization;
 using System.Text.Json;
@@ -23,7 +25,7 @@ public sealed class GoogleMapsService : IGoogleMapsService
 
         if (response is null)
         {
-            throw new Exception("Error while fetching data from Google Maps API");
+            throw new RestException(System.Net.HttpStatusCode.BadRequest, new { message = GoogleErrorMessages.GEO_CODE });
         }
 
         return response;
@@ -37,7 +39,7 @@ public sealed class GoogleMapsService : IGoogleMapsService
 
         if (response is null)
         {
-            throw new Exception("Error while fetching data from Google Maps API");
+            throw new RestException(System.Net.HttpStatusCode.BadRequest, new { message = GoogleErrorMessages.GEO_CODE });
         }
 
         return response;
@@ -49,7 +51,7 @@ public sealed class GoogleMapsService : IGoogleMapsService
 
         if (string.IsNullOrEmpty(googleMapsToken))
         {
-            throw new Exception("Google Maps token is not set in environment variables");
+            throw new RestException(System.Net.HttpStatusCode.BadRequest, new { message = GoogleErrorMessages.GEO_CODE });
         }
 
         var destinations = $"{location.Latitude.ToString(CultureInfo.InvariantCulture)},{location.Longitude.ToString(CultureInfo.InvariantCulture)}";
@@ -64,7 +66,7 @@ public sealed class GoogleMapsService : IGoogleMapsService
 
         if (string.IsNullOrEmpty(googleMapsToken))
         {
-            throw new Exception("Google Maps token is not set in environment variables");
+            throw new RestException(System.Net.HttpStatusCode.BadRequest, new { message = GoogleErrorMessages.GEO_CODE });
         }
 
         var addressParam = $"{address.StreetNumber}+{address.Street}+{address.District},+{address.City},+{address.State},+Brasil";

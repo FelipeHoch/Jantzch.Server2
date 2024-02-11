@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.Orders;
+using Jantzch.Server2.Domain.Entities.Orders.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 
@@ -21,14 +22,14 @@ public class DeleteOrderCommandHandler : IRequestHandler<DeleteOrderCommand>
 
         if (order is null)
         {
-            throw new RestException(System.Net.HttpStatusCode.NotFound, new { message = "Ordem não encontrada" });
+            throw new RestException(System.Net.HttpStatusCode.NotFound, new { message = OrdersErrorMessages.NOT_FOUND });
         }
 
         var reportLinked = await _orderReportRepository.OrdersAlreadyHasReportLinked([request.Id]);
 
         if (reportLinked)
         {
-            throw new RestException(System.Net.HttpStatusCode.BadRequest, new { message = "Ordem já possui relatório vinculado, exclua o relatório primeiro" });
+            throw new RestException(System.Net.HttpStatusCode.BadRequest, new { message = OrdersErrorMessages.ORDER_ALREADY_REPORTED });
         }
 
         await _orderRepository.DeleteAsync(order, cancellationToken);

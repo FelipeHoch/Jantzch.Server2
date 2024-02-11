@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Jantzch.Server2.Application.Services.DataShapingService;
 using Jantzch.Server2.Domain.Entities.Orders;
+using Jantzch.Server2.Domain.Entities.Orders.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using System.Dynamic;
@@ -33,7 +34,7 @@ public class GetOrderHandler : IRequestHandler<OrderQuery, ExpandoObject>
 
         if (order is null)
         {
-            throw new RestException(HttpStatusCode.NotFound, new { Order = "Not found" });
+            throw new RestException(HttpStatusCode.NotFound, new { message = OrdersErrorMessages.NOT_FOUND });
         }
 
         var orderResponse = _mapper.Map<OrderResponse>(order);

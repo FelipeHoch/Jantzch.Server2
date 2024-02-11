@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.Taxes;
+using Jantzch.Server2.Domain.Entities.Taxes.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -23,14 +24,12 @@ public class DeleteTaxCommandHandler
 
             if (tax is null)
             {
-                throw new RestException(HttpStatusCode.NotFound, new { GroupMaterial = "Not found" });
+                throw new RestException(HttpStatusCode.NotFound, new { message = TaxErrorMessages.NOT_FOUND });
             }
 
             await _taxesRepository.DeleteAsync(tax);
 
             await _taxesRepository.SaveChangesAsync(cancellationToken);
-
-            await Task.FromResult(Unit.Value);
         }
     }
 }

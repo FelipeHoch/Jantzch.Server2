@@ -4,6 +4,7 @@ using MediatR;
 using MongoDB.Bson;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
+using Jantzch.Server2.Domain.Entities.Users.Constants;
 
 namespace Jantzch.Server2.Application.Users.EditUser;
 
@@ -25,7 +26,7 @@ public class EditUserCommandHandler : IRequestHandler<EditUserCommand.Command, U
             user = await _userRepository.GetByIdpIdAsync(new ObjectId(request.Id), cancellationToken);
 
             if (user is null)
-                throw new RestException(HttpStatusCode.NotFound, new { User = "Not found" });
+                throw new RestException(HttpStatusCode.NotFound, new { message = UserErrorMessages.NOT_FOUND });
         }
         
         request.Model.ApplyTo(user);

@@ -1,5 +1,7 @@
 ﻿using Jantzch.Server2.Domain.Entities.GroupsMaterial;
+using Jantzch.Server2.Domain.Entities.GroupsMaterial.Constants;
 using Jantzch.Server2.Domain.Entities.Materials;
+using Jantzch.Server2.Domain.Entities.Materials.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -26,18 +28,18 @@ public class EditMaterialCommandHandler
         {
             var material = await _materialsRepository.GetMaterialByIdAsync(ObjectId.Parse(request.Id));
 
-            if (material == null)
+            if (material is null)
             {
-                throw new RestException(HttpStatusCode.NotFound, new { Material = "Not found" });
+                throw new RestException(HttpStatusCode.NotFound, new { message = MaterialErrorMessages.NOT_FOUND });
             }
 
             if (material.GroupMaterialId is not null)
             {
                 var group = await _groupsMaterialRepository.GetGroupByIdAsync((ObjectId)material.GroupMaterialId, cancellationToken);
 
-                if (group == null)
+                if (group is null)
                 {
-                    throw new RestException(HttpStatusCode.NotFound, new { Group = "Not found" });
+                    throw new RestException(HttpStatusCode.NotFound, new { message = GroupMaterialErrorMessages.NOT_FOUND });
                 }
             }
 

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Jantzch.Server2.Domain.Entities.Clients;
+using Jantzch.Server2.Domain.Entities.Clients.Constants;
 using Jantzch.Server2.Domain.Entities.Orders;
 using Jantzch.Server2.Domain.Entities.ReportConfigurations;
+using Jantzch.Server2.Domain.Entities.ReportConfigurations.Constants;
 using Jantzch.Server2.Domain.Entities.Taxes;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
@@ -45,14 +47,14 @@ public class CreateManualReportCommandHandler : IRequestHandler<CreateManualRepo
 
         if (client is null)
         {
-            throw new RestException(HttpStatusCode.NotFound, new { message = "Client not found" });
+            throw new RestException(HttpStatusCode.NotFound, new { message = ClientErrorMessages.NOT_FOUND });
         }
 
         var reportConfig = await _reportConfRepository.GetByKeyAsync("ORDER", cancellationToken);
 
         if (reportConfig is null)
         {
-            throw new RestException(HttpStatusCode.NotFound, new { message = "Report configuration not found" });
+            throw new RestException(HttpStatusCode.NotFound, new { message = ReportConfErrorMessages.NOT_FOUND });
         }
 
         var lastReport = await _orderReportRepository.LastReportInserted(cancellationToken);

@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.GroupsMaterial;
+using Jantzch.Server2.Domain.Entities.GroupsMaterial.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -23,7 +24,7 @@ public class EditGroupMaterialCommandHandler
 
             if (groupMaterial is null)
             {
-                throw new RestException(HttpStatusCode.NotFound, new { Group = "Not found" });
+                throw new RestException(HttpStatusCode.NotFound, new { message = GroupMaterialErrorMessages.NOT_FOUND });
             }
 
             groupMaterial.Name = request.Model.Name;

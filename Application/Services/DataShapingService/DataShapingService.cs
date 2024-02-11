@@ -1,4 +1,5 @@
 using Jantzch.Server2.Application.Helpers;
+using Jantzch.Server2.Application.Services.DataShapingService.Constants;
 using Jantzch.Server2.Application.Services.PropertyChecker;
 using Jantzch.Server2.Infraestructure.Errors;
 using System.Dynamic;
@@ -26,7 +27,7 @@ public class DataShapingService : IDataShapingService
     {
         if (!_propertyCheckerService.TypeHasProperties<T>(fields))
         {
-            throw new RestException(HttpStatusCode.BadRequest, new { Error = "Os campos fornecidos não são válidos" });
+            throw new RestException(HttpStatusCode.BadRequest, new { message = DataShapingErrorMessages.INVALID_FIELDS });
         }
 
         return data.ShapeData<T>(fields);
@@ -36,7 +37,7 @@ public class DataShapingService : IDataShapingService
     {
         if (!_propertyCheckerService.TypeHasProperties<T>(fields))
         {
-            throw new RestException(HttpStatusCode.BadRequest, new { Error = "Os campos fornecidos não são válidos" });
+            throw new RestException(HttpStatusCode.BadRequest, new { message = DataShapingErrorMessages.INVALID_FIELDS });
         }
 
         return data.ShapeData(fields);

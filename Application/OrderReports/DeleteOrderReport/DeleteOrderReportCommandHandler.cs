@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.Orders;
+using Jantzch.Server2.Domain.Entities.Orders.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using System.Net;
@@ -24,7 +25,7 @@ public class DeleteOrderReportCommandHandler : IRequestHandler<DeleteOrderReport
 
         if (report is null)
         {
-            throw new RestException(HttpStatusCode.NotFound, new { message = "Report not found" });
+            throw new RestException(HttpStatusCode.NotFound, new { message = OrdersErrorMessages.REPORT_NOT_FOUND });
         }
 
         var ordersIds = report.Orders.Select(x => x.Id).ToList();
