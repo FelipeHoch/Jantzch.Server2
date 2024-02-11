@@ -2,7 +2,6 @@
 using Jantzch.Server2.Domain.Entities.Orders;
 using Jantzch.Server2.Domain.Entities.Users;
 using MediatR;
-using MongoDB.Bson;
 
 namespace Jantzch.Server2.Application.Orders.CreateOrder;
 

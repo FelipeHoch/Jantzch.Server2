@@ -1,5 +1,6 @@
 ﻿using Jantzch.Server2.Application.Materials.DeleteMaterial;
 using Jantzch.Server2.Domain.Entities.Materials;
+using Jantzch.Server2.Domain.Entities.Materials.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -20,18 +21,19 @@ public class DeleteMaterialCommandHandler
 
         public async Task Handle(DeleteMaterialCommand.Command request, CancellationToken cancellationToken)
         {
+            if (request.Id is MaterialsConstants.OthersMaterialId)
+                throw new RestException(HttpStatusCode.BadRequest, new { message = "You can't delete this material" });
+
             var material = await _materialsRepository.GetMaterialByIdAsync(ObjectId.Parse(request.Id));
 
-            if (material == null)
+            if (material is null)
             {
-                throw new RestException(HttpStatusCode.NotFound, new { Material = "Not found" });
+                throw new RestException(HttpStatusCode.NotFound, new { message = "Material não encontrado" });
             }
 
             await _materialsRepository.DeleteMaterialAsync(material);
 
             await _materialsRepository.SaveChangesAsync();
-
-            await Task.FromResult(Unit.Value);
         }
     }
 }

@@ -5,12 +5,14 @@ using Jantzch.Server2.Application.Materials.GetMaterial;
 using Jantzch.Server2.Features.Materials;
 using Jantzch.Server2.Features.Materials.EditMaterial;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Jantzch.Server2.Api.Controllers.Materials;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class MaterialsController(IMediator mediator) : ControllerBase
 {
@@ -35,6 +37,7 @@ public class MaterialsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin,supervisor")]
     [ProducesResponseType(typeof(MaterialResponse), (int)HttpStatusCode.Created)]
     public async Task<IActionResult> Create([FromBody] CreateMaterialCommand command, CancellationToken cancellationToken)
     {
@@ -44,6 +47,7 @@ public class MaterialsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "admin,supervisor")]
     [ProducesResponseType(typeof(MaterialResponse), (int)HttpStatusCode.Created)]
     public async Task<IActionResult> Edit(string id, [FromBody] EditMaterialCommand command, CancellationToken cancellationToken)
     {
@@ -53,6 +57,7 @@ public class MaterialsController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin,supervisor")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
     {

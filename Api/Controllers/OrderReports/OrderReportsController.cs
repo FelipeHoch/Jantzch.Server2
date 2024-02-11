@@ -6,11 +6,13 @@ using Jantzch.Server2.Application.OrderReports.GetExportByOrder;
 using Jantzch.Server2.Application.OrderReports.GetOrderReport;
 using Jantzch.Server2.Application.OrderReports.GetOrderReports;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jantzch.Server2.Api.Controllers.OrderReports;
 
 [Route("api/clients/{clientId}/report/")]
+[Authorize(Roles = "admin,supervisor")]
 [ApiController]
 public class OrderReportsController : ControllerBase
 {

@@ -5,12 +5,14 @@ using Jantzch.Server2.Application.Users.EditUser;
 using Jantzch.Server2.Application.Users.GetUsers;
 using Jantzch.Server2.Domain.Entities.Users;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jantzch.Server2.Api.Controllers.Users;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
@@ -31,6 +33,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateUser([FromQuery] string data, [FromBody] User user, CancellationToken cancellationToken)
     {
@@ -40,6 +43,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPatch("{id}")]
+    [Authorize(Roles = "admin")]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
     public async Task<IActionResult> EditUser(string id, [FromBody] JsonPatchDocument<User> model, CancellationToken cancellationToken)
     {
@@ -49,6 +53,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteUser(string id, CancellationToken cancellationToken)
     {

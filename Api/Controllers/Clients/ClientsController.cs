@@ -7,11 +7,13 @@ using Jantzch.Server2.Application.Clients.GetClients;
 using Jantzch.Server2.Application.Clients.GetClientsInformation;
 using Jantzch.Server2.Domain.Entities.Clients;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jantzch.Server2.Api.Controllers.Clients;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class ClientsController : ControllerBase
 {
@@ -41,6 +43,7 @@ public class ClientsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     [ProducesResponseType(typeof(Client), StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateClient([FromBody] CreateClientCommand command, CancellationToken cancellationToken)
     {
@@ -50,6 +53,7 @@ public class ClientsController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
     [ProducesResponseType(typeof(Client), StatusCodes.Status200OK)]
     public async Task<IActionResult> EditClient(string id, [FromBody] EditClientCommand command, CancellationToken cancellationToken)
     {
@@ -59,6 +63,7 @@ public class ClientsController : ControllerBase
     }
 
     [HttpPut("{id}/address")]
+    [Authorize(Roles = "admin")]
     [ProducesResponseType(typeof(Client), StatusCodes.Status200OK)]
     public async Task<IActionResult> EditClientAddress(string id, [FromBody] EditAddressCommand command, CancellationToken cancellationToken)
     {
@@ -68,6 +73,7 @@ public class ClientsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteClient(string id, CancellationToken cancellationToken)
     {

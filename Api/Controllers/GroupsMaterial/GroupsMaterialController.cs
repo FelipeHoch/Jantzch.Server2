@@ -8,12 +8,14 @@ using Jantzch.Server2.Application.GroupsMaterial.GetGroupsWithMaterials;
 using Jantzch.Server2.Application.Shared;
 using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Jantzch.Server2.Api.Controllers.GroupsMaterial;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class GroupsMaterialController(IMediator mediator) : ControllerBase
 {
@@ -47,6 +49,7 @@ public class GroupsMaterialController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin,supervisor")]
     [ProducesResponseType(typeof(GroupMaterial), (int)HttpStatusCode.Created)]
     public async Task<IActionResult> Create([FromBody] CreateGroupMaterialCommand command, CancellationToken cancellationToken)
     {
@@ -56,6 +59,7 @@ public class GroupsMaterialController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "admin,supervisor")]
     [ProducesResponseType(typeof(GroupMaterial), (int)HttpStatusCode.Created)]
     public async Task<IActionResult> Edit(string id, [FromBody] EditGroupMaterialCommand command, CancellationToken cancellationToken)
     {
@@ -65,6 +69,7 @@ public class GroupsMaterialController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin,supervisor")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
     {

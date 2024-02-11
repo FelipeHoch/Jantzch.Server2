@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Jantzch.Server2.Domain.Entities.Materials.Constants;
 
 namespace Jantzch.Server2.Features.Materials.EditMaterial;
 
@@ -8,6 +9,7 @@ public class EditMaterialCommandValidator
     {
         public CommandValidator()
         {
+            RuleFor(x => x.Id).NotEqual(MaterialsConstants.OthersMaterialId);
             RuleFor(x => x.Model.Eu).NotNull().NotEmpty();
             RuleFor(x => x.Model.Name).NotNull().NotEmpty();
             RuleFor(x => x.Model.GroupId).NotNull().NotEmpty();

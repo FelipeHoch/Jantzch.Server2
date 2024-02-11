@@ -5,21 +5,16 @@ using Jantzch.Server2.Application.ReportConfigurations.EditConfiguration;
 using Jantzch.Server2.Application.ReportConfigurations.GetReportConfiguration;
 using Jantzch.Server2.Application.ReportConfigurations.GetReportConfigurations;
 using Jantzch.Server2.Application.Shared;
-using Jantzch.Server2.Application.Taxes;
-using Jantzch.Server2.Application.Taxes.CreateTax;
-using Jantzch.Server2.Application.Taxes.DeleteTax;
-using Jantzch.Server2.Application.Taxes.EditTax;
-using Jantzch.Server2.Application.Taxes.GetTax;
-using Jantzch.Server2.Application.Taxes.GetTaxes;
 using Jantzch.Server2.Domain.Entities.ReportConfigurations;
-using Jantzch.Server2.Domain.Entities.Taxes;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Jantzch.Server2.Api.Controllers.ReportConfigurations;
 
 [ApiController]
+[Authorize(Roles = "admin,supervisor")]
 [Route("api/[controller]")]
 public class ReportConfigurationController(IMediator mediator) : ControllerBase
 {

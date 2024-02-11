@@ -6,12 +6,14 @@ using Jantzch.Server2.Application.Taxes.GetTax;
 using Jantzch.Server2.Application.Taxes.GetTaxes;
 using Jantzch.Server2.Domain.Entities.Taxes;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Jantzch.Server2.Api.Controllers.Taxes;
 
 [ApiController]
+[Authorize(Roles = "admin,supervisor")]
 [Route("api/[controller]")]
 public class TaxesController(IMediator mediator) : ControllerBase
 {

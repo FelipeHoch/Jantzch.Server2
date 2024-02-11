@@ -7,12 +7,14 @@ using Jantzch.Server2.Application.Orders.GetOrder;
 using Jantzch.Server2.Application.Orders.GetOrders;
 using Jantzch.Server2.Domain.Entities.Orders;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jantzch.Server2.Api.Controllers.Orders;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class OrderController : ControllerBase
 {
