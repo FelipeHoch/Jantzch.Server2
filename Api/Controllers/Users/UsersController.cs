@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "admin")]
     [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
-    public async Task<IActionResult> CreateUser([FromQuery] string data, [FromBody] User user, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateUser([FromQuery] string data, [FromBody] UserResponse? user, CancellationToken cancellationToken)
     {
         var userCreated = await _mediator.Send(new CreateUserCommand(data, user), cancellationToken);
 
@@ -43,7 +43,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPatch("{id}")]
-    [Authorize(Roles = "admin")]
+    [Authorize]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
     public async Task<IActionResult> EditUser(string id, [FromBody] JsonPatchDocument<User> model, CancellationToken cancellationToken)
     {

@@ -1,4 +1,5 @@
-﻿using Jantzch.Server2.Domain.Entities.GroupsMaterial;
+﻿using Jantzch.Server2.Application.Abstractions.Jwt;
+using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using Jantzch.Server2.Domain.Entities.Taxes;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
@@ -10,16 +11,20 @@ public class CreateTaxCommandHandler
 {
     public class Handler : IRequestHandler<CreateTaxCommand, Tax>
     {
-        private readonly ITaxesRepository _TaxRepository;
+        private readonly ITaxesRepository _taxRepository;
 
-        public Handler(ITaxesRepository TaxRepository)
+        private readonly IJwtService _jwtService;
+
+        public Handler(ITaxesRepository TaxRepository, IJwtService jwtService)
         {
-            _TaxRepository = TaxRepository;
+            _taxRepository = TaxRepository;
+
+            _jwtService = jwtService;
         }
 
         public async Task<Tax> Handle(CreateTaxCommand request, CancellationToken cancellationToken)
         {
-            var lastTax = await _TaxRepository.LastTaxInsertedAsync(cancellationToken);
+            var lastTax = await _taxRepository.LastTaxInsertedAsync(cancellationToken);
 
             var code = 0;
 
@@ -30,15 +35,14 @@ public class CreateTaxCommandHandler
             {
                 Name = request.Name,
                 Type = request.Type,
-                // TODO: Get user from token
-                CreatedBy = "Mock",
+                CreatedBy = _jwtService.GetNameFromToken(),
                 Value = request.Value,
                 Code = code,
             };
 
-            await _TaxRepository.AddAsync(tax, cancellationToken);
+            await _taxRepository.AddAsync(tax, cancellationToken);
 
-            await _TaxRepository.SaveChangesAsync(cancellationToken);
+            await _taxRepository.SaveChangesAsync(cancellationToken);
 
             return tax;
         }

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Jantzch.Server2.Application.Abstractions.Jwt;
 using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Domain.Entities.Clients.Constants;
 using Jantzch.Server2.Domain.Entities.Orders;
-using Jantzch.Server2.Domain.Entities.Orders.Constants;
 using Jantzch.Server2.Domain.Entities.ReportConfigurations;
 using Jantzch.Server2.Domain.Entities.ReportConfigurations.Constants;
 using Jantzch.Server2.Domain.Entities.Taxes;
@@ -25,6 +25,8 @@ public class GetReportByOrderHandler : IRequestHandler<ReportByOrderQuery, Order
 
     private readonly ITaxesRepository _taxesRepository;
 
+    private readonly IJwtService _jwtService;
+
     private readonly IMapper _mapper;
 
     public GetReportByOrderHandler(
@@ -33,6 +35,7 @@ public class GetReportByOrderHandler : IRequestHandler<ReportByOrderQuery, Order
         IClientsRepository clientRepository, 
         IReportConfigurationRepository reportConfRepository, 
         ITaxesRepository taxesRepository, 
+        IJwtService jwtService,
         IMapper mapper)
     {
         _orderReportRepository = orderReportRepository;
@@ -45,18 +48,13 @@ public class GetReportByOrderHandler : IRequestHandler<ReportByOrderQuery, Order
 
         _taxesRepository = taxesRepository;
 
+        _jwtService = jwtService;
+
         _mapper = mapper;
     }
 
     public async Task<OrderReportResponse> Handle(ReportByOrderQuery request, CancellationToken cancellationToken)
     {
-        var hasAnyOrderAlreadyLinked = await _orderReportRepository.OrdersAlreadyHasReportLinked([request.OrderId]);
-
-        if (hasAnyOrderAlreadyLinked)
-        {
-            throw new RestException(HttpStatusCode.BadRequest, new { message = OrdersErrorMessages.ORDER_ALREADY_REPORTED });
-        }
-
         var detailedOrders = await _orderRepository.GetToExport([request.OrderId]);
 
         var client = await _clientRepository.GetByIdAsync(new ObjectId(request.ClientId), cancellationToken);
@@ -95,7 +93,7 @@ public class GetReportByOrderHandler : IRequestHandler<ReportByOrderQuery, Order
             taxes = await _taxesRepository.GetByIds(taxesId, cancellationToken);
         }
 
-        var report = new OrderReport(client, reportNumber, "Mock", ordersToExport, taxes);
+        var report = new OrderReport(client, reportNumber, _jwtService.GetNameFromToken(), ordersToExport, taxes);
 
         return _mapper.Map<OrderReport, OrderReportResponse>(report);
     }

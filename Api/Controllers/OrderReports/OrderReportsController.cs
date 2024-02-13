@@ -43,7 +43,7 @@ public class OrderReportsController : ControllerBase
 
     [HttpGet("orders/{orderId}")]
     [ProducesResponseType(typeof(OrderReportResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetOrderReportByOrderId([FromQuery] string taxesId, string clientId, string orderId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetOrderReportByOrderId([FromQuery] string? taxesId, string clientId, string orderId, CancellationToken cancellationToken)
     {
         var orderReport = await _mediator.Send(new ReportByOrderQuery(clientId, orderId, taxesId), cancellationToken);
 

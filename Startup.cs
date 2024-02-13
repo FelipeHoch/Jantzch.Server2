@@ -2,6 +2,8 @@
 using FluentValidation.AspNetCore;
 using Jantzch.Server2.Application.Abstractions.Configuration;
 using Jantzch.Server2.Application.Abstractions.Google;
+using Jantzch.Server2.Application.Abstractions.Jwt;
+using Jantzch.Server2.Application.Orders;
 using Jantzch.Server2.Application.Services.DataShapingService;
 using Jantzch.Server2.Application.Services.Pagination;
 using Jantzch.Server2.Application.Services.PropertyChecker;
@@ -12,6 +14,7 @@ using Jantzch.Server2.Infrastructure;
 using Jantzch.Server2.Infrastructure.Configuration;
 using Jantzch.Server2.Infrastructure.Google;
 using Jantzch.Server2.Infrastructure.Json;
+using Jantzch.Server2.Infrastructure.Jwt;
 using Jantzch.Server2.Infrastructure.MongoDb;
 using Jantzch.Server2.Infrastructure.Repositories;
 using Jantzch.Server2.Infrastructure.Security;
@@ -45,6 +48,8 @@ public class Startup
 
         services.AddLocalization(x => x.ResourcesPath = "Resources");
 
+        services.AddSignalR();
+
         services.AddRepositories();
 
         services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
@@ -54,6 +59,8 @@ public class Startup
         services.AddTransient<IDataShapingService, DataShapingService>();
 
         services.AddSingleton<IConfigurationService, ConfigurationService>();
+
+        services.AddScoped<IJwtService, JwtService>();
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -78,13 +85,36 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.UseCors(builder =>
-               builder
-               .AllowAnyHeader()
-               .AllowAnyOrigin()
-               .AllowAnyMethod()
-               .WithExposedHeaders("X-Pagination")
-               );
+        if (env.IsDevelopment())
+        {
+            app.UseCors(opt =>
+            {
+                opt
+                .WithOrigins("http://localhost:8080", "http://localhost:5016", "http://192.168.100.10:5016")
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
+                .SetIsOriginAllowed(x => true)
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .WithExposedHeaders("X-Pagination");
+            });
+        }
+        else
+        {
+            app.UseCors(opt =>
+            {
+                opt
+                .WithOrigins(Environment.GetEnvironmentVariable("CLIENT_DOMAIN"), Environment.GetEnvironmentVariable("LOGIN_DOMAIN"))
+                 .SetIsOriginAllowedToAllowWildcardSubdomains()
+                .SetIsOriginAllowed(x => true)
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .WithExposedHeaders("X-Pagination");
+            });
+        }        
+
+        app.UseRouting();
 
         app.UseAuthentication();
         app.UseAuthorization();
@@ -98,7 +128,14 @@ public class Startup
         app.UseSwagger();
 
         // Enable middleware to serve swagger-ui assets(HTML, JS, CSS etc.)
-        app.UseSwaggerUI();
+        app.UseSwaggerUI();        
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapHub<OrderHub>("/orderhub")
+            .RequireAuthorization();
+            // outras rotas...
+        });
 
 
         app.ApplicationServices.GetRequiredService<ILoggerFactory>();

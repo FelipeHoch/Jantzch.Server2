@@ -3,5 +3,5 @@ using MediatR;
 
 namespace Jantzch.Server2.Application.Users.CreateUser;
 
-public record CreateUserCommand(string Data, User UserFromClient) : IRequest<UserResponse>;
+public record CreateUserCommand(string Data, UserResponse UserFromClient) : IRequest<UserResponse>;
 

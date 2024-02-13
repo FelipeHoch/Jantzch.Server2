@@ -19,10 +19,10 @@ public class User
 
     public string Role { get; set; }
 
-    public int CustByHour { get; set; } = 0;
+    public int? CustByHour { get; set; } = 0;
 
     public double CalculateTotalManPower(double hoursWorked)
     {
-        return hoursWorked * CustByHour;
+        return hoursWorked * (int)CustByHour;
     }
 }

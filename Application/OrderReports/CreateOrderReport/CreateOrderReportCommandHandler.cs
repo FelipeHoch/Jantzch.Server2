@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Jantzch.Server2.Application.Abstractions.Jwt;
 using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Domain.Entities.Clients.Constants;
 using Jantzch.Server2.Domain.Entities.Orders;
@@ -24,6 +25,8 @@ public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReport
 
     private readonly ITaxesRepository _taxesRepository;
 
+    private readonly IJwtService _jwtService;
+
     private readonly IMapper _mapper;
 
     public CreateOrderReportCommandHandler(
@@ -32,6 +35,7 @@ public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReport
         IClientsRepository clientRepository, 
         IReportConfigurationRepository reportConfRepository, 
         ITaxesRepository taxesRepository, 
+        IJwtService jwtService,
         IMapper mapper)
     {
         _orderReportRepository = orderReportRepository;
@@ -43,6 +47,8 @@ public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReport
         _reportConfRepository = reportConfRepository;
 
         _taxesRepository = taxesRepository;
+
+        _jwtService = jwtService;
 
         _mapper = mapper;
     }
@@ -87,7 +93,7 @@ public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReport
             taxes = await _taxesRepository.GetByIds(taxesId, cancellationToken);
         }
 
-        var report = new OrderReport(client, reportNumber, "Mock", ordersToExport, taxes);           
+        var report = new OrderReport(client, reportNumber, _jwtService.GetNameFromToken(), ordersToExport, taxes);           
         
         await _orderReportRepository.AddAsync(report, cancellationToken);
 

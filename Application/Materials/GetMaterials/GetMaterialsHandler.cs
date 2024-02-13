@@ -3,6 +3,7 @@ using Jantzch.Server2.Application.Services.DataShapingService;
 using Jantzch.Server2.Application.Services.Pagination;
 using Jantzch.Server2.Domain.Entities.Materials;
 using Jantzch.Server2.Features.Materials;
+using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using System.Dynamic;
 
@@ -42,7 +43,7 @@ public class GetMaterialsHandler
         }
 
         public async Task<IEnumerable<ExpandoObject>> Handle(MaterialsQuery request, CancellationToken cancellationToken)
-        {
+        {         
             var materials = await _materialsRepository.GetMaterialsAsync(request.MaterialsResourceParameters, cancellationToken);
 
             _paginationService.AddPaginationMetadataInResponseHeader(materials, _httpContextAccessor.HttpContext.Response);

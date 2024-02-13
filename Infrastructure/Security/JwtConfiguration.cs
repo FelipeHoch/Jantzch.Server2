@@ -24,6 +24,20 @@ public static class ServiceCollectionExtensions
                 ValidAudiences = Environment.GetEnvironmentVariable("JWT_AUDIENCES").Split(","),
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")))
             };
+
+            op.Events = new JwtBearerEvents
+            {
+               OnMessageReceived = context =>
+               {
+                   var accessToken = context.Request.Query["access_token"];
+                   var path = context.HttpContext.Request.Path;
+                   if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/orderHub"))
+                   {
+                       context.Token = accessToken;
+                   }
+                   return Task.CompletedTask;
+               }
+            };
         });
 
         services.AddAuthorization(auth =>

@@ -1,4 +1,5 @@
-﻿using Jantzch.Server2.Domain.Entities.Orders;
+﻿using Jantzch.Server2.Application.Abstractions.Jwt;
+using Jantzch.Server2.Domain.Entities.Orders;
 using Jantzch.Server2.Domain.Entities.Orders.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
@@ -10,9 +11,13 @@ public class EditOrderCommandHandler : IRequestHandler<EditOrderCommand.Command,
 {
     private readonly IOrderRepository _orderRepository;
 
-    public EditOrderCommandHandler(IOrderRepository orderRepository)
+    private readonly IJwtService _jwtService;
+
+    public EditOrderCommandHandler(IOrderRepository orderRepository, IJwtService jwtService)
     {
         _orderRepository = orderRepository;
+
+        _jwtService = jwtService;
     }
 
     public async Task<Order> Handle(EditOrderCommand.Command request, CancellationToken cancellationToken)
@@ -25,9 +30,8 @@ public class EditOrderCommandHandler : IRequestHandler<EditOrderCommand.Command,
 
         var status = request.Model.Operations.FirstOrDefault(x => x.path == "/status");
 
-        if (status is not null && status.value is "Finalizada")
-            // TODO: Get data from token
-            order.FinishOrder("64a49b23141f6f29641cc4ce", "Felipe Mock");
+        if (status is not null && status.value is "Finalizada")            
+            order.FinishOrder(_jwtService.GetSubFromToken(), _jwtService.GetNameFromToken());
                   
         await _orderRepository.UpdateAsync(order, cancellationToken);
 

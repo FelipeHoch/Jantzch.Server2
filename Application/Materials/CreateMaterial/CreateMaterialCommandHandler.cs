@@ -1,4 +1,5 @@
-﻿using Jantzch.Server2.Application.Materials.Notifications;
+﻿using Jantzch.Server2.Application.Abstractions.Jwt;
+using Jantzch.Server2.Application.Materials.Notifications;
 using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using Jantzch.Server2.Domain.Entities.Materials;
 using Jantzch.Server2.Domain.Entities.Materials.Constants;
@@ -17,16 +18,21 @@ public class CreateMaterialCommandHandler
 
         private readonly IGroupsMaterialRepository _groupsMaterialRepository;
 
+        private readonly IJwtService _jwtService;
+
         private readonly IMediator _mediator;
 
         public Handler(
             IMaterialsRepository materialsRepository, 
             IGroupsMaterialRepository groupsMaterialRepository,
+            IJwtService jwtService,
             IMediator mediator)
         {
             _materialsRepository = materialsRepository;
 
             _groupsMaterialRepository = groupsMaterialRepository;
+
+            _jwtService = jwtService;
 
             _mediator = mediator;
         }
@@ -38,7 +44,7 @@ public class CreateMaterialCommandHandler
                 Name = request.Name,
                 Value = request.Value,
                 Eu = request.Eu,
-                CreatedBy = "Mock",
+                CreatedBy = _jwtService.GetNameFromToken(),
                 GroupMaterialId = ObjectId.Parse(request.GroupId)
             };            
 

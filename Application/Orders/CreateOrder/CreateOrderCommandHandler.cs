@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Jantzch.Server2.Application.Abstractions.Jwt;
+using Jantzch.Server2.Application.Orders.Notifications.OrderCreated;
 using Jantzch.Server2.Domain.Entities.Orders;
 using Jantzch.Server2.Domain.Entities.Users;
 using MediatR;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Jantzch.Server2.Application.Orders.CreateOrder;
 
@@ -9,13 +12,25 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Ord
 {
     private readonly IOrderRepository _orderRepository;
 
+    private readonly IJwtService _jwtService;
+
     private readonly IMapper _mapper;
 
-    public CreateOrderCommandHandler(IOrderRepository orderRepository, IMapper mapper)
+    private readonly IHubContext<OrderHub> _hubContext;
+
+    private readonly IMediator _mediator;
+
+    public CreateOrderCommandHandler(IOrderRepository orderRepository, IMapper mapper, IJwtService jwtService, IHubContext<OrderHub> hub, IMediator mediator)
     {
         _orderRepository = orderRepository;
 
         _mapper = mapper;
+
+        _jwtService = jwtService;
+
+        _hubContext = hub;
+
+        _mediator = mediator;
     }
 
     public async Task<Order> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -28,14 +43,15 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Ord
 
         order.SetStatusOnCreation();
 
-        // TODO: Get From token
         order.CreatedBy = new UserSimple
         {
-            Id = "64a49b23141f6f29641cc4ce",
-            Name = "Felipe Mock"
+            Id = _jwtService.GetNameIdentifierFromToken(),
+            Name = _jwtService.GetNameFromToken()
         };
 
         await _orderRepository.AddAsync(order, cancellationToken);
+
+        await _mediator.Publish(new OrderCreatedNotification(order.Id), cancellationToken);
 
         return order;
     }

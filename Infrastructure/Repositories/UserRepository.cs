@@ -52,11 +52,27 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
     }
 
+    public async Task<List<User>> GetByIdsAsync(List<string> ids, CancellationToken cancellationToken)
+    {
+        return await _context.Users
+            .AsNoTracking()
+            .Where(x => ids.Contains(x.Id.ToString()))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<User?> GetByIdpIdAsync(ObjectId idpId, CancellationToken cancellationToken)
     {
         return await _context.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.IdentityProviderId.Equals(idpId), cancellationToken);
+    }
+
+    public async Task<List<User>> GetByIdpIdsAsync(List<string> idpIds, CancellationToken cancellationToken)
+    {
+        return await _context.Users
+            .AsNoTracking()
+            .Where(x => idpIds.Contains(x.IdentityProviderId.ToString()))
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)

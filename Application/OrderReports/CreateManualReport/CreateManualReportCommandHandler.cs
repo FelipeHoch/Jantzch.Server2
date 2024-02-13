@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Jantzch.Server2.Application.Abstractions.Jwt;
 using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Domain.Entities.Clients.Constants;
 using Jantzch.Server2.Domain.Entities.Orders;
@@ -16,27 +17,33 @@ public class CreateManualReportCommandHandler : IRequestHandler<CreateManualRepo
 {
     private readonly IOrderReportRepository _orderReportRepository;
 
-    private readonly IOrderRepository _orderRepository;
-
     private readonly IClientsRepository _clientRepository;
 
     private readonly IReportConfigurationRepository _reportConfRepository;
 
     private readonly ITaxesRepository _taxesRepository;
 
+    private readonly IJwtService _jwtService;
+
     private readonly IMapper _mapper;
 
-    public CreateManualReportCommandHandler(IOrderReportRepository orderReportRepository, IOrderRepository orderRepository, IClientsRepository clientRepository, IReportConfigurationRepository reportConfRepository, ITaxesRepository taxesRepository, IMapper mapper)
+    public CreateManualReportCommandHandler(
+        IOrderReportRepository orderReportRepository,
+        IClientsRepository clientRepository, 
+        IReportConfigurationRepository reportConfRepository, 
+        ITaxesRepository taxesRepository, 
+        IJwtService jwtService,
+        IMapper mapper)
     {
         _orderReportRepository = orderReportRepository;
-
-        _orderRepository = orderRepository;
 
         _clientRepository = clientRepository;
 
         _reportConfRepository = reportConfRepository;
 
         _taxesRepository = taxesRepository;
+
+        _jwtService = jwtService;
 
         _mapper = mapper;
     }
@@ -72,7 +79,7 @@ public class CreateManualReportCommandHandler : IRequestHandler<CreateManualRepo
             taxes = await _taxesRepository.GetByIds(taxesId, cancellationToken);
         }
 
-        var report = new OrderReport(client, reportNumber, "Mock", ordersToExport, taxes);
+        var report = new OrderReport(client, reportNumber, _jwtService.GetNameFromToken(), ordersToExport, taxes);
 
         return _mapper.Map<OrderReport, OrderReportResponse>(report);
     }

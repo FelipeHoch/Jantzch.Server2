@@ -10,7 +10,11 @@ public interface IUserRepository
 
     Task<User?> GetByIdAsync(ObjectId id, CancellationToken cancellationToken);
 
+    Task<List<User>> GetByIdsAsync(List<string> ids, CancellationToken cancellationToken);
+
     Task<User?> GetByIdpIdAsync(ObjectId idpId, CancellationToken cancellationToken); 
+
+    Task<List<User>> GetByIdpIdsAsync(List<string> idpIds, CancellationToken cancellationToken);
 
     Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken);
 
