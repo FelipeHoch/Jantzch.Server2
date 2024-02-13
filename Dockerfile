@@ -15,15 +15,15 @@ ENV SECRET_PASSWORD ""
 # Set the base image to the official .NET Core SDK image to build the application
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["Jantzch.Server.csproj", "./"]
-RUN dotnet restore "./Jantzch.Server.csproj"
+COPY ["Jantzch.Server2.csproj", "./"]
+RUN dotnet restore "./Jantzch.Server2.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "Jantzch.Server.csproj" -c Release -o /app/build
+RUN dotnet build "Jantzch.Server2.csproj" -c Release -o /app/build
 
 # Set the final image to the base image and copy the compiled application from the build image
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/build .
-ENTRYPOINT ["dotnet", "Jantzch.Server.dll"]
+ENTRYPOINT ["dotnet", "Jantzch.Server2.dll"]
  
