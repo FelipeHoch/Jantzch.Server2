@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using FluentValidation;
 using Microsoft.Extensions.Localization;
 
 namespace Jantzch.Server2.Infraestructure.Errors;
@@ -32,6 +33,10 @@ public class ErrorHandlingMiddleware
         try
         {
             await _next(context);
+        }
+        catch (ValidationException ex)
+        {
+            await HandleExceptionAsync(context, ex, _logger, _localizer);
         }
         catch (Exception ex)
         {
