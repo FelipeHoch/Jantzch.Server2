@@ -1,17 +1,19 @@
 ﻿using Jantzch.Server2.Application.Events;
 using Jantzch.Server2.Application.Events.CreateEventType;
+using Jantzch.Server2.Application.Events.DeleteEventType;
 using Jantzch.Server2.Application.Events.EditEventType;
 using Jantzch.Server2.Application.Events.GetEventTypes;
 using Jantzch.Server2.Application.Helpers;
 using Jantzch.Server2.Application.Shared;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jantzch.Server2.Api.Controllers.Events;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = "admin,supervisor")]
 public class EventTypesController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -52,10 +54,11 @@ public class EventTypesController : ControllerBase
         return Ok(response);
     }
 
-    //[HttpDelete("{id}")]
-    //public async Task<ActionResult> DeleteAsync(string id, CancellationToken cancellationToken)
-    //{
-    //    await _mediator.Send(new DeleteEventTypeCommand(id), cancellationToken);
-    //    return NoContent();
-    //}
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteAsync(string id, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new DeleteEventTypeCommand(id), cancellationToken);
+
+        return NoContent();
+    }
 }

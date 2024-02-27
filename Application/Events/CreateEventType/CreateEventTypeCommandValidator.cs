@@ -7,6 +7,6 @@ public class CreateEventTypeCommandValidator : AbstractValidator<CreateEventType
     public CreateEventTypeCommandValidator()
     {
         RuleFor(x => x.Name).NotEmpty().MaximumLength(50);
-        RuleFor(x => x.HexColor).NotEmpty().MaximumLength(7);
+        RuleFor(x => x.HexColor).NotEmpty().MaximumLength(10);
     }
 }

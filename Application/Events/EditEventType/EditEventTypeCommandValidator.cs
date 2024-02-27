@@ -7,6 +7,6 @@ public class EditEventTypeCommandValidator : AbstractValidator<EditEventTypeComm
     public EditEventTypeCommandValidator()
     {
         RuleFor(x => x.Name).NotEmpty();
-        RuleFor(x => x.HexColor).NotEmpty();
+        RuleFor(x => x.HexColor).NotEmpty().MaximumLength(10);
     }
 }

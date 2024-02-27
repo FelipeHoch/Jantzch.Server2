@@ -2,9 +2,7 @@
 using Jantzch.Server2.Application.Helpers;
 using Jantzch.Server2.Application.Services.PropertyChecker;
 using Jantzch.Server2.Domain.Entities.Events;
-using Jantzch.Server2.Infraestructure.Errors;
 using MongoDB.Driver;
-using System.Reflection.Metadata;
 
 namespace Jantzch.Server2.Infrastructure.Repositories;
 
@@ -38,7 +36,6 @@ public class EventRepository : IEventRepository
 
             filter &= startDateFilter & endDateFilter;
         }
-
 
         if (!string.IsNullOrWhiteSpace(parameters.EventType))
         {
