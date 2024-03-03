@@ -47,6 +47,15 @@ public class EventsController : ControllerBase
         return Ok(@event);
     }
 
+    [HttpPost("many")]
+    [ProducesResponseType(typeof(List<Event>), StatusCodes.Status201Created)]
+    public async Task<IActionResult> CreateEventToManyUsers([FromBody] CreateEventToManyUsersCommand command, CancellationToken cancellationToken)
+    {
+        var events = await _mediator.Send(command, cancellationToken);
+
+        return Ok(events);
+    }
+
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(Event), StatusCodes.Status200OK)]
     public async Task<IActionResult> EditEvent(string id, [FromBody] EditEventCommand model, CancellationToken cancellationToken)

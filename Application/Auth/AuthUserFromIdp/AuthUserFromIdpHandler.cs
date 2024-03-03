@@ -28,7 +28,9 @@ public class AuthUserFromIdpHandler : IRequestHandler<AuthUserFromIdpQuery, stri
 
     public async Task<string> Handle(AuthUserFromIdpQuery request, CancellationToken cancellationToken)
     {
-        var userFromIdp = Utils.DecodeBase64<UserFromIdpDto>(request.DataInBase64);
+        var base64UrlDecode = System.Web.HttpUtility.UrlDecode(request.DataInBase64);
+
+        var userFromIdp = Utils.DecodeBase64<UserFromIdpDto>(base64UrlDecode);
 
         if (userFromIdp is null)
         {
