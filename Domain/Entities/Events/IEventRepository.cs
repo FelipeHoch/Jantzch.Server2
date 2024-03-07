@@ -7,6 +7,8 @@ public interface IEventRepository
 {
     Task <PagedList<Event>> GetAsync(EventResourceParameters parameters, CancellationToken cancellationToken);
 
+    Task<PagedList<Event>> GetByUserAsync(string userId, EventResourceParameters parameters, CancellationToken cancellationToken);
+
     Task<Event?> GetByIdAsync(string id, CancellationToken cancellationToken);
 
     Task AddAsync(Event @event, CancellationToken cancellationToken);

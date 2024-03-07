@@ -29,6 +29,15 @@ public class EventsController : ControllerBase
         return Ok(events);
     }
 
+    [HttpGet("user")]
+    [ProducesResponseType(typeof(List<EventResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetEventsByUser([FromQuery] EventResourceParameters parameters, CancellationToken cancellationToken)
+    {
+        var events = await _mediator.Send(new EventsByUserQuery(parameters), cancellationToken);
+
+        return Ok(events);
+    }
+
     //[HttpGet("{id}")]
     //[ProducesResponseType(typeof(EventResponse), StatusCodes.Status200OK)]
     //public async Task<IActionResult> GetEvent(string id, [FromQuery] string? fields, CancellationToken cancellationToken)
@@ -65,12 +74,12 @@ public class EventsController : ControllerBase
         return Ok(@event);
     }
 
-    //[HttpDelete("{id}")]
-    //[ProducesResponseType(StatusCodes.Status204NoContent)]
-    //public async Task<IActionResult> DeleteEvent(string id, CancellationToken cancellationToken)
-    //{
-    //    await _mediator.Send(new DeleteEventCommand(id), cancellationToken);
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> DeleteEvent(string id, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new DeleteEventCommand(id), cancellationToken);
 
-    //    return NoContent();
-    //}
+        return NoContent();
+    }
 }
