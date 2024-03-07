@@ -82,6 +82,58 @@ public class EventRepository : IEventRepository
         return await PagedList<Event>.CreateAsync(events, parameters.PageNumber, parameters.PageSize, count, cancellationToken);
     }
 
+    public async Task<PagedList<Event>> GetByUserAsync(string userId, EventResourceParameters parameters, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+        ArgumentNullException.ThrowIfNull(parameters);
+
+        var builder = Builders<Event>.Filter;
+        var filter = builder.Eq(e => e.User.Id, userId);
+        var sort = Builders<Event>.Sort.Descending(e => e.StartDate);
+
+        if (parameters.StartDate is not null && parameters.EndDate is not null)
+        {
+            var startDateFilter = builder.Gte(e => e.StartDate, parameters.StartDate);
+            var endDateFilter = builder.Lte(e => e.StartDate, parameters.EndDate);
+
+            filter &= startDateFilter & endDateFilter;
+        }
+
+        if (!string.IsNullOrWhiteSpace(parameters.EventType))
+        {
+            var typeFilter = builder.Eq(e => e.EventType.Name, parameters.EventType);
+            filter &= typeFilter;
+        }
+
+        if (!string.IsNullOrWhiteSpace(parameters.SearchQuery))
+        {
+            var searchQuery = parameters.SearchQuery.Trim().ToLower();
+
+            var where = builder.Or(
+                 builder.Regex(order => order.Name, "/^" + searchQuery + "/i"),
+                 builder.Regex(order => order.User.Name, "/^" + searchQuery + "/i")            
+                );
+
+            filter &= where;
+        }
+
+        if (!string.IsNullOrWhiteSpace(parameters.OrderBy))
+        {
+            if (_propertyCheckerService.TypeHasProperties<Event>(parameters.OrderBy))
+            {
+                sort = Builders<Event>.Sort.Descending(parameters.OrderBy);
+            }        
+        }
+
+        var events = _events.Aggregate()
+            .Match(filter)
+            .Sort(sort);
+
+        var count = (int)await _events.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
+
+        return await PagedList<Event>.CreateAsync(events, parameters.PageNumber, parameters.PageSize, count, cancellationToken);
+    }
+
     public async Task<Event?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(id);

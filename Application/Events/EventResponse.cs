@@ -1,4 +1,5 @@
-﻿using Jantzch.Server2.Domain.Entities.Users;
+﻿using Jantzch.Server2.Domain.Entities.Events;
+using Jantzch.Server2.Domain.Entities.Users;
 using Newtonsoft.Json;
 
 namespace Jantzch.Server2.Application.Events;
@@ -21,7 +22,7 @@ public class EventResponse
     public DateTime? EndDate { get; set; } = default;
 
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-    public string? EventType { get; set; } = default;
+    public EventType? EventType { get; set; } = default;
 
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public UserSimple? User { get; set; } = default;
