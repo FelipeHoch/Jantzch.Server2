@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrderReportRepository, OrderReportRepository>();
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<IEventTypeRepository, EventTypeRepository>();
+        services.AddScoped<IPotentialOrderRepository, PotentialOrderRepository>();
 
         return services;
     }

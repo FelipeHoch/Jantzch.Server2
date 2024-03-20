@@ -1,5 +1,6 @@
 ﻿using Jantzch.Server2.Infraestructure;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
@@ -28,5 +29,7 @@ public static class MongoDbConfiguration
         ConventionRegistry.Register("CamelCaseElementNameConvention", conventionPack, t => true);
 
         ConventionRegistry.Register("IgnoreExtraElements", new ConventionPack { new IgnoreExtraElementsConvention(true) }, _ => true);
+
+        ConventionRegistry.Register("EnumStringRepresentationConvention", new ConventionPack { new EnumRepresentationConvention(BsonType.String) }, t => t.IsEnum);
     }
 }

@@ -15,10 +15,21 @@ public class Order
         SetStartDateOnOpen();
     }
 
+    public Order(ClientSimple client, int predictedTime, string? observations, UserSimple createdBy, int orderNumber)
+    {
+        OrderNumber = orderNumber;
+        Client = client;
+        PredictedTime = predictedTime;
+        Observations = observations;
+        CreatedBy = createdBy;
+        Status = "scheduled";
+        ScheduledDate = DateTime.UtcNow;
+    }
+
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     [BsonElement("_id")]
-    public string Id { get; set; } = string.Empty;
+    public string? Id { get; set; } = string.Empty;
 
     public int OrderNumber { get; set; } = 0;
 
@@ -54,12 +65,12 @@ public class Order
     public DateTime? ScheduledDate { get; set; }
 
     [BsonIgnoreIfNull]
-    public List<MaterialHistory>? MaterialsUsed { get; set; }
+    public List<MaterialHistory>? MaterialsUsed { get; set; } = [];
 
     public List<UserSimple> Workers { get; set; } = [];
 
     [BsonIgnoreIfNull]
-    public bool? IsReported { get; set; }
+    public bool? IsReported { get; set; } = false;
 
     [BsonIgnoreIfNull]
     public List<Break> BreaksHistory { get; set; } = [];
