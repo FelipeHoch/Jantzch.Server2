@@ -9,5 +9,6 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
         RuleFor(x => x.Observations).MaximumLength(500);
         RuleFor(x => x.Client).NotNull();
         RuleFor(x => x.Workers).NotEmpty();
+        RuleFor(x => x.Type);        
     }
 }

@@ -1,4 +1,5 @@
-﻿using Jantzch.Server2.Infrastructure.Google.Models;
+﻿using Jantzch.Server2.Domain.Entities.Clients.Enums;
+using Jantzch.Server2.Infrastructure.Google.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -35,6 +36,9 @@ public class Client
 
     [BsonElement("location")]
     public Location? Location { get; set; }
+
+    [BsonElement("types")]
+    public List<ClientType> Types { get; set; } = [];
 }
 
 public class Address

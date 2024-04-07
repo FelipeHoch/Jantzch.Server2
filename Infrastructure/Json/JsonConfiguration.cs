@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensions
             {
                 opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(new LowerCaseJsonNamingPolicy()));
+                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(new LowerCaseJsonNamingPolicy()));                
             })
             .AddNewtonsoftJson(opt =>
             {

@@ -1,4 +1,5 @@
-﻿using Jantzch.Server2.Application.Helpers;
+﻿using Domain.Entities.Orders.Enums;
+using Jantzch.Server2.Application.Helpers;
 using Jantzch.Server2.Application.OrderReports.Models;
 using Jantzch.Server2.Application.Orders;
 using Jantzch.Server2.Application.Services.PropertyChecker;
@@ -88,8 +89,42 @@ public class OrderRepository : IOrderRepository
             }
         }
 
+        if (!string.IsNullOrWhiteSpace(paramaters.Types))
+        {
+            var types = paramaters.Types.Split(',')
+            .Select(type => (OrderType)Enum.Parse(typeof(OrderType), type))
+            .ToArray();
+
+            var typeFilter = builder.In(order => order.Type, types);
+            filter &= typeFilter;
+        }
+
         var orders = _orders.Aggregate()
             .Match(filter)
+            .Lookup("clients", "client._id", "_id", "clientFull")
+            .Unwind("clientFull")
+            .Project<Order>(
+                @"{
+                    _id: 1, 
+                    orderNumber: 1, 
+                    client: { _id: 1, name: 1, address: '$clientFull.address', location: '$clientFull.location'}, 
+                    status: 1, 
+                    createdAt: 1, 
+                    createdBy: 1, 
+                    finishedAt: 1, 
+                    hoursWorked: 1, 
+                    breaksHistory: 1, 
+                    materialsUsed: 1, 
+                    workers: 1, 
+                    descriptive: 1, 
+                    predictedTime: 1, 
+                    type: 1, 
+                    observations: 1, 
+                    startDate: 1, 
+                    scheduledDate: 1, 
+                    isReported: 1 
+                }"
+            )
             .Sort(sort);
 
         var count = (int)await _orders.CountDocumentsAsync(filter, cancellationToken: cancellationToken);

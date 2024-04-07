@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Domain.Entities.Orders.Enums;
 using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Domain.Entities.Orders;
 using Jantzch.Server2.Domain.Entities.Users;
@@ -28,6 +29,8 @@ public class PotentialOrder
 
     public ClientSimple Client { get; set; }
 
+    public OrderType Type { get; set; } = OrderType.Eletric;
+
     [BsonIgnoreIfNull]
     [MaxLength(400)]
     public string? Observations { get; set; }
@@ -44,7 +47,7 @@ public class PotentialOrder
 
         var estimatedCompletionTimeInMinutes = EstimatedCompletionTimeInMilliseconds / 60000;
 
-        return new Order(Client, estimatedCompletionTimeInMinutes, Observations, convertedBy, orderNumber);
+        return new Order(Client, estimatedCompletionTimeInMinutes, Observations, convertedBy, orderNumber, Type);
     }
 
     public void RelateOrder(string orderId)

@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.Clients;
+using Jantzch.Server2.Domain.Entities.Clients.Enums;
 using MongoDB.Bson;
 using System.Text.Json.Serialization;
 using Route = Jantzch.Server2.Domain.Entities.Clients.Route;
@@ -33,4 +34,7 @@ public class ClientResponse
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Location? Location { get; set; } = default;
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<ClientType>? Types { get; set; } = default;
 }

@@ -1,4 +1,5 @@
-﻿using Jantzch.Server2.Domain.Entities.Clients;
+﻿using Domain.Entities.Orders.Enums;
+using Jantzch.Server2.Domain.Entities.Clients;
 using MediatR;
 
 namespace Jantzch.Server2;
@@ -10,4 +11,6 @@ public class CreatePotentialOrderCommand : IRequest<PotentialOrder>
     public ClientSimple Client { get; set; }
 
     public string? Observations { get; set; }
+
+    public OrderType Type { get; set; }
 }

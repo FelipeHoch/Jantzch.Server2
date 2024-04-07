@@ -10,4 +10,6 @@ public class OrderResourceParameters : ResourceParameters
     public string? Status { get; set; }
     public string? Client { get; set; }
     public new string OrderBy { get; set; } = "orderNumber";
+
+    public string? Types { get; set; }
 }

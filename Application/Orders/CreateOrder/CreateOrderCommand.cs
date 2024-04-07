@@ -1,4 +1,5 @@
-﻿using Jantzch.Server2.Domain.Entities.Clients;
+﻿using Domain.Entities.Orders.Enums;
+using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Domain.Entities.Orders;
 using Jantzch.Server2.Domain.Entities.Users;
 using MediatR;
@@ -18,4 +19,6 @@ public class CreateOrderCommand : IRequest<Order>
     public DateTime? ScheduledDate { get; set; }
 
     public List<UserSimple> Workers { get; set; } = [];
+
+    public OrderType Type { get; set; }
 }

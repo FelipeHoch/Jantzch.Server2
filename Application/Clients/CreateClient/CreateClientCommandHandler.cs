@@ -58,7 +58,8 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
             Cpf = request.Cpf,
             Address = request.Address,
             Location = location,
-            Route = route
+            Route = route,
+            Types = request.Types
         };
 
         await _clientsRepository.AddAsync(client, cancellationToken);

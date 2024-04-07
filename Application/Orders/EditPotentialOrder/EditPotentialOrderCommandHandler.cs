@@ -38,6 +38,7 @@ public class EditPotentialOrderCommandHandler : IRequestHandler<EditPotentialOrd
         potentialOrder.Client = request.Model.Client;
         potentialOrder.EstimatedCompletionTimeInMilliseconds = request.Model.EstimatedCompletionTimeInMilliseconds;
         potentialOrder.Observations = request.Model.Observations;
+        potentialOrder.Type = request.Model.Type;
 
         await _potentialOrderRepository.UpdateAsync(potentialOrder, cancellationToken);
 

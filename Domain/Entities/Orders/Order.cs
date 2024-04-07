@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Jantzch.Server2.Domain.Entities.Users;
 using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Domain.Entities.Materials;
+using Domain.Entities.Orders.Enums;
 
 namespace Jantzch.Server2.Domain.Entities.Orders;
 
@@ -15,7 +16,7 @@ public class Order
         SetStartDateOnOpen();
     }
 
-    public Order(ClientSimple client, int predictedTime, string? observations, UserSimple createdBy, int orderNumber)
+    public Order(ClientSimple client, int predictedTime, string? observations, UserSimple createdBy, int orderNumber, OrderType type)
     {
         OrderNumber = orderNumber;
         Client = client;
@@ -24,6 +25,7 @@ public class Order
         CreatedBy = createdBy;
         Status = "scheduled";
         ScheduledDate = DateTime.UtcNow;
+        Type = type;
     }
 
     [BsonId]
@@ -53,6 +55,8 @@ public class Order
     public ClientSimple Client { get; set; }
 
     public int PredictedTime { get; set; } = 0;
+
+    public OrderType Type { get; set; } = OrderType.Eletric;
 
     [BsonIgnoreIfNull]
     [MaxLength(400)]

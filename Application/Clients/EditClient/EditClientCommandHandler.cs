@@ -30,6 +30,7 @@ public class EditClientCommandHandler : IRequestHandler<EditClientCommand.Comman
         client.Cnpj = request.Model.Cnpj;
         client.Cpf = request.Model.Cpf;
         client.PhoneNumber = request.Model.PhoneNumber;
+        client.Types = request.Model.Types;
 
         await _clientsRepository.UpdateAsync(client);
 

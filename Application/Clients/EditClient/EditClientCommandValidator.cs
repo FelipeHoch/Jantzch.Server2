@@ -13,6 +13,7 @@ public class EditClientCommandValidator
             RuleFor(x => x.Model.PhoneNumber).NotEmpty().MaximumLength(20);
             RuleFor(x => x.Model.Cnpj).MaximumLength(14);
             RuleFor(x => x.Model.Cpf).MaximumLength(11);
+            RuleFor(x => x.Model.Types).NotEmpty().IsInEnum();
         }
     }
 }

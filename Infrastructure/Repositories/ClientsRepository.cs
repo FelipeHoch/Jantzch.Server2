@@ -2,8 +2,7 @@
 using Jantzch.Server2.Application.Clients.GetClientsInformation;
 using Jantzch.Server2.Application.Helpers;
 using Jantzch.Server2.Domain.Entities.Clients;
-using Jantzch.Server2.Infraestructure;
-using MediatR;
+using Jantzch.Server2.Domain.Entities.Clients.Enums;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -106,6 +105,15 @@ public class ClientsRepository : IClientsRepository
         {
             var stateFilter = builder.Eq(client => client.Address.State.ToLower(), clientsResourceParameters.State.ToLower());
             filter = stateFilter;
+        }
+
+        if (!string.IsNullOrWhiteSpace(clientsResourceParameters.Type))
+        {
+            var types = clientsResourceParameters.Type.Split(',')
+            .Select(type => (ClientType)Enum.Parse(typeof(ClientType), type))
+            .ToArray();
+
+            var typeFilter = builder.AnyIn(client => client.Types, types);
         }
 
         if (!string.IsNullOrWhiteSpace(clientsResourceParameters.SearchQuery))

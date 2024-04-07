@@ -8,5 +8,6 @@ public class CreatePotentialOrderCommandValidator : AbstractValidator<CreatePote
     {
         RuleFor(x => x.Observations).MaximumLength(500);
         RuleFor(x => x.Client).NotNull();
+        RuleFor(x => x.Type).NotNull();
     }
 }
