@@ -15,4 +15,6 @@ public class ClientSimple
     public Address? Address { get; set; }
 
     public Location? Location { get; set; }
+
+    public string? PhoneNumber { get; set; }
 }

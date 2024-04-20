@@ -107,7 +107,7 @@ public class OrderRepository : IOrderRepository
                 @"{
                     _id: 1, 
                     orderNumber: 1, 
-                    client: { _id: 1, name: 1, address: '$clientFull.address', location: '$clientFull.location'}, 
+                    client: { _id: 1, name: 1, address: '$clientFull.address', location: '$clientFull.location', phoneNumber: '$clientFull.phoneNumber'}, 
                     status: 1, 
                     createdAt: 1, 
                     createdBy: 1, 
