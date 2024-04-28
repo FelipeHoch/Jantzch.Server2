@@ -27,13 +27,7 @@ public class ClientResponse
     public string? PhoneNumber { get; set; } = default;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public Route? Route { get; set; } = default;
-
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public Address? Address { get; set; } = default;
-
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public Location? Location { get; set; } = default;
+    public List<Localization>? Localizations { get; set; } = default;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<ClientType>? Types { get; set; } = default;

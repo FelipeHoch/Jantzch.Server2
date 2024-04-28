@@ -1,5 +1,4 @@
 ﻿using Jantzch.Server2.Application.Clients;
-using Jantzch.Server2.Application.Clients.GetClientsInformation;
 using Jantzch.Server2.Application.Helpers;
 using MongoDB.Bson;
 
@@ -8,8 +7,6 @@ namespace Jantzch.Server2.Domain.Entities.Clients;
 public interface IClientsRepository
 {
     Task<PagedList<Client>> GetAsync(ClientsResourceParameters parameters, CancellationToken cancellationToken);
-
-    Task<PagedList<ClientInformationResponse>> GetInformationsAsync(ClientsResourceParameters parameters, CancellationToken cancellationToken);
 
     Task<Client?> GetByIdAsync(ObjectId id, CancellationToken cancellationToken);
 

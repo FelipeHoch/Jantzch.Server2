@@ -13,7 +13,7 @@ public class CreateClientCommandValidator
             RuleFor(x => x.PhoneNumber).NotEmpty().MaximumLength(20);
             RuleFor(x => x.Cnpj).MaximumLength(14);
             RuleFor(x => x.Cpf).MaximumLength(11);
-            RuleFor(x => x.Address).NotNull();
+            RuleFor(x => x.Localizations).NotEmpty();
         }
     }   
 }

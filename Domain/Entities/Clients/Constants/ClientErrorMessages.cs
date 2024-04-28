@@ -8,4 +8,6 @@ public static class ClientErrorMessages
     public const string INVALID_DISTANCE = "Distância inválida";
     public const string INVALID_DURATION = "Duração inválida";
     public const string INVALID_CLIENT = "Cliente inválido";
+
+    public const string PRIMARY_LOCALIZATION_NOT_FOUND = "Localização principal não encontrada";
 }

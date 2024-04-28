@@ -2,6 +2,9 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using Jantzch.Server2.Domain.Entities.Taxes;
+using Jantzch.Server2.Infraestructure.Errors;
+using System.Net;
+using Jantzch.Server2.Domain.Entities.Clients.Constants;
 
 namespace Jantzch.Server2.Domain.Entities.Orders;
 
@@ -17,7 +20,14 @@ public class OrderReport
 
         CalculateTotalValue();
 
-        AddTaxValueToTotalValue(taxes, client.Route.Distance.Value);
+        var primaryAddress = client.Localizations.Find(localization => localization.IsPrimary);
+
+        if (primaryAddress is null)
+        {
+            throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.PRIMARY_LOCALIZATION_NOT_FOUND });
+        }
+
+        AddTaxValueToTotalValue(taxes, primaryAddress.Route.Distance.Value);
 
         SetDueDate();
     }

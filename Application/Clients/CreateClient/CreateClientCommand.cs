@@ -16,7 +16,16 @@ public class CreateClientCommand : IRequest<Client>
 
     public string PhoneNumber { get; set; }
 
-    public Address Address { get; set; }
+    public List<LocalizationToCreate> Localizations { get; set; } = [];
 
     public List<ClientType> Types { get; set; } = [];
+}
+
+public class LocalizationToCreate
+{
+    public Address? Address { get; set; }
+
+    public string? Description { get; set; }
+
+    public bool IsPrimary { get; set; }
 }

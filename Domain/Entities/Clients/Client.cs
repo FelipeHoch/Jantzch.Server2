@@ -28,17 +28,28 @@ public class Client
     [BsonElement("phoneNumber")]
     public string PhoneNumber { get; set; }
 
-    [BsonElement("route")]
-    public Route? Route { get; set; }
+    [BsonElement("types")]
+    public List<ClientType> Types { get; set; } = [];
+
+    [BsonElement("localizations")]
+    public List<Localization> Localizations { get; set; } = [];
+}
+
+public class Localization {
+    [BsonElement("location")]
+    public Location? Location { get; set; }
 
     [BsonElement("address")]
     public Address? Address { get; set; }
 
-    [BsonElement("location")]
-    public Location? Location { get; set; }
+    [BsonElement("route")]
+    public Route? Route { get; set; }
 
-    [BsonElement("types")]
-    public List<ClientType> Types { get; set; } = [];
+    [BsonElement("description")]
+    public string? Description { get; set; }
+
+    [BsonElement("isPrimary")]
+    public bool IsPrimary { get; set; }
 }
 
 public class Address

@@ -1,5 +1,4 @@
 ﻿using Jantzch.Server2.Application.Clients;
-using Jantzch.Server2.Application.Clients.GetClientsInformation;
 using Jantzch.Server2.Application.Helpers;
 using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Domain.Entities.Clients.Enums;
@@ -35,29 +34,6 @@ public class ClientsRepository : IClientsRepository
         var count = (int)await _clients.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
 
         return await PagedList<Client>.CreateAsync(clients, parameters?.PageNumber ?? 1, parameters?.PageSize ?? 10, count, cancellationToken);
-    }
-
-    public async Task<PagedList<ClientInformationResponse>> GetInformationsAsync(ClientsResourceParameters parameters, CancellationToken cancellationToken)
-    {
-        var filter = BuildClientFilters(parameters);
-        var sort = BuildSortDefinition(parameters);
-        
-        var query = _clients.Aggregate()
-            .Match(filter)
-            .Sort(sort)
-            .Project(client => new ClientInformationResponse
-            {
-                Id = client.Id,
-                Name = client.Name,
-                Email = client.Email,
-                PhoneNumber = client.PhoneNumber,
-                Address = client.Address,
-                Location = client.Location
-            });
-
-        var count = (int)await _clients.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
-
-        return await PagedList<ClientInformationResponse>.CreateAsync(query, parameters?.PageNumber ?? 1, parameters?.PageSize ?? 10, count, cancellationToken);
     }
 
     public async Task<Client?> GetByIdAsync(ObjectId id, CancellationToken cancellationToken)
@@ -97,13 +73,13 @@ public class ClientsRepository : IClientsRepository
 
         if (!string.IsNullOrWhiteSpace(clientsResourceParameters.City))
         {
-            var cityFilter = builder.Eq(client => client.Address.City.ToLower(), clientsResourceParameters.City.ToLower());
+            var cityFilter = builder.Exists(client => client.Localizations.Any(localization => localization.Address.City.ToLower() == clientsResourceParameters.City.ToLower()));
             filter = cityFilter;
         }
 
         if (!string.IsNullOrWhiteSpace(clientsResourceParameters.State))
         {
-            var stateFilter = builder.Eq(client => client.Address.State.ToLower(), clientsResourceParameters.State.ToLower());
+            var stateFilter = builder.Exists(client => client.Localizations.Any(localization => localization.Address.State.ToLower() == clientsResourceParameters.State.ToLower()));
             filter = stateFilter;
         }
 

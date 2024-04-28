@@ -67,9 +67,16 @@ public class EditAddressCommandHandler : IRequestHandler<EditAddressCommand.Comm
             Duration = distance.Rows.First().Elements.First().Duration
         };
 
-        client.Address = address;
-        client.Location = location;
-        client.Route = route;
+        var localizationToUpdate = client.Localizations.Find(localization => localization.Location.Equals(request.Model.PreviousLocation));
+
+        if (localizationToUpdate is null)
+        {
+            throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.ADDRESS_NOT_FOUND });
+        }
+
+        localizationToUpdate.Address = address;
+        localizationToUpdate.Location = location;
+        localizationToUpdate.Route = route;
 
         await _clientsRepository.UpdateAsync(client);
 

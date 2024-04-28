@@ -15,5 +15,7 @@ public class EditAddressCommand
 
     public string State { get; set; }
 
+    public Location PreviousLocation { get; set; }
+
     public record Command(EditAddressCommand Model, string Id) : IRequest<Client>;
 }

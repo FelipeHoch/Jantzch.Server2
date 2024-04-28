@@ -23,31 +23,50 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
 
     public async Task<Client> Handle(CreateClientCommand request, CancellationToken cancellationToken)
     {
-        var geoCode = await _googleMapsService.GetGeoCode(request.Address);
+        List<Task<Localization>> localizationTasks = [];
 
-        if (geoCode is null)
+        foreach (var localization in request.Localizations)
         {
-            throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.INVALID_ADDRESS });
+            localizationTasks.Add(Task.Run(async () =>
+            {
+                var geoCode = await _googleMapsService.GetGeoCode(localization.Address);
+
+                if (geoCode is null)
+                {
+                    throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.INVALID_ADDRESS });
+                }
+
+                var location = new Location
+                {
+                    Latitude = geoCode.Results.First().Geometry.Location.Lat,
+                    Longitude = geoCode.Results.First().Geometry.Location.Lng
+                };
+
+                var distance = await _googleMapsService.GetDistance(location);
+
+                if (distance is null)
+                {
+                    throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.INVALID_ADDRESS });
+                }
+
+                var route = new Route
+                {
+                    Distance = distance.Rows.First().Elements.First().Distance,
+                    Duration = distance.Rows.First().Elements.First().Duration
+                };
+
+                return new Localization
+                {
+                    Address = localization.Address,
+                    Location = location,
+                    Route = route,
+                    IsPrimary = localization.IsPrimary,
+                    Description = localization.Description
+                };
+            }));
         }
 
-        var location = new Location
-        {
-            Latitude = geoCode.Results.First().Geometry.Location.Lat,
-            Longitude = geoCode.Results.First().Geometry.Location.Lng
-        };
-
-        var distance = await _googleMapsService.GetDistance(location);
-
-        if (distance is null)
-        {
-            throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.INVALID_ADDRESS });
-        }
-
-        var route = new Route
-        {
-            Distance = distance.Rows.First().Elements.First().Distance,
-            Duration = distance.Rows.First().Elements.First().Duration
-        };
+        List<Localization> localizations = (await Task.WhenAll(localizationTasks)).ToList();
 
         var client = new Client
         {
@@ -56,10 +75,8 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
             PhoneNumber = request.PhoneNumber,
             Cnpj = request.Cnpj,
             Cpf = request.Cpf,
-            Address = request.Address,
-            Location = location,
-            Route = route,
-            Types = request.Types
+            Types = request.Types,
+            Localizations = localizations
         };
 
         await _clientsRepository.AddAsync(client, cancellationToken);
