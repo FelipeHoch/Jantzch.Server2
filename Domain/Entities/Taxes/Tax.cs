@@ -11,6 +11,7 @@ public class Tax
     [JsonIgnore]
     public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
 
+
     public string Name { get; set; }
 
     public string Type { get; set; }

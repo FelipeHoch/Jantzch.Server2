@@ -33,9 +33,77 @@ public class Client
 
     [BsonElement("localizations")]
     public List<Localization> Localizations { get; set; } = [];
+
+    public void AddLocalization(Location location, Address address, Route route, string description, bool? isPrimary)
+    {
+        var localization = new Localization
+        {
+            Location = location,
+            Address = address,
+            Route = route,
+            Description = description,
+            IsPrimary = isPrimary ?? false
+        };
+
+        if (isPrimary ?? false)
+        {
+            Localizations.ForEach(l => l.IsPrimary = false);
+        }
+
+        Localizations.Add(localization);
+    }
+
+    public void RemoveLocalization(string Id)
+    {
+        var localization = Localizations.Find(l => l.Id == Id);
+
+        if (localization is null)
+        {
+            return;
+        }
+
+        Localizations.Remove(localization);
+
+        SetPrimaryIfHavent();
+    }
+
+    public void UpdateLocalization(string id, Location location, Address address, Route route, string description, bool? isPrimary)
+    {
+        var localization = Localizations.Find(l => l.Id == id);
+
+        if (localization is null)
+        {
+            return;
+        }
+
+        if (isPrimary ?? false)
+        {
+            Localizations.ForEach(l => l.IsPrimary = false);
+        }
+
+        localization.Address = address;
+        localization.Route = route;
+        localization.Description = description;
+        localization.IsPrimary = isPrimary ?? false;
+        localization.Location = location;        
+    }
+
+    private void SetPrimaryIfHavent()
+    {
+        var hasPrimary = Localizations.Exists(l => l.IsPrimary);
+
+        if (!hasPrimary && Localizations.Count > 0)
+        {
+            Localizations[0].IsPrimary = true;
+        }
+    }
 }
 
 public class Localization {
+    [BsonRepresentation(BsonType.ObjectId)]
+    [BsonElement("_id")]
+    public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
+
     [BsonElement("location")]
     public Location? Location { get; set; }
 

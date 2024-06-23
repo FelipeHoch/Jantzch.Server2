@@ -1,5 +1,6 @@
 ﻿using Jantzch.Server2.Application.Clients;
 using Jantzch.Server2.Application.Clients.CreateClient;
+using Jantzch.Server2.Application.Clients.DeleteAddress;
 using Jantzch.Server2.Application.Clients.DeleteClient;
 using Jantzch.Server2.Application.Clients.EditAddress;
 using Jantzch.Server2.Application.Clients.EditClient;
@@ -58,6 +59,16 @@ public class ClientsController : ControllerBase
     public async Task<IActionResult> EditClientAddress(string id, [FromBody] EditAddressCommand command, CancellationToken cancellationToken)
     {
         var client = await _mediator.Send(new EditAddressCommand.Command(command, id), cancellationToken);
+
+        return Ok(client);
+    }
+     
+    [HttpDelete("{id}/address/{addressId}")]
+    [Authorize(Roles = "admin")]
+    [ProducesResponseType(typeof(Client), StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteClientAddress(string id, string addressId, CancellationToken cancellationToken)
+    {
+        var client = await _mediator.Send(new DeleteAddress.Command(id, addressId), cancellationToken);
 
         return Ok(client);
     }

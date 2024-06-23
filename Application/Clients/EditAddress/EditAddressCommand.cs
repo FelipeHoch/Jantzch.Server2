@@ -5,6 +5,8 @@ namespace Jantzch.Server2.Application.Clients.EditAddress;
 
 public class EditAddressCommand
 {
+    public string Id { get; set; }
+
     public string Street { get; set; }
 
     public int StreetNumber { get; set; }
@@ -15,7 +17,9 @@ public class EditAddressCommand
 
     public string State { get; set; }
 
-    public Location PreviousLocation { get; set; }
+    public string Description { get; set; }    
+
+    public bool? IsPrimary { get; set; }
 
     public record Command(EditAddressCommand Model, string Id) : IRequest<Client>;
 }
