@@ -19,4 +19,6 @@ public interface IClientsRepository
     Task<bool> ClientExists(ObjectId id, CancellationToken cancellationToken);
 
     Task<bool> SaveChangesAsync(CancellationToken cancellationToken);
+
+    Task ScriptToUpdateAddressToLocalization(); 
 }

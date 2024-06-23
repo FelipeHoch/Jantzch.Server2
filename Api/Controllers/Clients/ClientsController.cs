@@ -19,9 +19,20 @@ public class ClientsController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public ClientsController(IMediator mediator)
+    private readonly IClientsRepository clientsRepository;
+
+    public ClientsController(IMediator mediator, IClientsRepository clientsRepository)
     {
         _mediator = mediator;
+        this.clientsRepository = clientsRepository;
+    }
+
+    [HttpGet("script")]
+    public async Task<IActionResult> GetScript(CancellationToken cancellationToken)
+    {
+        await clientsRepository.ScriptToUpdateAddressToLocalization();
+
+        return Ok();
     }
 
     [HttpGet]
@@ -81,5 +92,5 @@ public class ClientsController : ControllerBase
         await _mediator.Send(new DeleteClientCommand(id), cancellationToken);
 
         return NoContent();
-    }
+    }   
 }

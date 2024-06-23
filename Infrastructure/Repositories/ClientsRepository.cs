@@ -66,6 +66,38 @@ public class ClientsRepository : IClientsRepository
         throw new NotImplementedException();
     }
 
+    public async  Task ScriptToUpdateAddressToLocalization()
+    {
+        var allClients = await _clients.Find(_ => true).ToListAsync();
+
+        allClients.ForEach(async client =>
+        {
+            if (client.Localizations.Count > 0)
+            {
+                return;
+            }
+
+            var localization = new Localization
+            {
+                Address = client.Address,
+                Location = client.Location,
+                Route = client.Route,
+                IsPrimary = true,
+                Description = "Primário",
+                Id = ObjectId.GenerateNewId().ToString(),
+            };
+
+            client.Localizations.Add(localization);
+
+            // delete the address, location and route
+            client.Address = null;
+            client.Location = null;
+            client.Route = null;
+
+            await _clients.ReplaceOneAsync(x => x.Id == client.Id, client);            
+        });
+    }
+
     private static FilterDefinition<Client> BuildClientFilters(ClientsResourceParameters clientsResourceParameters)
     {
         var builder = Builders<Client>.Filter;

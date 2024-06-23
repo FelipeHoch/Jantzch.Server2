@@ -28,6 +28,18 @@ public class Client
     [BsonElement("phoneNumber")]
     public string PhoneNumber { get; set; }
 
+    [BsonIgnoreIfNull]
+    [BsonElement]
+    public Address? Address { get; set; }
+
+    [BsonIgnoreIfNull]
+    [BsonElement("location")]
+    public Location? Location { get; set; }
+
+    [BsonIgnoreIfNull]
+    [BsonElement("route")]
+    public Route? Route { get; set; }
+
     [BsonElement("types")]
     public List<ClientType> Types { get; set; } = [];
 

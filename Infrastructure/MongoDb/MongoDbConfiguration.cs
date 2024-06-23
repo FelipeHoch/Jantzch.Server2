@@ -14,7 +14,7 @@ public static class MongoDbConfiguration
 {
     public static void ConfigureMongoDB(this IServiceCollection services)
     {
-        var mongoClientSettings = MongoClientSettings.FromConnectionString(Environment.GetEnvironmentVariable("MONGODB_URI") ?? "mongodb://localhost:27017");
+        var mongoClientSettings = MongoClientSettings.FromConnectionString(Environment.GetEnvironmentVariable("MONGODB_URI") ?? "mongodb://localhost:27017");        
         mongoClientSettings.ApplicationName = "JANTZCH";
 
         var mongoClient = new MongoClient(mongoClientSettings);
