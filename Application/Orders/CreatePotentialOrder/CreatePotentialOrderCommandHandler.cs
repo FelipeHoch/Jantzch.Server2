@@ -38,6 +38,7 @@ public class CreatePotentialOrderCommandHandler : IRequestHandler<CreatePotentia
 
     public async Task<PotentialOrder> Handle(CreatePotentialOrderCommand request, CancellationToken cancellationToken)
     {
+
         var potentialOrder = _mapper.Map<PotentialOrder>(request);
 
         var client = await _clientsRepository.GetByIdAsync(new ObjectId(request.Client.Id), cancellationToken);

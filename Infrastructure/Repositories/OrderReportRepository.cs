@@ -48,8 +48,7 @@ public class OrderReportRepository : IOrderReportRepository
 
             var where = builder.Or(
                  builder.Regex(report => report.Client.Name, "/^" + searchQuery + "/i"),
-                 builder.Regex(report => report.GeneratedBy, "/^" + searchQuery + "/i"),
-                 builder.Regex(report => report.Client.Email, "/^" + searchQuery + "/i")
+                 builder.Regex(report => report.GeneratedBy, "/^" + searchQuery + "/i")
             );
 
             filter &= where;

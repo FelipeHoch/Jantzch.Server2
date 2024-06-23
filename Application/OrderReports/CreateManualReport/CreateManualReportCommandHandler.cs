@@ -79,7 +79,17 @@ public class CreateManualReportCommandHandler : IRequestHandler<CreateManualRepo
             taxes = await _taxesRepository.GetByIds(taxesId, cancellationToken);
         }
 
-        var report = new OrderReport(client, reportNumber, _jwtService.GetNameFromToken(), ordersToExport, taxes);
+        var clientSimple = new ClientSimple
+        {
+            Id = client.Id,
+            Name = client.Name,
+            Address = client.Localizations.Find(localization => localization.IsPrimary).Address,
+            Location = client.Localizations.Find(localization => localization.IsPrimary).Location,
+            PhoneNumber = client.PhoneNumber,
+            Route = client.Localizations.Find(localization => localization.IsPrimary).Route
+        };
+
+        var report = new OrderReport(clientSimple, reportNumber, _jwtService.GetNameFromToken(), ordersToExport, taxes);
 
         return _mapper.Map<OrderReport, OrderReportResponse>(report);
     }

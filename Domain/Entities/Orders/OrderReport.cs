@@ -8,9 +8,10 @@ using Jantzch.Server2.Domain.Entities.Clients.Constants;
 
 namespace Jantzch.Server2.Domain.Entities.Orders;
 
+[BsonIgnoreExtraElements]
 public class OrderReport
 {
-    public OrderReport(Client client, int reportNumber, string generatedBy, List<OrderExport> orderExports, List<Tax> taxes)
+    public OrderReport(ClientSimple client, int reportNumber, string generatedBy, List<OrderExport> orderExports, List<Tax> taxes)
     {
         Client = client;
         ReportNumber = reportNumber;
@@ -20,14 +21,7 @@ public class OrderReport
 
         CalculateTotalValue();
 
-        var primaryAddress = client.Localizations.Find(localization => localization.IsPrimary);
-
-        if (primaryAddress is null)
-        {
-            throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.PRIMARY_LOCALIZATION_NOT_FOUND });
-        }
-
-        AddTaxValueToTotalValue(taxes, primaryAddress.Route.Distance.Value);
+        AddTaxValueToTotalValue(taxes, client.Route.Distance.Value);
 
         SetDueDate();
     }
@@ -39,7 +33,7 @@ public class OrderReport
 
     public int ReportNumber { get; set; }
 
-    public Client Client { get; set; }
+    public ClientSimple Client { get; set; }
 
     public List<OrderExport> Orders { get; set; } = [];
 

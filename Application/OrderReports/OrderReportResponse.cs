@@ -14,7 +14,7 @@ public class OrderReportResponse
     public int? ReportNumber { get; set; } = default;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public Client? Client { get; set; } = default;
+    public ClientSimple? Client { get; set; } = default;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<OrderExport>? Orders { get; set; } = default;

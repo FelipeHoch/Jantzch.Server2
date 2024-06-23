@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Jantzch.Server2.Domain.Entities.Clients;
 
+[BsonIgnoreExtraElements]
 public class ClientSimple
 {
     [BsonRepresentation(BsonType.ObjectId)]
@@ -15,6 +16,8 @@ public class ClientSimple
     public Address? Address { get; set; }
 
     public Location? Location { get; set; }
+
+    public Route? Route { get; set; }
 
     public string? PhoneNumber { get; set; }
 }
