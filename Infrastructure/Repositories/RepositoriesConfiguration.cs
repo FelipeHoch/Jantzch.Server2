@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.Clients;
+using Jantzch.Server2.Domain.Entities.Clients.Deals;
 using Jantzch.Server2.Domain.Entities.Events;
 using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using Jantzch.Server2.Domain.Entities.Materials;
@@ -24,6 +25,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<IEventTypeRepository, EventTypeRepository>();
         services.AddScoped<IPotentialOrderRepository, PotentialOrderRepository>();
+        services.AddScoped<IDealRepository, DealRepository>();
 
         return services;
     }

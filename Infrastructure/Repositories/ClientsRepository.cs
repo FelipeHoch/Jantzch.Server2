@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Linq.Dynamic.Core;
+using System.Text.RegularExpressions;
 
 namespace Jantzch.Server2.Infrastructure.Repositories;
 
@@ -41,9 +42,45 @@ public class ClientsRepository : IClientsRepository
         return await _clients.Find(client => client.Id == id.ToString()).FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<List<Client>> GetByMultipleIdentifiersAsync(List<string> emails, List<string> phones, List<string> names, CancellationToken c)
+    {
+        List<FilterDefinition<Client>> filter = [];
+
+        if (emails.Count > 0)
+        {
+            var emailFilter = Builders<Client>.Filter.In(client => client.Email, emails);
+
+            filter.Add(emailFilter);
+        }
+
+        if (phones.Count > 0)
+        {
+            var phoneFilter = Builders<Client>.Filter.In(client => client.PhoneNumber, phones);
+            
+            filter.Add(phoneFilter);
+        }
+
+        if (names.Count > 0)
+        {
+            var nameRegex = new BsonRegularExpression(string.Join("|", names.Select(Regex.Escape)), "i");
+            var nameFilter = Builders<Client>.Filter.Regex(client => client.Name, nameRegex);
+            
+            filter.Add(nameFilter);
+        }
+
+        var filterDefinition = Builders<Client>.Filter.Or(filter);
+
+        return await _clients.Find(filterDefinition).ToListAsync(c);
+    }
+
     public async Task AddAsync(Client client, CancellationToken cancellationToken)
     {
         await _clients.InsertOneAsync(client, cancellationToken: cancellationToken);
+    }
+
+    public async Task AddAsync(IEnumerable<Client> clients, CancellationToken cancellationToken)
+    {
+        await _clients.InsertManyAsync(clients, cancellationToken: cancellationToken);
     }
 
     public async Task UpdateAsync(Client client)

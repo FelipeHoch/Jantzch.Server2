@@ -20,4 +20,6 @@ public class ClientSimple
     public Route? Route { get; set; }
 
     public string? PhoneNumber { get; set; }
+
+    public string? Email { get; set; }
 }

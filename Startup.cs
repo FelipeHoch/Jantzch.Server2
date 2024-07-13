@@ -1,17 +1,20 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using Jantzch.Server2.Application.Abstractions.Configuration;
+using Jantzch.Server2.Application.Abstractions.Excel;
 using Jantzch.Server2.Application.Abstractions.Google;
 using Jantzch.Server2.Application.Abstractions.Jwt;
 using Jantzch.Server2.Application.Orders;
 using Jantzch.Server2.Application.Services.DataShapingService;
 using Jantzch.Server2.Application.Services.Pagination;
 using Jantzch.Server2.Application.Services.PropertyChecker;
+using Jantzch.Server2.Domain.Entities.Clients.Services;
 using Jantzch.Server2.Infraestructure;
 using Jantzch.Server2.Infraestructure.Errors;
 using Jantzch.Server2.Infraestructure.Services.PropertyChecker;
 using Jantzch.Server2.Infrastructure;
 using Jantzch.Server2.Infrastructure.Configuration;
+using Jantzch.Server2.Infrastructure.Excel;
 using Jantzch.Server2.Infrastructure.Google;
 using Jantzch.Server2.Infrastructure.Json;
 using Jantzch.Server2.Infrastructure.Jwt;
@@ -52,11 +55,15 @@ public class Startup
 
         services.AddRepositories();
 
+        services.AddTransient<IClientService, ClientService>();
+
         services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
 
         services.AddTransient<IPaginationService, PaginationService>();
 
         services.AddTransient<IDataShapingService, DataShapingService>();
+
+        services.AddTransient<IExcelService, ClosedXmlService>();
 
         services.AddSingleton<IConfigurationService, ConfigurationService>();
 
