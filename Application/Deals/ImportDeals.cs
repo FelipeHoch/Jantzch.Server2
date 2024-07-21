@@ -126,7 +126,8 @@ public class ImportDeals
                         Name = client.Name
                     },
                     IntegrationId = deal.IntegrationId,
-                    Status = StatusEnum.PendingMaterial,                    
+                    Status = StatusEnum.PendingMaterial,
+                    LastUpdateAt = DateTime.UtcNow,              
                     HistoryStatus = [historyStatus]
                 };
 

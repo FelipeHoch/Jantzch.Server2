@@ -44,6 +44,9 @@ public class DealResponse
     public DateTime? ClosedAt { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public DateTime? LastUpdateAt { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<HistoryStatus>? HistoryStatus { get; set; }
 
 }

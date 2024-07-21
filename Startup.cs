@@ -21,6 +21,7 @@ using Jantzch.Server2.Infrastructure.Jwt;
 using Jantzch.Server2.Infrastructure.MongoDb;
 using Jantzch.Server2.Infrastructure.Repositories;
 using Jantzch.Server2.Infrastructure.Security;
+using Jantzch.Server2.Infrastructure.Services;
 using MediatR;
 using System.Reflection;
 
@@ -54,6 +55,8 @@ public class Startup
         services.AddSignalR();
 
         services.AddRepositories();
+
+        services.AddServices();
 
         services.AddTransient<IClientService, ClientService>();
 

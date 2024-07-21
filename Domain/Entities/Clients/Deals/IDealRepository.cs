@@ -1,10 +1,13 @@
-﻿using Jantzch.Server2.Application.Helpers;
+﻿using Jantzch.Server2.Application.Deals.Analytics;
+using Jantzch.Server2.Application.Helpers;
 
 namespace Jantzch.Server2.Domain.Entities.Clients.Deals;
 
 public interface IDealRepository
 {
     Task<PagedList<Deal>> GetAsync(DealsResourceParamenters parameters, CancellationToken cancellationToken);
+
+    Task<List<Deal>> GetAsync(AnalyticsResourceParameters parameters, CancellationToken cancellationToken);
 
     Task<Deal?> GetByIdAsync(string id, CancellationToken cancellationToken);
 

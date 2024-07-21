@@ -1,4 +1,5 @@
-﻿using Jantzch.Server2.Application.Helpers;
+﻿using Jantzch.Server2.Application.Deals.Analytics;
+using Jantzch.Server2.Application.Helpers;
 using Jantzch.Server2.Application.Services.PropertyChecker;
 using Jantzch.Server2.Domain.Entities.Clients.Deals;
 using MongoDB.Driver;
@@ -54,7 +55,9 @@ public class DealRepository(
         {
             if (propertyCheckerService.TypeHasProperties<Deal>(parameters.OrderBy))
             {
-                sort = Builders<Deal>.Sort.Descending(parameters.OrderBy);
+                sort = parameters.OrderByDesc is true
+                    ? Builders<Deal>.Sort.Descending(parameters.OrderBy)
+                    : Builders<Deal>.Sort.Ascending(parameters.OrderBy);
             }
         }
 
@@ -65,6 +68,21 @@ public class DealRepository(
         var total = (int)await _deals.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
 
         return await PagedList<Deal>.CreateAsync(deals, parameters.PageNumber, parameters.PageSize, total, cancellationToken);
+    }
+
+    public async Task<List<Deal>> GetAsync(AnalyticsResourceParameters parameters, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(parameters);
+
+        var filter = Builders<Deal>.Filter.Empty;
+
+        filter = filter & Builders<Deal>.Filter.Gte(deal => deal.DealConfirmedAt, parameters.InitialDate);
+
+        filter = filter & Builders<Deal>.Filter.Lte(deal => deal.DealConfirmedAt, parameters.FinalDate);
+
+        var deals = _deals.Find(filter);
+
+        return await deals.ToListAsync(cancellationToken);
     }
 
     public async Task<Deal?> GetByIdAsync(string id, CancellationToken cancellationToken)

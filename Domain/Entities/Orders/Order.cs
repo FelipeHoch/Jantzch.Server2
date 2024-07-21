@@ -135,6 +135,8 @@ public class Order
         }
 
         HoursWorked = minutesWorked / 60;
+
+        if (HoursWorked < 1) HoursWorked = 1;
     }
 
     public void SetStatusOnCreation()
