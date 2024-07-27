@@ -45,21 +45,13 @@ public class Deal
 
     public List<HistoryStatus> HistoryStatus { get; set; } = [];
 
-    public void NextStatus(UserSimple user)
-    {        
-        var nextStatus = Status switch
-        {
-            StatusEnum.PendingMaterial => StatusEnum.PendingInstallation,
-            StatusEnum.PendingInstallation => StatusEnum.InstallationInProgress,
-            StatusEnum.InstallationInProgress => StatusEnum.InstallationCompleted,
-            _ => throw new Exception("Invalid status")
-        };
-
-        Status = nextStatus;
+    public void NextStatus(StatusEnum status, UserSimple user)
+    {              
+        Status = status;
 
         HistoryStatus historyStatus = new()
         {
-            Status = nextStatus,
+            Status = status,
             Date = DateTime.Now,
             User = user
         };

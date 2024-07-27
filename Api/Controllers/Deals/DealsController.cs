@@ -3,6 +3,7 @@ using Jantzch.Server2.Application.Deals;
 using Jantzch.Server2.Application.Deals.Analytics;
 using Jantzch.Server2.Application.Deals.Analytics.DTOs;
 using Jantzch.Server2.Domain.Entities.Clients.Deals;
+using Jantzch.Server2.Domain.Entities.Clients.Deals.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,9 +36,9 @@ public class DealsController(IMediator mediator) : ControllerBase
 
     [HttpPost("{dealId}/next-status")]
     [ProducesResponseType(typeof(DealResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> NextStatus(string dealId, CancellationToken cancellationToken)
+    public async Task<IActionResult> NextStatus([FromQuery] StatusEnum status, string dealId, CancellationToken cancellationToken)
     {
-        var deal = await mediator.Send(new NextStatus.Command(dealId), cancellationToken);
+        var deal = await mediator.Send(new ChangeStatus.Command(dealId, status), cancellationToken);
 
         return Ok(deal);
     }

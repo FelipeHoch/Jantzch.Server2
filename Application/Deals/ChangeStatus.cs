@@ -9,9 +9,9 @@ using MediatR;
 
 namespace Jantzch.Server2.Application.Deals;
 
-public class NextStatus
+public class ChangeStatus
 {
-    public record Command(string DealId) : IRequest<DealResponse>;
+    public record Command(string DealId, StatusEnum Status) : IRequest<DealResponse>;
 
     public class Handler(
         IDealRepository dealRepository,
@@ -31,7 +31,7 @@ public class NextStatus
 
             try
             {
-                deal.NextStatus(user);
+                deal.NextStatus(request.Status, user);
             }
             catch (Exception)
             {
