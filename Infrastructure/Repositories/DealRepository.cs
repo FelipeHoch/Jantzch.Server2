@@ -32,12 +32,12 @@ public class DealRepository(
 
         if (parameters.StartDate is not null)
         {
-            filter = filter & Builders<Deal>.Filter.Gte(deal => deal.CreatedAt, parameters.StartDate);
+            filter = filter & Builders<Deal>.Filter.Gte(deal => deal.DealConfirmedAt, parameters.StartDate);
         }
 
         if (parameters.EndDate is not null)
         {
-            filter = filter & Builders<Deal>.Filter.Lte(deal => deal.CreatedAt, parameters.EndDate);
+            filter = filter & Builders<Deal>.Filter.Lte(deal => deal.DealConfirmedAt, parameters.EndDate);
         }
 
         if (parameters.SearchQuery is not null)
