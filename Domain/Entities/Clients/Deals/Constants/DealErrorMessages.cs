@@ -6,4 +6,5 @@ public static class DealErrorMessages
     public const string INVALID_CLIENT = "Cliente inválido";
     public const string INVALID_DEAL = "Negócio inválido";
     public const string INVALID_DEAL_STATUS = "Status do negócio inválido";
+    public const string ERROR_CREATE = "Erro ao criar novo negócio";
 }

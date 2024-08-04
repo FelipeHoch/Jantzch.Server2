@@ -27,15 +27,23 @@ public class Deal
 
     public StatusEnum Status { get; set; } = StatusEnum.PendingMaterial;
 
+    public ProjectStatusEnum? ProjectStatus { get; set; } = ProjectStatusEnum.GroupingPhotos;
+
     public ClientSimple Client { get; set; }
 
     public List<string> OrderIds { get; set; } = [];
 
     public string? IntegrationId { get; set; }
 
-    public string CreatedBy { get; set; } = string.Empty;
+    public string? Material { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    public string? PanelInstallation { get; set; }
+
+    public string? InversorLocalization { get; set; }
+
+    public string? CreatedBy { get; set; } = string.Empty;
+
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public DateTime? LastUpdateAt { get; set; }
 
@@ -59,6 +67,15 @@ public class Deal
         HistoryStatus.Add(historyStatus);
 
         LastUpdateAt = DateTime.Now;
+
+        if (status == StatusEnum.InstallationCompleted)
+        {
+            ClosedAt = DateTime.Now;
+        }
+        else
+        {
+            ClosedAt = null;        
+        }
     }
 }
 

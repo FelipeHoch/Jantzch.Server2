@@ -1,4 +1,4 @@
-﻿using Jantzch.Server2.Application.Abstractions.Excel;
+﻿
 using Jantzch.Server2.Application.Deals;
 using Jantzch.Server2.Application.Deals.Analytics;
 using Jantzch.Server2.Application.Deals.Analytics.DTOs;
@@ -23,6 +23,24 @@ public class DealsController(IMediator mediator) : ControllerBase
         var deals = await mediator.Send(new ListDeals.Query(parameters), cancellationToken);
 
         return Ok(deals);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(DealResponse), StatusCodes.Status201Created)]
+    public async Task<IActionResult> CreateDeal([FromBody] CreateDeal.DealForCreation deal, CancellationToken cancellationToken)
+    {
+        var createdDeal = await mediator.Send(new CreateDeal.Command(deal), cancellationToken);
+
+        return CreatedAtAction(nameof(GetDeals), null, createdDeal);
+    }
+
+    [HttpPut("{dealId}")]
+    [ProducesResponseType(typeof(DealResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> EditDeal(string dealId, [FromBody] EditDeal.DealForEdit deal, CancellationToken cancellationToken)
+    {
+        var editedDeal = await mediator.Send(new EditDeal.Command(dealId, deal), cancellationToken);
+
+        return Ok(editedDeal);
     }
 
     [HttpPost("import")]
