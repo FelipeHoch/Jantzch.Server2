@@ -11,7 +11,7 @@ namespace Jantzch.Server2.Application.Deals;
 
 public class ChangeStatus
 {
-    public record Command(string DealId, StatusEnum Status) : IRequest<DealResponse>;
+    public record Command(string DealId, StatusEnum Status, DateTime? Date) : IRequest<DealResponse>;
 
     public class Handler(
         IDealRepository dealRepository,
@@ -31,7 +31,7 @@ public class ChangeStatus
 
             try
             {
-                deal.NextStatus(request.Status, user);
+                deal.NextStatus(request.Status, user, request.Date);
             }
             catch (Exception)
             {

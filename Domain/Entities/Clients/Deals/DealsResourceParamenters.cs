@@ -8,6 +8,8 @@ public class DealsResourceParamenters : ResourceParameters
     public string? ClientId { get; set; }
 
     public StatusEnum? Status { get; set; }
+
+    public ProjectStatusEnum? ProjectStatus { get; set; }
     
     public DateTime? StartDate { get; set; }
 

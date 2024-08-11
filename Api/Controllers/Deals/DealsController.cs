@@ -54,9 +54,9 @@ public class DealsController(IMediator mediator) : ControllerBase
 
     [HttpPost("{dealId}/next-status")]
     [ProducesResponseType(typeof(DealResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> NextStatus([FromQuery] StatusEnum status, string dealId, CancellationToken cancellationToken)
+    public async Task<IActionResult> NextStatus([FromQuery] StatusEnum status, [FromQuery] DateTime? date, string dealId, CancellationToken cancellationToken)
     {
-        var deal = await mediator.Send(new ChangeStatus.Command(dealId, status), cancellationToken);
+        var deal = await mediator.Send(new ChangeStatus.Command(dealId, status, date), cancellationToken);
 
         return Ok(deal);
     }

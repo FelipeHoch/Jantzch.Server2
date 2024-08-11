@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Jantzch.Server2.Domain.Entities.Users.Enums;
+using System.Text.Json.Serialization;
 
 namespace Jantzch.Server2.Application.Users;
 
@@ -24,6 +25,9 @@ public class UserResponse
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? CustByHour { get; set; } = default!;
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<UserTypeEnum>? Types { get; set; } = default!;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? NewPassword { get; set; } = default!;

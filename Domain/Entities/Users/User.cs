@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
+using Jantzch.Server2.Domain.Entities.Users.Enums;
 
 namespace Jantzch.Server2.Domain.Entities.Users;
 
@@ -20,6 +21,8 @@ public class User
     public string Role { get; set; }
 
     public int? CustByHour { get; set; } = 0;
+
+    public List<UserTypeEnum>? Types { get; set; } = [UserTypeEnum.Technical];
 
     public double CalculateTotalManPower(double hoursWorked)
     {

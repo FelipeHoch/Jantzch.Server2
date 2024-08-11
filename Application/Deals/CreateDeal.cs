@@ -6,6 +6,7 @@ using Jantzch.Server2.Domain.Entities.Clients.Deals;
 using Jantzch.Server2.Domain.Entities.Clients.Deals.Constants;
 using Jantzch.Server2.Domain.Entities.Clients.Deals.Enums;
 using Jantzch.Server2.Domain.Entities.Users;
+using Jantzch.Server2.Domain.Entities.Users.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -42,6 +43,22 @@ public class CreateDeal
         public string? InversorLocalization { get; set; }
 
         public DateTime? DealConfirmedAt { get; set; }
+
+        public string? SoldedById { get; set; }
+
+        public PaymentStatusEnum? PaymentStatus { get; set; }
+
+        public SystemPayment? SystemPayment { get; set; }
+
+        public Commission? Commission { get; set; }
+
+        public string? AppAccess { get; set; }
+
+        public string? Datalogger { get; set; }
+
+        public string? LinkForImages { get; set; }
+
+        public string? Order { get; set; }
     }
 
     public record Command(DealForCreation DealForCreation) : IRequest<DealResponse>;
@@ -49,6 +66,7 @@ public class CreateDeal
     public class Handler(
         IDealRepository dealRepository,
         IClientsRepository clientsRepository,
+        IUserRepository userRepository,
         IJwtService jwtService,
         IMapper mapper
     ) : IRequestHandler<Command, DealResponse>
@@ -67,6 +85,13 @@ public class CreateDeal
             if (address is null)
             {
                 throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.ADDRESS_NOT_FOUND });
+            }
+
+            var soldedBy = await userRepository.GetByIdAsync(new ObjectId(request.DealForCreation.SoldedById), cancellationToken);
+
+            if (soldedBy is null)
+            {
+                throw new RestException(HttpStatusCode.NotFound, new { message = UserErrorMessages.NOT_FOUND });
             }
 
             var deal = mapper.Map<Deal>(request.DealForCreation);
@@ -89,6 +114,14 @@ public class CreateDeal
                 Id = jwtService.GetNameIdentifierFromToken(),
                 Name = jwtService.GetNameFromToken()
             };
+
+            var solderBy = new UserSimple
+            {
+                Id = soldedBy.Id.ToString(),
+                Name = soldedBy.Name
+            };
+
+            deal.SoldedBy = solderBy;
 
             var historyStatus = new HistoryStatus
             {

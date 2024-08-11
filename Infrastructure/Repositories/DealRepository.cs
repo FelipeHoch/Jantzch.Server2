@@ -30,6 +30,11 @@ public class DealRepository(
             filter = filter & Builders<Deal>.Filter.Eq(deal => deal.Status, parameters.Status);
         }
 
+        if (parameters.ProjectStatus is not null)
+        {
+            filter = filter & Builders<Deal>.Filter.Eq(deal => deal.ProjectStatus, parameters.ProjectStatus);
+        }
+
         if (parameters.StartDate is not null)
         {
             filter = filter & Builders<Deal>.Filter.Gte(deal => deal.DealConfirmedAt, parameters.StartDate);

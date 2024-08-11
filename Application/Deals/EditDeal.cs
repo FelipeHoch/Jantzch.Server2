@@ -5,6 +5,8 @@ using Jantzch.Server2.Domain.Entities.Clients.Constants;
 using Jantzch.Server2.Domain.Entities.Clients.Deals;
 using Jantzch.Server2.Domain.Entities.Clients.Deals.Constants;
 using Jantzch.Server2.Domain.Entities.Clients.Deals.Enums;
+using Jantzch.Server2.Domain.Entities.Users;
+using Jantzch.Server2.Domain.Entities.Users.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using MediatR;
 using MongoDB.Bson;
@@ -41,6 +43,22 @@ public class EditDeal
         public string? InversorLocalization { get; set; }
 
         public DateTime? DealConfirmedAt { get; set; }
+
+        public string? SoldedById { get; set; }
+
+        public PaymentStatusEnum? PaymentStatus { get; set; }
+
+        public SystemPayment? SystemPayment { get; set; }
+
+        public Commission? Commission { get; set; }
+
+        public string? AppAccess { get; set; }
+
+        public string? Datalogger { get; set; }
+
+        public string? LinkForImages { get; set; }
+
+        public string? Order { get; set; }
     }
 
     public record Command(string DealId, DealForEdit DealForEdit) : IRequest<DealResponse>;
@@ -48,6 +66,7 @@ public class EditDeal
     public class Handler(
         IDealRepository dealRepository,
         IClientsRepository clientsRepository,
+        IUserRepository userRepository,
         IJwtService jwtService,
         IMapper mapper
     ) : IRequestHandler<Command, DealResponse>
@@ -59,6 +78,13 @@ public class EditDeal
             if (deal is null)
             {
                 throw new RestException(HttpStatusCode.NotFound, new { message = DealErrorMessages.NOT_FOUND });
+            }
+
+            var soldedBy = await userRepository.GetByIdAsync(new ObjectId(request.DealForEdit.SoldedById), cancellationToken);
+
+            if (soldedBy is null)
+            {
+                throw new RestException(HttpStatusCode.NotFound, new { message = UserErrorMessages.NOT_FOUND });
             }
 
             var clientId = deal.Client.Id;
@@ -74,6 +100,18 @@ public class EditDeal
             deal.Material = request.DealForEdit.Material;
             deal.InversorLocalization = request.DealForEdit.InversorLocalization;
             deal.DealConfirmedAt = request.DealForEdit.DealConfirmedAt;
+            deal.SoldedBy = new UserSimple
+            {
+                Id = soldedBy.Id.ToString(),
+                Name = soldedBy.Name,
+            };
+            deal.PaymentStatus = request.DealForEdit.PaymentStatus;
+            deal.SystemPayment = request.DealForEdit.SystemPayment;
+            deal.Commission = request.DealForEdit.Commission;
+            deal.AppAccess = request.DealForEdit.AppAccess;
+            deal.Datalogger = request.DealForEdit.Datalogger;
+            deal.LinkForImages = request.DealForEdit.LinkForImages;
+            deal.Order = request.DealForEdit.Order;
 
             if (clientId != request.DealForEdit.ClientId)
             {                

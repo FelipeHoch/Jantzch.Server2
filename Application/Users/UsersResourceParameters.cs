@@ -5,4 +5,6 @@ namespace Jantzch.Server2.Application.Users;
 public class UsersResourceParameters : ResourceParameters
 {
     public string? Role { get; set; }
+
+    public string? Types { get; set; }
 }

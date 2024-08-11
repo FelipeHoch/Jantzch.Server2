@@ -2,10 +2,12 @@
 using Jantzch.Server2.Application.Services.PropertyChecker;
 using Jantzch.Server2.Application.Users;
 using Jantzch.Server2.Domain.Entities.Users;
+using Jantzch.Server2.Domain.Entities.Users.Enums;
 using Jantzch.Server2.Infraestructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
+using System.Linq;
 using System.Linq.Dynamic.Core;
 
 namespace Jantzch.Server2.Infrastructure.Repositories;
@@ -30,6 +32,23 @@ public class UserRepository : IUserRepository
         if (!string.IsNullOrWhiteSpace(parameters.Role))
         {
             query = query.Where(u => u.Role == parameters.Role);
+        }
+
+        if (!string.IsNullOrEmpty(parameters.Types))
+        {
+            var types = parameters.Types.Split(",").Select(t =>
+            {
+                var success = Enum.TryParse<UserTypeEnum>(t.Trim(), out var userType);
+                return success ? userType : (UserTypeEnum?)null;
+            })
+            .Where(t => t != null)
+            .Cast<UserTypeEnum>()
+            .ToList();
+
+            foreach (var type in types)
+            {               
+                query = query.Where(u => u.Types.Contains(type));
+            }
         }
 
         if (!string.IsNullOrWhiteSpace(parameters.SearchQuery))

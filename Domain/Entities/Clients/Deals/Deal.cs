@@ -53,30 +53,59 @@ public class Deal
 
     public List<HistoryStatus> HistoryStatus { get; set; } = [];
 
-    public void NextStatus(StatusEnum status, UserSimple user)
+    public UserSimple? SoldedBy { get; set; }
+
+    public PaymentStatusEnum? PaymentStatus { get; set; }
+
+    public SystemPayment? SystemPayment { get; set; }
+
+    public Commission? Commission { get; set; }
+
+    public string? AppAccess { get; set; }
+
+    public string? Datalogger { get; set; }
+
+    public string? LinkForImages { get; set; }
+
+    public string? Order { get; set; }
+
+    public void NextStatus(StatusEnum status, UserSimple user, DateTime? date = null)
     {              
         Status = status;
 
         HistoryStatus historyStatus = new()
         {
             Status = status,
-            Date = DateTime.Now,
+            Date = (DateTime)(date == null ? DateTime.Now : date),
             User = user
         };
 
         HistoryStatus.Add(historyStatus);
 
-        LastUpdateAt = DateTime.Now;
+        LastUpdateAt = (DateTime)(date == null ? DateTime.Now : date);
 
         if (status == StatusEnum.InstallationCompleted)
         {
-            ClosedAt = DateTime.Now;
+            ClosedAt = (DateTime)(date == null ? DateTime.Now : date);
         }
         else
         {
             ClosedAt = null;        
         }
     }
+}
+
+public class SystemPayment
+{
+    public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
+    public double Value { get; set; }
+    public PaymentTypeEnum PaymentType { get; set; }
+}
+
+public class Commission
+{
+    public double Value { get; set; }
+    public CommissionStatusEnum Status { get; set; }
 }
 
 

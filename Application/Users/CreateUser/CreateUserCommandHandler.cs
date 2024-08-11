@@ -36,6 +36,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserR
             opt.AfterMap((src, dest) =>
             {
                 dest.CustByHour = request.UserFromClient.CustByHour;
+                dest.Types = request.UserFromClient.Types;
                 dest.Id = ObjectId.GenerateNewId();
             }));
 
