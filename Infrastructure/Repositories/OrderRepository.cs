@@ -1,9 +1,12 @@
-﻿using Domain.Entities.Orders.Enums;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Domain.Entities.Orders.Enums;
 using Jantzch.Server2.Application.Helpers;
 using Jantzch.Server2.Application.OrderReports.Models;
 using Jantzch.Server2.Application.Orders;
 using Jantzch.Server2.Application.Services.PropertyChecker;
+using Jantzch.Server2.Domain.Entities.Clients.Deals;
 using Jantzch.Server2.Domain.Entities.Orders;
+using Jantzch.Server2.Infraestructure.Services.PropertyChecker;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -35,8 +38,8 @@ public class OrderRepository : IOrderRepository
 
         if (paramaters.StartDate is not null && paramaters.EndDate is not null)
         {
-            var startDateFilter = builder.Gte(order => order.FinishedAt, paramaters.StartDate);
-            var endDateFilter = builder.Lte(order => order.FinishedAt, paramaters.EndDate);
+            var startDateFilter = builder.Gte(order => order.CreatedAt, paramaters.StartDate);
+            var endDateFilter = builder.Lte(order => order.CreatedAt, paramaters.EndDate);
 
             filter &= startDateFilter & endDateFilter;
         }
@@ -76,16 +79,17 @@ public class OrderRepository : IOrderRepository
                  builder.Regex(order => order.CreatedBy, "/^" + searchQuery + "/i"),
                  builder.Regex(order => order.Client.Name, "/^" + searchQuery + "/i"),
                  builder.ElemMatch(order => order.Workers, worker => worker.Name.Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase))
-                );
-
+            );
             filter &= where;
         }
 
-        if (!string.IsNullOrWhiteSpace(paramaters.OrderBy))
+        if (paramaters.OrderBy is not null)
         {
             if (_propertyCheckerService.TypeHasProperties<Order>(paramaters.OrderBy))
             {
-                sort = Builders<Order>.Sort.Descending(paramaters.OrderBy);
+                sort = paramaters.OrderByDesc is true
+                    ? Builders<Order>.Sort.Descending(paramaters.OrderBy)
+                    : Builders<Order>.Sort.Ascending(paramaters.OrderBy);
             }
         }
 

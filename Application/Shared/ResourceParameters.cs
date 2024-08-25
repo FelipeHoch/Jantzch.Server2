@@ -14,12 +14,12 @@ public class ResourceParameters
         set => _pageSize = (value > maxPageSize) ? maxPageSize : value;
     }
 
-    private string _orderBy = "name";
+    private string? _orderBy;
 
-    public string OrderBy {
+    public string? OrderBy {
         get => _orderBy;
         set {
-            if (value != null && value.Contains("-"))
+            if (value != null && value.Contains('-'))
             {
                 OrderByDesc = true;
                 _orderBy = value.Replace("-", "");
