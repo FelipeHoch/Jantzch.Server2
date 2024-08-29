@@ -12,6 +12,8 @@ public class Order
 {
     public Order()
     {
+        if (string.IsNullOrEmpty(Id)) return;
+
         SetStatusOnCreation();
         SetStartDateOnOpen();
     }
