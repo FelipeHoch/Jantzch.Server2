@@ -38,10 +38,18 @@ public class OrderRepository : IOrderRepository
 
         if (paramaters.StartDate is not null && paramaters.EndDate is not null)
         {
-            var startDateFilter = builder.Gte(order => order.CreatedAt, paramaters.StartDate);
-            var endDateFilter = builder.Lte(order => order.CreatedAt, paramaters.EndDate);
+            var startDateFilter = builder.And(
+                builder.Gte(order => order.StartDate, paramaters.StartDate),
+                builder.Lte(order => order.StartDate, paramaters.EndDate)
+            );
 
-            filter &= startDateFilter & endDateFilter;
+            var scheduledDateFilter = builder.And(
+                builder.Gte(order => order.ScheduledDate, paramaters.StartDate),
+                builder.Lte(order => order.ScheduledDate, paramaters.EndDate)
+            );
+
+            var dateFilter = builder.Or(startDateFilter, scheduledDateFilter);
+            filter &= dateFilter;
         }
 
         if (!string.IsNullOrWhiteSpace(paramaters.CreatedBy))
