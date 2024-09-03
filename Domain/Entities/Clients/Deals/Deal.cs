@@ -5,6 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Jantzch.Server2.Domain.Entities.Clients.Deals;
 
+[BsonIgnoreExtraElements]
 public class Deal
 {
     [BsonId]
@@ -67,7 +68,7 @@ public class Deal
 
     public string? LinkForImages { get; set; }
 
-    public string? Order { get; set; }
+    public bool? SolarEdge { get; set; } = false;
 
     public void NextStatus(StatusEnum status, UserSimple user, DateTime? date = null)
     {              
@@ -98,8 +99,8 @@ public class Deal
 public class SystemPayment
 {
     public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
-    public double Value { get; set; }
-    public PaymentTypeEnum PaymentType { get; set; }
+    public double? Value { get; set; }
+    public string? Text { get; set; }
 }
 
 public class Commission

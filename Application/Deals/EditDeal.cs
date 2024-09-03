@@ -58,7 +58,7 @@ public class EditDeal
 
         public string? LinkForImages { get; set; }
 
-        public string? Order { get; set; }
+        public bool? SolarEdge { get; set; }
     }
 
     public record Command(string DealId, DealForEdit DealForEdit) : IRequest<DealResponse>;
@@ -111,7 +111,7 @@ public class EditDeal
             deal.AppAccess = request.DealForEdit.AppAccess;
             deal.Datalogger = request.DealForEdit.Datalogger;
             deal.LinkForImages = request.DealForEdit.LinkForImages;
-            deal.Order = request.DealForEdit.Order;
+            deal.SolarEdge = request.DealForEdit.SolarEdge ?? false;
 
             if (clientId != request.DealForEdit.ClientId)
             {                

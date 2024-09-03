@@ -58,7 +58,7 @@ public class CreateDeal
 
         public string? LinkForImages { get; set; }
 
-        public string? Order { get; set; }
+        public bool? SolarEdge { get; set; }
     }
 
     public record Command(DealForCreation DealForCreation) : IRequest<DealResponse>;

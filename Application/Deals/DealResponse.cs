@@ -90,7 +90,5 @@ public class DealResponse
     public string? LinkForImages { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Order { get; set; }
-
-
+    public bool? SolarEdge { get; set; }
 }
