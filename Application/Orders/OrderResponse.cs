@@ -63,5 +63,11 @@ public class OrderResponse
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<UserSimple>? Workers { get; set; } = default;
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public OrderType? Type { get; set; } = OrderType.Eletric;
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? ManualManPower { get; set; } = default;
+
+
 }

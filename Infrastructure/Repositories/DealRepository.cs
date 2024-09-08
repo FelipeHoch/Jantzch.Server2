@@ -45,6 +45,11 @@ public class DealRepository(
             filter = filter & Builders<Deal>.Filter.Lte(deal => deal.DealConfirmedAt, parameters.EndDate);
         }
 
+        if (parameters.IsSolarEdge is not null)
+        {
+            filter = filter & Builders<Deal>.Filter.Eq(deal => deal.SolarEdge, parameters.IsSolarEdge);
+        }
+
         if (parameters.SearchQuery is not null)
         {
             var searchQuery = parameters.SearchQuery.Trim().ToLower();

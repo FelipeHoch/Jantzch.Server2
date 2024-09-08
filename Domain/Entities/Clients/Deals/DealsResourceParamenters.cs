@@ -14,4 +14,6 @@ public class DealsResourceParamenters : ResourceParameters
     public DateTime? StartDate { get; set; }
 
     public DateTime? EndDate { get; set; }
+
+    public bool? IsSolarEdge { get; set; }
 }

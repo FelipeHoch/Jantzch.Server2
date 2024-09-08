@@ -33,7 +33,7 @@ public class Order
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     [BsonElement("_id")]
-    public string? Id { get; set; } = string.Empty;
+    public string? Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
     public int OrderNumber { get; set; } = 0;
 
@@ -83,6 +83,9 @@ public class Order
 
     [BsonIgnoreIfNull]
     public double? HoursWorked { get; set; } = 0;
+
+    [BsonIgnoreIfNull]
+    public double? ManualManPower { get; set; } = null;
 
     public void FinishOrder(string userId, string userName)
     {

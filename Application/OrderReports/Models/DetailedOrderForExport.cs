@@ -39,4 +39,12 @@ public class DetailedOrderForExport
 
     [BsonIgnoreIfNull]
     public double? HoursWorked { get; set; }
+
+    [BsonIgnoreIfNull]
+    public double? ManualManPower { get; set; }
+
+    public bool HasManualManPower()
+    {
+        return ManualManPower is not null && ManualManPower > 0;
+    }
 }

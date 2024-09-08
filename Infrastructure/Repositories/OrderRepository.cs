@@ -167,6 +167,7 @@ public class OrderRepository : IOrderRepository
                     { "orderNumber", 1 },
                     { "hoursWorked", 1 },
                     { "materialsUsed", 1 },
+                    { "manualManPower", 1 },
                     { "materials",
                         new BsonDocument("$map",
                             new BsonDocument

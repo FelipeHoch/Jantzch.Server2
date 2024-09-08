@@ -49,6 +49,13 @@ public class OrderExport
     {
         var manPower = 0.0;
 
+        if (detailedOrderForExport.HasManualManPower())
+        {
+            ManPower = (double)detailedOrderForExport.ManualManPower;
+
+            return;
+        }
+
         detailedOrderForExport.Workers.ForEach(worker =>
         {
             manPower += worker.CalculateTotalManPower((double)detailedOrderForExport.HoursWorked);
