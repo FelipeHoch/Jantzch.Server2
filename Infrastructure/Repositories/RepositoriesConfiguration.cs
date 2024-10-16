@@ -6,6 +6,7 @@ using Jantzch.Server2.Domain.Entities.GroupsMaterial;
 using Jantzch.Server2.Domain.Entities.Materials;
 using Jantzch.Server2.Domain.Entities.Orders;
 using Jantzch.Server2.Domain.Entities.ReportConfigurations;
+using Jantzch.Server2.Domain.Entities.SolarPlants;
 using Jantzch.Server2.Domain.Entities.Taxes;
 using Jantzch.Server2.Domain.Entities.Users;
 
@@ -28,6 +29,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPotentialOrderRepository, PotentialOrderRepository>();
         services.AddScoped<IDealRepository, DealRepository>();
         services.AddScoped<IAnalyticsReadRepository, AnalyticsReadRepository>();
+        services.AddScoped<ISolarPlantRepository, SolarPlantRepository>();
 
         return services;
     }
