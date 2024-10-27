@@ -58,6 +58,13 @@ public class OrderExport
 
         detailedOrderForExport.Workers.ForEach(worker =>
         {
+            var hoursWorked = 0.0;
+
+            if (detailedOrderForExport.HoursWorked is not null)
+            {
+                hoursWorked = (double)detailedOrderForExport.HoursWorked;
+            }
+
             manPower += worker.CalculateTotalManPower((double)detailedOrderForExport.HoursWorked);
         });
 
