@@ -5,6 +5,7 @@ using Jantzch.Server2.Application.OrderReports.DeleteOrderReport;
 using Jantzch.Server2.Application.OrderReports.GetExportByOrder;
 using Jantzch.Server2.Application.OrderReports.GetOrderReport;
 using Jantzch.Server2.Application.OrderReports.GetOrderReports;
+using Jantzch.Server2.Application.OrderReports.PendingReports;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

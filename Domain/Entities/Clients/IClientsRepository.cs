@@ -10,6 +10,8 @@ public interface IClientsRepository
 
     Task<Client?> GetByIdAsync(ObjectId id, CancellationToken cancellationToken);
 
+    Task<List<Client>> GetByIdsAsync(List<ObjectId> ids, CancellationToken cancellationToken);
+
     Task<List<Client>> GetByMultipleIdentifiersAsync(List<string> emails, List<string> phones, List<string> names, CancellationToken cancellation);
 
     Task AddAsync(Client client, CancellationToken cancellationToken);

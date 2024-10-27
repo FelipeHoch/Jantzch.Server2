@@ -125,6 +125,90 @@ public class OrderRepository : IOrderRepository
         return await _orders.Find(order => order.Id == id).FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<List<DetailedOrderForExport>> GetOrderPendingToExportAsync(CancellationToken cancellationToken)
+    {
+        var filter = new BsonDocument
+        {
+            { "isReported", false },
+            { "finishedAt", new BsonDocument("$ne", BsonNull.Value) }
+        };
+
+        var pipeline = new BsonDocument[]
+        {
+            new("$match", filter),
+
+            new("$lookup",
+                new BsonDocument("from", "users")
+                    .Add("localField", "workers._id")
+                    .Add("foreignField", "_id")
+                    .Add("as", "workersFull")),
+
+            new("$lookup",
+                new BsonDocument("from", "materials")
+                    .Add("localField", "materialsUsed.materialId")
+                    .Add("foreignField", "_id")
+                    .Add("as", "materialsFull")),
+
+            new("$lookup",
+                new BsonDocument("from", "clients")
+                    .Add("localField", "client._id")
+                    .Add("foreignField", "_id")
+                    .Add("as", "client")),
+
+            new("$unwind", "$client"),
+
+            new("$project",
+                new BsonDocument
+                {
+                    { "createdBy", 1 },
+                    { "startDate", 1 },
+                    { "finishedAt", 1 },
+                    { "descriptive", 1 },
+                    { "client", 1 },
+                    { "breaksHistory", 1 },
+                    { "orderNumber", 1 },
+                    { "hoursWorked", 1 },
+                    { "materialsUsed", 1 },
+                    { "manualManPower", 1 },
+                    { "materials",
+                        new BsonDocument("$map",
+                            new BsonDocument
+                            {
+                                { "input", "$materialsFull" },
+                                { "as", "m" },
+                                { "in", new BsonDocument
+                                    {
+                                        { "_id", "$$m._id" },
+                                        { "name", "$$m.name" },
+                                        { "value", "$$m.value" }
+                                    }
+                                }
+                            }
+                        )
+                    },
+                    { "workers",
+                        new BsonDocument("$map",
+                            new BsonDocument
+                            {
+                                { "input", "$workersFull" },
+                                { "as", "w" },
+                                { "in", new BsonDocument
+                                    {
+                                        { "name", "$$w.name" },
+                                        { "custByHour", "$$w.custByHour" }
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            ),
+            new("$sort", new BsonDocument("startDate", -1))
+            };
+
+        return await _orders.Aggregate<DetailedOrderForExport>(pipeline, cancellationToken: cancellationToken).ToListAsync();
+    }
+
     public async Task<List<DetailedOrderForExport>> GetToExport(List<string> ordersId)
     {
         var ordersIdParsed = ordersId.Select(ObjectId.Parse).ToList();

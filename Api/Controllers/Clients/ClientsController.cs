@@ -5,6 +5,7 @@ using Jantzch.Server2.Application.Clients.DeleteClient;
 using Jantzch.Server2.Application.Clients.EditAddress;
 using Jantzch.Server2.Application.Clients.EditClient;
 using Jantzch.Server2.Application.Clients.GetClients;
+using Jantzch.Server2.Application.OrderReports.PendingReports;
 using Jantzch.Server2.Domain.Entities.Clients;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -40,6 +41,16 @@ public class ClientsController : ControllerBase
     public async Task<IActionResult> GetClients([FromQuery] ClientsResourceParameters parameters, CancellationToken cancellationToken)
     {
         var clients = await _mediator.Send(new ClientsQuery(parameters), cancellationToken);
+
+        return Ok(clients);
+    }
+
+    [HttpGet("payments/pending")]
+    [Authorize(Roles = "admin,supervisor")]
+    [ProducesResponseType(typeof(List<ClientWithPendingValue>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetClientsWithPendingOrders(CancellationToken cancellationToken)
+    {
+        var clients = await _mediator.Send(new List.Query(), cancellationToken);
 
         return Ok(clients);
     }

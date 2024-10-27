@@ -42,6 +42,13 @@ public class ClientsRepository : IClientsRepository
         return await _clients.Find(client => client.Id == id.ToString()).FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<List<Client>> GetByIdsAsync(List<ObjectId> ids, CancellationToken cancellationToken)
+    {
+        var idsString = ids.Select(id => id.ToString()).ToList();
+
+        return await _clients.Find(client => idsString.Contains(client.Id)).ToListAsync(cancellationToken);
+    }
+
     public async Task<List<Client>> GetByMultipleIdentifiersAsync(List<string> emails, List<string> phones, List<string> names, CancellationToken c)
     {
         List<FilterDefinition<Client>> filter = [];
