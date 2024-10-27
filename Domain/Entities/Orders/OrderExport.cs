@@ -65,7 +65,7 @@ public class OrderExport
                 hoursWorked = (double)detailedOrderForExport.HoursWorked;
             }
 
-            manPower += worker.CalculateTotalManPower((double)detailedOrderForExport.HoursWorked);
+            manPower += worker.CalculateTotalManPower(hoursWorked);
         });
 
         ManPower = manPower;
