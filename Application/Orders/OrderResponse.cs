@@ -69,5 +69,8 @@ public class OrderResponse
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? ManualManPower { get; set; } = default;
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? ExpectedValue { get; set; } = default;
+
 
 }

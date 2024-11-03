@@ -125,6 +125,16 @@ public class OrderRepository : IOrderRepository
         return await _orders.Find(order => order.Id == id).FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<List<Order>> GetActiveOrdersAsync(CancellationToken cancellationToken)
+    {
+        var filter = new BsonDocument
+        {
+            { "status", new BsonDocument("$ne", "Finalizada") }
+        };
+
+        return await _orders.Find(filter).ToListAsync(cancellationToken);
+    }
+
     public async Task<List<DetailedOrderForExport>> GetOrderPendingToExportAsync(CancellationToken cancellationToken)
     {
         var filter = new BsonDocument

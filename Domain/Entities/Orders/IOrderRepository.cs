@@ -10,6 +10,8 @@ public interface IOrderRepository
 
     Task<List<DetailedOrderForExport>> GetOrderPendingToExportAsync(CancellationToken cancellationToken);
 
+    Task<List<Order>> GetActiveOrdersAsync(CancellationToken cancellationToken);
+
     Task<Order?> GetByIdAsync(string id, CancellationToken cancellationToken);
 
     Task<List<DetailedOrderForExport>> GetToExport(List<string> ordersId);

@@ -5,11 +5,14 @@ using Jantzch.Server2.Application.Clients.DeleteClient;
 using Jantzch.Server2.Application.Clients.EditAddress;
 using Jantzch.Server2.Application.Clients.EditClient;
 using Jantzch.Server2.Application.Clients.GetClients;
+using Jantzch.Server2.Application.OrderReports.ExpectedValue;
 using Jantzch.Server2.Application.OrderReports.PendingReports;
 using Jantzch.Server2.Domain.Entities.Clients;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using List = Jantzch.Server2.Application.OrderReports.ExpectedValue.List;
+using ListPending = Jantzch.Server2.Application.OrderReports.PendingReports.List;
 
 namespace Jantzch.Server2.Api.Controllers.Clients;
 
@@ -49,6 +52,16 @@ public class ClientsController : ControllerBase
     [Authorize(Roles = "admin,supervisor")]
     [ProducesResponseType(typeof(List<ClientWithPendingValue>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientsWithPendingOrders(CancellationToken cancellationToken)
+    {
+        var clients = await _mediator.Send(new ListPending.Query(), cancellationToken);
+
+        return Ok(clients);
+    }
+
+    [HttpGet("payments/expected")]
+    [Authorize(Roles = "admin,supervisor")]
+    [ProducesResponseType(typeof(List<ExpectedValueResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetClientsWithExpectedOrders(CancellationToken cancellationToken)
     {
         var clients = await _mediator.Send(new List.Query(), cancellationToken);
 

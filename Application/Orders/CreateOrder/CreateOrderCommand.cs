@@ -21,4 +21,6 @@ public class CreateOrderCommand : IRequest<Order>
     public List<UserSimple> Workers { get; set; } = [];
 
     public OrderType Type { get; set; }
+
+    public double? ExpectedValue { get; set; } = 0;
 }

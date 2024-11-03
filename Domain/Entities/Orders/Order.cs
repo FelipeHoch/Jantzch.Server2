@@ -87,6 +87,9 @@ public class Order
     [BsonIgnoreIfNull]
     public double? ManualManPower { get; set; } = null;
 
+    [BsonIgnoreIfNull]
+    public double?  ExpectedValue { get; set; } = 0;
+
     public void FinishOrder(string userId, string userName)
     {
         if (FinishedAt is null)
