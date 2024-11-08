@@ -1,4 +1,4 @@
-using AutoMapper;
+ using AutoMapper;
 using Jantzch.Server2.Application.Abstractions.Jwt;
 using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Domain.Entities.Clients.Constants;

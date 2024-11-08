@@ -4,7 +4,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var startup = new Startup();
 
-startup.ConfigureServices(builder.Services);
+var configuration = builder.Configuration;  
+
+startup.ConfigureServices(builder.Services, configuration);
 
 var app = builder.Build();
 

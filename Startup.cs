@@ -29,7 +29,7 @@ namespace Jantzch.Server2;
 
 public class Startup
 {
-    public void ConfigureServices(IServiceCollection services)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.ConfigureMongoDB();        
 
@@ -56,7 +56,7 @@ public class Startup
 
         services.AddRepositories();
 
-        services.AddServices();
+        services.AddServices(configuration);
 
         services.AddTransient<IClientService, ClientService>();
 

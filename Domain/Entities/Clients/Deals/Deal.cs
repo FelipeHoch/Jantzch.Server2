@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.Clients.Deals.Enums;
+using Jantzch.Server2.Domain.Entities.Services.Storage;
 using Jantzch.Server2.Domain.Entities.Users;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -69,6 +70,8 @@ public class Deal
     public string? LinkForImages { get; set; }
 
     public bool? SolarEdge { get; set; } = false;
+    
+    public List<Image> Images { get; set; } = [];
 
     public void NextStatus(StatusEnum status, UserSimple user, DateTime? date = null)
     {              
@@ -93,6 +96,52 @@ public class Deal
         {
             ClosedAt = null;        
         }
+    }
+
+    public void AddImage(Image image)
+    {
+        Images.Add(image);
+    }
+
+    public void AddImages(List<Image> images)
+    {
+        Images.AddRange(images);
+    }
+
+    public IEnumerable<Image>GetImages()
+    {
+        return Images;
+    }
+
+    public IEnumerable<Image> GetImages(ImageKeyEnum key)
+    {
+        return Images.Where(i => i.Key == key);
+    }
+}
+
+public class Image
+{
+    public string? Id { get; set; }
+
+    public string? Url { get; set; }
+
+    public string? Description { get; set; } = null;
+
+    [BsonRepresentation(BsonType.String)]
+    public ImageKeyEnum? Key
+    {
+        get; set;
+    }
+
+    public static Image Create(string id, string url, string description, ImageKeyEnum key)
+    {
+        return new Image
+        {
+            Id = id,
+            Url = url,
+            Description = description,
+            Key = key
+        };
     }
 }
 

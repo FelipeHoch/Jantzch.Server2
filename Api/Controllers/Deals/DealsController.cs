@@ -8,14 +8,16 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Dynamic;
+using static Jantzch.Server2.Application.Deals.UploadImages;
 
 namespace Jantzch.Server2.Api.Controllers.Deals;
 
 [Route("api/[controller]")]
-[Authorize(Roles = "admin,supervisor")]
+[Authorize(Roles = "admin,supervisor,normal")]
 [ApiController]
 public class DealsController(IMediator mediator) : ControllerBase
 {
+
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ExpandoObject>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetDeals([FromQuery] DealsResourceParamenters parameters, CancellationToken cancellationToken)
@@ -68,6 +70,39 @@ public class DealsController(IMediator mediator) : ControllerBase
         await mediator.Send(new DeleteDeal.Command(dealId), cancellationToken);
 
         return NoContent();
+    }
+
+    [HttpPost("{dealId}/upload-images")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UploadImages(string dealId, CancellationToken cancellationToken)
+    {
+        var formCollection = await Request.ReadFormAsync(cancellationToken);
+        var files = formCollection.Files;
+
+        var imageRequests = new List<UploadImageRequest>();
+
+        for (int i = 0; i < files.Count; i++)
+        {
+            imageRequests.Add(new UploadImageRequest
+            {
+                Image = Request.Form.Files[$"file{i}"],
+                Key = Enum.Parse<ImageKeyEnum>(Request.Form[$"key{i}"]),
+                Description = Request.Form[$"description{i}"]
+            });
+        }
+
+        await mediator.Send(new Command(dealId, imageRequests), cancellationToken);        
+
+        return NoContent();
+    }
+
+    [HttpGet("{dealId}/images")]
+    [ProducesResponseType(typeof(IEnumerable<Image>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListImages(string dealId, CancellationToken cancellationToken)
+    {
+        var images = await mediator.Send(new ListImages.Query(dealId), cancellationToken);
+
+        return Ok(images);
     }
 
     [HttpGet("analytics/revenue-by-installation-type")]

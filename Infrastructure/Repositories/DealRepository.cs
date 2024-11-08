@@ -2,6 +2,7 @@
 using Jantzch.Server2.Application.Helpers;
 using Jantzch.Server2.Application.Services.PropertyChecker;
 using Jantzch.Server2.Domain.Entities.Clients.Deals;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Jantzch.Server2.Infrastructure.Repositories;
@@ -54,10 +55,11 @@ public class DealRepository(
         {
             var searchQuery = parameters.SearchQuery.Trim().ToLower();
 
+
             filter = filter & Builders<Deal>.Filter.Or(
-                Builders<Deal>.Filter.Regex(deal => deal.Type, "/^" + parameters + "/i"),
-                Builders<Deal>.Filter.Regex(deal => deal.Description, "/^" + parameters + "/i"),
-                Builders<Deal>.Filter.Regex(deal => deal.Client.Name, "/^" + parameters + "/i")                
+                Builders<Deal>.Filter.Regex(deal => deal.Type, new BsonRegularExpression(searchQuery, "i")),
+                Builders<Deal>.Filter.Regex(deal => deal.Description, new BsonRegularExpression(searchQuery, "i")),
+                Builders<Deal>.Filter.Regex(deal => deal.Client.Name, new BsonRegularExpression(searchQuery, "i"))
             );
         }
 
