@@ -5,6 +5,7 @@ using Jantzch.Server2.Application.Orders.DeleteOrder;
 using Jantzch.Server2.Application.Orders.EditOrder;
 using Jantzch.Server2.Application.Orders.GetOrder;
 using Jantzch.Server2.Application.Orders.GetOrders;
+using Jantzch.Server2.Application.Orders.GetOrderImages;
 using Jantzch.Server2.Domain.Entities.Orders;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -77,5 +78,13 @@ public class OrderController : ControllerBase
         await _mediator.Send(new DeleteOrderCommand(id), cancellationToken);
 
         return NoContent();
+    }
+
+    [HttpGet("{id}/images")]
+    [ProducesResponseType(typeof(OrderImagesResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetOrderImages(string id, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new OrderImagesQuery(id), cancellationToken);
+        return Ok(response);
     }
 }

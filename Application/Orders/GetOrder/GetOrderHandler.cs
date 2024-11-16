@@ -37,6 +37,11 @@ public class GetOrderHandler : IRequestHandler<OrderQuery, ExpandoObject>
             throw new RestException(HttpStatusCode.NotFound, new { message = OrdersErrorMessages.NOT_FOUND });
         }
 
+        if (!string.IsNullOrEmpty(request.DealId) && order.DealId != request.DealId)
+        {
+            throw new RestException(HttpStatusCode.NotFound, new { message = "Order not found for the specified deal" });
+        }
+
         var orderResponse = _mapper.Map<OrderResponse>(order);
 
         var orderShaped = _dataShapingService.ShapeData(orderResponse, request.Fields);

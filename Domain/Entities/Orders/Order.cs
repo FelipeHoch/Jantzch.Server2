@@ -90,6 +90,10 @@ public class Order
     [BsonIgnoreIfNull]
     public double?  ExpectedValue { get; set; } = 0;
 
+    [BsonRepresentation(BsonType.ObjectId)]
+    [BsonIgnoreIfNull]
+    public string? DealId { get; private set; }
+
     public void FinishOrder(string userId, string userName)
     {
         if (FinishedAt is null)
@@ -155,5 +159,18 @@ public class Order
     private void SetStartDateOnOpen()
     {
         if (Status == "open") StartDate = DateTime.UtcNow;
+    }
+
+    public void AssignToDeal(string dealId)
+    {
+        if (string.IsNullOrEmpty(dealId))
+            throw new ArgumentNullException(nameof(dealId));
+
+        DealId = dealId;
+    }
+
+    public void RemoveFromDeal()
+    {
+        DealId = null;
     }
 }

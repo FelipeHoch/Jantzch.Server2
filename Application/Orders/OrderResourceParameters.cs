@@ -10,4 +10,5 @@ public class OrderResourceParameters : ResourceParameters
     public string? Status { get; set; }
     public string? Client { get; set; }
     public string? Types { get; set; }
+    public string? DealId { get; set; }
 }

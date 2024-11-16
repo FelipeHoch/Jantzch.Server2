@@ -1,4 +1,5 @@
 ﻿using Jantzch.Server2.Domain.Entities.Clients.Deals.Enums;
+using Jantzch.Server2.Domain.Entities.Orders;
 using Jantzch.Server2.Domain.Entities.Services.Storage;
 using Jantzch.Server2.Domain.Entities.Users;
 using MongoDB.Bson;
@@ -33,7 +34,7 @@ public class Deal
 
     public ClientSimple Client { get; set; }
 
-    public List<string> OrderIds { get; set; } = [];
+    public List<string> OrderIds { get; private set; } = [];
 
     public string? IntegrationId { get; set; }
 
@@ -116,6 +117,32 @@ public class Deal
     public IEnumerable<Image> GetImages(ImageKeyEnum key)
     {
         return Images.Where(i => i.Key == key);
+    }
+
+    public void AddOrder(Order order)
+    {
+        if (order == null)
+            throw new ArgumentNullException(nameof(order));
+
+        if (!OrderIds.Contains(order.Id))
+        {
+            OrderIds.Add(order.Id);
+            LastUpdateAt = DateTime.Now;
+        }
+    }
+
+    public void RemoveOrder(string orderId)
+    {
+        if (OrderIds.Contains(orderId))
+        {
+            OrderIds.Remove(orderId);
+            LastUpdateAt = DateTime.Now;
+        }
+    }
+
+    public bool HasOrder(string orderId)
+    {
+        return OrderIds.Contains(orderId);
     }
 }
 

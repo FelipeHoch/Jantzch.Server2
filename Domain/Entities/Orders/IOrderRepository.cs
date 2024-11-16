@@ -29,4 +29,6 @@ public interface IOrderRepository
     Task<Order> LastOrderInserted(CancellationToken cancellationToken);
 
     Task<long> CountOrders(CancellationToken cancellationToken);
+
+    Task<List<Order>> GetByIdsAsync(List<string> ids, CancellationToken cancellationToken);
 }

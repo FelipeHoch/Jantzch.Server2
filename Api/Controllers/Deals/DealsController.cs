@@ -1,5 +1,4 @@
-﻿
-using Jantzch.Server2.Application.Deals;
+﻿using Jantzch.Server2.Application.Deals;
 using Jantzch.Server2.Application.Deals.Analytics;
 using Jantzch.Server2.Application.Deals.Analytics.DTOs;
 using Jantzch.Server2.Domain.Entities.Clients.Deals;
@@ -139,5 +138,21 @@ public class DealsController(IMediator mediator) : ControllerBase
         var summary = await mediator.Send(new ActualMonthlySummary.Query(), cancellationToken);
 
         return Ok(summary);
+    }
+
+    [HttpPost("{dealId}/assign-orders")]
+    [ProducesResponseType(typeof(DealResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> AssignOrders(string dealId, [FromBody] List<string> orderIds, CancellationToken cancellationToken)
+    {
+        var deal = await mediator.Send(new AssignOrders.Command(dealId, orderIds), cancellationToken);
+        return Ok(deal);
+    }
+
+    [HttpPost("{dealId}/unassign-orders")]
+    [ProducesResponseType(typeof(DealResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UnassignOrders(string dealId, [FromBody] List<string> orderIds, CancellationToken cancellationToken)
+    {
+        var deal = await mediator.Send(new UnassignOrders.Command(dealId, orderIds), cancellationToken);
+        return Ok(deal);
     }
 }

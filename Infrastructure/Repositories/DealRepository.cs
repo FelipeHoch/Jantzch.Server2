@@ -8,7 +8,7 @@ using MongoDB.Driver;
 namespace Jantzch.Server2.Infrastructure.Repositories;
 
 public class DealRepository(
-    IMongoDatabase database, 
+    IMongoDatabase database,
     IPropertyCheckerService propertyCheckerService
 ) : IDealRepository
 {
@@ -132,5 +132,12 @@ public class DealRepository(
     public async Task DeleteAsync(string id, CancellationToken cancellationToken)
     {
         await _deals.DeleteOneAsync(deal => deal.Id == id, cancellationToken);
+    }
+
+    public async Task<Deal?> GetByOrderIdAsync(string orderId, CancellationToken cancellationToken)
+    {
+        return await _deals
+            .Find(d => d.OrderIds.Contains(orderId))
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

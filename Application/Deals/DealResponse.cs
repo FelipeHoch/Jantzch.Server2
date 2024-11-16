@@ -91,4 +91,7 @@ public class DealResponse
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? SolarEdge { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<string>? OrderIds { get; set; }
 }

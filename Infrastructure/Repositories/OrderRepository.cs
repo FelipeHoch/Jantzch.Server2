@@ -58,6 +58,12 @@ public class OrderRepository : IOrderRepository
             filter &= createdByFilter;
         }
 
+        if (!string.IsNullOrWhiteSpace(paramaters.DealId))
+        {
+            var dealFilter = builder.Eq(order => order.DealId, paramaters.DealId);
+            filter &= dealFilter;
+        }
+
         if (!string.IsNullOrWhiteSpace(paramaters.Status))
         {
             var statusSplited = paramaters.Status.Split(',');
@@ -109,7 +115,7 @@ public class OrderRepository : IOrderRepository
 
             var typeFilter = builder.In(order => order.Type, types);
             filter &= typeFilter;
-        }
+        }        
 
         var orders = _orders.Aggregate()
             .Match(filter)
@@ -346,5 +352,11 @@ public class OrderRepository : IOrderRepository
     public async Task<long> CountOrders(CancellationToken cancellationToken)
     {
         return await _orders.CountDocumentsAsync(order => true, cancellationToken: cancellationToken);
+    }
+
+    public async Task<List<Order>> GetByIdsAsync(List<string> ids, CancellationToken cancellationToken)
+    {
+        var filter = Builders<Order>.Filter.In(x => x.Id, ids);
+        return await _orders.Find(filter).ToListAsync(cancellationToken);
     }
 }
