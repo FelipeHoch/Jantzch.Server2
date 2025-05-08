@@ -1,8 +1,9 @@
-﻿using Jantzch.Server2.Application.Abstractions.Google;
+using Jantzch.Server2.Application.Abstractions.Google;
 using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Domain.Entities.Clients.Constants;
 using Jantzch.Server2.Infraestructure.Errors;
 using Jantzch.Server2.Infrastructure.Google;
+using Jantzch.Server2.Infrastructure.Google.Models;
 using MediatR;
 using System.Net;
 using Route = Jantzch.Server2.Domain.Entities.Clients.Route;
@@ -31,29 +32,34 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
             {
                 var geoCode = await _googleMapsService.GetGeoCode(localization.Address);
 
-                if (geoCode is null)
+                Location? location = null;
+
+                if (geoCode is not null)
                 {
-                    throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.INVALID_ADDRESS });
+                    location = new Location
+                    {
+                        Latitude = geoCode.Results.First().Geometry.Location.Lat,
+                        Longitude = geoCode.Results.First().Geometry.Location.Lng
+                    };
                 }
 
-                var location = new Location
-                {
-                    Latitude = geoCode.Results.First().Geometry.Location.Lat,
-                    Longitude = geoCode.Results.First().Geometry.Location.Lng
-                };
+                Distance? distance = null;
 
-                var distance = await _googleMapsService.GetDistance(location);
-
-                if (distance is null)
+                if (location is not null)
                 {
-                    throw new RestException(HttpStatusCode.BadRequest, new { message = ClientErrorMessages.INVALID_ADDRESS });
+                    distance = await _googleMapsService.GetDistance(location);
                 }
 
-                var route = new Route
+                Route? route = null;
+
+                if (distance is not null)
                 {
-                    Distance = distance.Rows.First().Elements.First().Distance,
-                    Duration = distance.Rows.First().Elements.First().Duration
-                };
+                    route = new Route
+                    {
+                        Distance = distance.Rows.First().Elements.First().Distance,
+                        Duration = distance.Rows.First().Elements.First().Duration
+                    };
+                }
 
                 return new Localization
                 {
