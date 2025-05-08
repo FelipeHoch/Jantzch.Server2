@@ -34,7 +34,7 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, C
 
                 Location? location = null;
 
-                if (geoCode is not null)
+                if (geoCode is not null && geoCode.Results.Any())
                 {
                     location = new Location
                     {
