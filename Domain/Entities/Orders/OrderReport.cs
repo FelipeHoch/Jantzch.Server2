@@ -1,4 +1,4 @@
-﻿using Jantzch.Server2.Domain.Entities.Clients;
+using Jantzch.Server2.Domain.Entities.Clients;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using Jantzch.Server2.Domain.Entities.Taxes;
@@ -21,7 +21,14 @@ public class OrderReport
 
         CalculateTotalValue();
 
-        AddTaxValueToTotalValue(taxes, client.Route.Distance.Value);
+        var distance = 0;
+
+        if (client.Route is not null)
+        {
+            distance = client.Route.Distance.Value;
+        }
+
+        AddTaxValueToTotalValue(taxes, distance);
 
         SetDueDate();
     }
