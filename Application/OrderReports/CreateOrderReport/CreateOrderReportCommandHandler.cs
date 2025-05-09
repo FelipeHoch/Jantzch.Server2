@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Jantzch.Server2.Application.Abstractions.Jwt;
 using Jantzch.Server2.Domain.Entities.Clients;
 using Jantzch.Server2.Domain.Entities.Clients.Constants;
@@ -93,14 +93,42 @@ public class CreateOrderReportCommandHandler : IRequestHandler<CreateOrderReport
             taxes = await _taxesRepository.GetByIds(taxesId, cancellationToken);
         }
 
+        Address? address = null;        
+
+        if (client.Localizations.Find(localization => localization.IsPrimary) is not null)
+        {
+            address = client.Localizations.Find(localization => localization.IsPrimary).Address;
+        }
+
+        Domain.Entities.Clients.Route? route = null;
+
+        if (address is not null && client.Localizations.Find(localization => localization.IsPrimary) is not null)
+        {
+            if (client.Localizations.Find(localization => localization.IsPrimary).Route is not null)
+            {
+                route = client.Localizations.Find(localization => localization.IsPrimary).Route;
+            }
+        }
+
+        Location? location = null;
+
+        if (client.Localizations.Find(localization => localization.IsPrimary) is not null)
+        {
+            if (client.Localizations.Find(localization => localization.IsPrimary).Location is not null)
+            {
+                location = client.Localizations.Find(localization => localization.IsPrimary).Location;
+            }
+        }
+
+
         var clientSimple = new ClientSimple
         {
             Id = client.Id,
             Name = client.Name,
-            Address = client.Localizations.Find(localization => localization.IsPrimary).Address,
-            Location = client.Localizations.Find(localization => localization.IsPrimary).Location,
+            Address = address,
+            Location = location,
             PhoneNumber = client.PhoneNumber,
-            Route = client.Localizations.Find(localization => localization.IsPrimary).Route
+            Route = route
         };
 
         var report = new OrderReport(clientSimple, reportNumber, _jwtService.GetNameFromToken(), ordersToExport, taxes);           
