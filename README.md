@@ -1,5 +1,6 @@
 # ASP.NET Core Web API with MediatR, Serilog, Swagger, DDD, CQRS, .NET 8
 
+
 This repository contains a sample ASP.NET Core Web API project showcasing the integration of various technologies and architectural patterns. The goal is to provide a clean and scalable structure for building modern web applications.
 
 ## Technologies and Libraries Used
@@ -16,3 +17,4 @@ This repository contains a sample ASP.NET Core Web API project showcasing the in
 
 - **Command Query Responsibility Segregation (CQRS):** A pattern that separates the command (write) and query (read) responsibilities of a system.
 - 
+
