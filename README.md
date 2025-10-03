@@ -15,6 +15,5 @@ This repository contains a sample ASP.NET Core Web API project showcasing the in
 
 - **Domain-Driven Design (DDD):** An approach to software design that prioritizes a deep understanding of the business domain.
 
-- **Command Query Responsibility Segregation (CQRS):** A pattern that separates the command (write) and query (read) responsibilities of a system.
-- 
+- **Command Query Responsibility Segregation (CQRS):** A pattern that separates the command (write) and query (read) responsibilities of a systemm 
 
