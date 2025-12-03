@@ -30,7 +30,7 @@ public class SolarPlantsController(
 
         return Ok(solarPlant);
     }
-
+// teste 
     [HttpPost]
     [ProducesResponseType(typeof(SolarPlantResponse), StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateSolarPlant([FromBody] CreateSolarPlant.SolarPlantForCreation solarPlant, CancellationToken cancellationToken)
