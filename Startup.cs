@@ -25,7 +25,6 @@ using Jantzch.Server2.Infrastructure.Services;
 using MediatR;
 using System.Reflection;
 
-
 namespace Jantzch.Server2;
 
 public class Startup
